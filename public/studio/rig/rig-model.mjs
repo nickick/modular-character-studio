@@ -132,6 +132,8 @@ export function bakePoseIntoProfile(scene, profile, pose = {}) {
  * canvas, so one placement cannot serve them all. Art authored against a slot's
  * registration can leave the bind out and inherit the layer's.
  */
+const HEADGEAR_LAYER_ID = "headgear";
+
 export const optionSlots = [
   { active: "activeNecklace", catalogue: "necklaceOptions", dresses: (layer) => layer.id === "necklace" },
   { active: "activeQuiver", catalogue: "quiverOptions", dresses: (layer) => layer.id === "quiver" },
@@ -143,7 +145,7 @@ export const optionSlots = [
   { active: "activeShield", catalogue: "shieldOptions", dresses: (layer) => layer.id === "shield" },
   { active: "activeRing", catalogue: "ringOptions", dresses: (layer) => layer.id === "ring" },
   { active: "activeChest", catalogue: "chestOptions", dresses: (layer) => layer.id === "tunicBody" },
-  { active: "activeHeadgear", catalogue: "headgearOptions", dresses: (layer) => /helmet/i.test(layer.id) },
+  { active: "activeHeadgear", catalogue: "headgearOptions", dresses: (layer) => layer.id === HEADGEAR_LAYER_ID },
   { active: "activeArmSet", catalogue: "armOptions", byLayer: true },
   { active: "activeBootSet", catalogue: "bootOptions", byLayer: true },
 ];
@@ -238,7 +240,7 @@ export function resolveProfile(
   // in the assembled rig while a real, visible headgear option is being worn.
   const hidesFrontHair = scene.layers.some((layer) => (
     layer.visible
-      && /helmet/i.test(layer.id)
+      && layer.id === HEADGEAR_LAYER_ID
       && (scene.headgearOptions ?? []).some((option) => option.id === selection.activeHeadgear)
   ));
   const bones = scene.bones.map((bone) => ({

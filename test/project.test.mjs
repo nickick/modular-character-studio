@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { resolve } from 'node:path'
 import { validateModularCharacterScene } from '../public/studio/rig/schema.mjs'
+import { resolveProfile } from '../public/studio/rig/rig-model.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const scene = validateModularCharacterScene(
@@ -27,4 +28,32 @@ test('demo catalogue contains the requested armor and held-item families', () =>
     'Scout Leathers', 'Arcane Robes', 'Vanguard Plate',
     'Arming Sword', 'Bearded Axe', 'Oak Staff', 'Hunting Bow', 'Round Shield',
   ]) assert.ok(names.has(name), `missing ${name}`)
+})
+
+test('each bundled headgear option resolves its own asset and hides front hair', () => {
+  const renderedAssets = new Set()
+
+  for (const option of scene.headgearOptions) {
+    const rig = resolveProfile(
+      scene,
+      scene.activeProfile,
+      scene.activeChest,
+      scene.activeArmSet,
+      option.id,
+      scene.activeBootSet,
+      scene.activeNecklace,
+    )
+    const byID = Object.fromEntries(rig.layers.map((layer) => [layer.id, layer]))
+    assert.equal(byID.headgear.asset, option.assetByProfile[scene.activeProfile])
+    assert.equal(byID.headgear.visible, true)
+    assert.equal(byID.hairFront.visible, false)
+    renderedAssets.add(byID.headgear.asset)
+  }
+
+  assert.equal(renderedAssets.size, scene.headgearOptions.length)
+
+  const bareHead = structuredClone(scene)
+  bareHead.layers.find((layer) => layer.id === 'headgear').visible = false
+  const rig = resolveProfile(bareHead, bareHead.activeProfile)
+  assert.equal(rig.layers.find((layer) => layer.id === 'hairFront').visible, true)
 })
