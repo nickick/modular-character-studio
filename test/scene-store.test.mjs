@@ -4,9 +4,9 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
 import {
-  loadModularCharacterSnapshot,
-  saveModularCharacterSnapshot,
-} from '../src/lib/scene-store.mjs'
+  loadSceneSnapshot,
+  saveSceneSnapshot,
+} from '../src/server/scene-store.ts'
 
 test('scene saves are revision checked and backed up', async () => {
   const root = await mkdtemp(join(tmpdir(), 'mcs-scene-store-'))
@@ -15,10 +15,10 @@ test('scene saves are revision checked and backed up', async () => {
   const source = await readFile(new URL('../project/scene.json', import.meta.url))
   await import('node:fs/promises').then(({ writeFile }) => writeFile(scenePath, source))
 
-  const before = await loadModularCharacterSnapshot(scenePath)
+  const before = await loadSceneSnapshot(scenePath)
   const edited = structuredClone(before.scene)
   edited.activeProfile = edited.activeProfile === 'maleV1' ? 'femaleV1' : 'maleV1'
-  const saved = await saveModularCharacterSnapshot({
+  const saved = await saveSceneSnapshot({
     scenePath,
     historyRoot,
     value: edited,
@@ -27,7 +27,7 @@ test('scene saves are revision checked and backed up', async () => {
   assert.notEqual(saved.revision, before.revision)
 
   await assert.rejects(
-    saveModularCharacterSnapshot({
+    saveSceneSnapshot({
       scenePath,
       historyRoot,
       value: before.scene,

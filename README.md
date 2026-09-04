@@ -41,6 +41,6 @@ project/
   assets/
 ```
 
-This first extraction preserves the proven canvas editors inside a TanStack
-Start application shell. The editors remain framework-independent ES modules,
-while TanStack owns routing, project APIs, and the production server.
+The Rig Studio and Equipment Studio are native React routes on TanStack Start.
+They share a typed, framework-independent rig core, Zustand editor state, the
+same revision-protected project API, and route-scoped canvas-editor styles.

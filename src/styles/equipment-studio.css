@@ -1,0 +1,471 @@
+:root { color-scheme: dark; --ink: #e8eef6; --studio-muted: #8fa3b8; --line: #2a3340; --studio-accent: #f0b24b; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #0d1117; color: var(--ink); font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.app-header { display: flex; align-items: center; gap: 20px; padding: 14px 22px; border-bottom: 1px solid var(--line); }
+.eyebrow { margin: 0; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--studio-accent); }
+h1 { margin: 2px 0 0; font-size: 20px; }
+.status { flex: 1; margin: 0; color: var(--studio-muted); }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+button, select, input[type="number"] { background: #161c26; color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font: inherit; }
+button { cursor: pointer; }
+button.accent { background: var(--studio-accent); color: #1a1206; border-color: var(--studio-accent); font-weight: 600; }
+button[aria-pressed="true"] { border-color: var(--studio-accent); color: var(--studio-accent); }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+.layout { display: grid; grid-template-columns: 240px minmax(0, 1fr) 280px; gap: 16px; padding: 16px 22px; align-items: start; }
+.panel { border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: #10151d; }
+.section-heading { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--studio-muted); padding: 6px 0; }
+.slot-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.item-list { display: flex; flex-direction: column; gap: 4px; max-height: 52vh; overflow: auto; }
+.item-list button { text-align: left; }
+.stage-shell { display: flex; flex-direction: column; gap: 10px; }
+.stage-toolbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.stage-title { font-weight: 600; }
+/* Transport buttons carry a glyph, not a word: square, centred, currentColor
+   so the icon follows the button's own state. */
+.icon-button { width: 34px; height: 30px; padding: 0; display: inline-grid; place-items: center; }
+.icon-button svg { width: 11px; height: 11px; fill: currentColor; display: block; }
+.icon-button[aria-pressed="true"] { border-color: var(--studio-accent); color: var(--studio-accent); }
+.check, .zoom-control { display: inline-flex; align-items: center; gap: 6px; color: var(--studio-muted); }
+.canvas-wrap { border: 1px solid var(--line); border-radius: 10px; background: #12161d; overflow: auto; max-height: 62vh; display: flex; justify-content: center; }
+canvas#stage { touch-action: none; cursor: grab; }
+.animation-controls { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 7px 11px; border: 1px solid var(--line); border-radius: 8px; background: #141a22; }
+.animation-controls span { flex: 0 0 auto; color: var(--studio-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.animation-controls input[type="range"] { flex: 1 1 140px; min-width: 120px; accent-color: var(--studio-accent); }
+.hint { margin: 0; color: var(--studio-muted); font-size: 12px; }
+.field-grid { display: grid; gap: 6px; }
+/* Label, sweep, exact value -- one row each, and every part allowed to shrink
+   so the panel never pushes a spinner off its right edge. */
+.field-row { display: grid; grid-template-columns: 58px minmax(0, 1fr) 68px; align-items: center; gap: 8px; font-size: 11px; color: var(--studio-muted); }
+.field-row > span { overflow: hidden; text-overflow: ellipsis; }
+.field-row input { min-width: 0; }
+.field-row input[type="number"] { padding: 5px 6px; font-size: 12px; }
+.field-slider { accent-color: var(--studio-accent); height: 20px; }
+.item-title { margin: 2px 0 10px; font-size: 16px; font-weight: 600; }
+.row { display: flex; gap: 8px; }
+.row select { flex: 1; min-width: 0; }
+.animation-picker-button { position: relative; width: 155px; height: 32px; overflow: hidden; padding: 0 29px 0 10px; color: var(--ink); text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.animation-picker-button::after { content: "▦"; position: absolute; top: 50%; right: 10px; color: var(--studio-muted); transform: translateY(-50%); }
+.animation-modal { width: min(1040px, calc(100vw - 40px)); max-width: none; max-height: calc(100vh - 40px); padding: 0; overflow: hidden; border: 1px solid #465366; border-radius: 14px; background: #111821; color: var(--ink); box-shadow: 0 28px 90px rgba(0, 0, 0, .72); }
+.animation-modal::backdrop { background: rgba(4, 7, 11, .78); backdrop-filter: blur(4px); }
+.animation-modal-panel { display: grid; grid-template-rows: auto minmax(0, 1fr); max-height: calc(100vh - 42px); }
+.animation-modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 18px 20px 15px; border-bottom: 1px solid var(--line); background: #141c26; }
+.animation-modal-header h2 { margin: 3px 0 2px; font-size: 20px; }
+.animation-modal-header .eyebrow { margin: 0; }
+.animation-modal-close { width: 34px; height: 34px; padding: 0; font-size: 24px; line-height: 1; }
+.animation-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-rows: max-content; align-content: start; gap: 10px; padding: 14px; overflow-y: auto; }
+.animation-option { display: grid; grid-template-rows: auto minmax(42px, auto); align-content: start; min-width: 0; padding: 0; overflow: hidden; border-color: #303b49; background: #0d131a; text-align: center; }
+.animation-option:hover { border-color: #5b6b80; background: #18222d; }
+.animation-option[aria-selected="true"] { border-color: var(--studio-accent); background: #322514; box-shadow: 0 0 0 1px var(--studio-accent) inset; }
+.animation-option canvas { display: block; width: 100%; aspect-ratio: 1; background: radial-gradient(circle at 50% 42%, #202b38 0, #111820 56%, #0b1016 100%); }
+.animation-option-name { display: flex; align-items: center; justify-content: center; min-height: 42px; padding: 8px 7px; border-top: 1px solid #303b49; color: var(--ink); font-size: 12px; font-weight: 700; line-height: 1.25; white-space: normal; }
+.animation-option[aria-selected="true"] .animation-option-name { border-top-color: #8e672c; color: #ffd796; font-weight: 800; }
+
+/* The slot's current pick, and the grid behind it. */
+.item-picker {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 10px 12px;
+  cursor: pointer;
+  text-align: left;
+}
+.item-picker:hover { border-color: var(--studio-accent); }
+.item-picker-meta { font-size: 11px; color: var(--studio-muted); }
+
+.item-modal {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #10151d;
+  color: var(--ink);
+  padding: 0;
+  max-width: min(1500px, 94vw);
+  max-height: 88vh;
+}
+.item-modal::backdrop { background: rgba(6, 9, 13, 0.72); }
+.item-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.item-modal-header h2 { margin: 0 0 4px; font-size: 17px; }
+.item-grid {
+  display: grid;
+  gap: 8px;
+  padding: 16px 20px 20px;
+  overflow: auto;
+  max-height: 70vh;
+}
+.item-grid .column-head,
+.item-grid .row-head { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--studio-muted); }
+.item-grid .column-head strong { display: block; font-size: 13px; letter-spacing: 0; text-transform: none; color: var(--ink); }
+.item-grid .row-head { align-self: center; }
+.item-grid .row-head strong { display: block; font-size: 13px; letter-spacing: 0; text-transform: none; color: var(--ink); }
+.item-cell {
+  min-height: 62px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #141b25;
+  padding: 8px 10px;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+}
+.item-cell:hover { border-color: var(--studio-accent); }
+.item-cell[aria-pressed="true"] { border-color: var(--studio-accent); color: var(--studio-accent); }
+.item-cell .cell-meta { display: block; font-size: 11px; color: var(--studio-muted); padding-top: 3px; }
+/* Nothing to equip, or an item whose art has not been made: both are gaps, and
+   the difference between them is what the art pipeline wants to see. */
+.item-cell.empty, .item-cell.unmade {
+  cursor: not-allowed;
+  color: #5d6b7c;
+  background: repeating-linear-gradient(135deg, #11161e, #11161e 6px, #131a23 6px, #131a23 12px);
+}
+.item-cell.not-applicable {
+  color: #6f7780;
+  border-color: #2f353b;
+  background: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.018) 6px, transparent 6px, transparent 12px);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+}
+.item-cell.unmade { color: #8a7a52; border-style: dashed; }
+
+/* A cell holding several items stacks them, each pickable in its own right. */
+.item-cell.filled { display: flex; flex-direction: column; gap: 4px; padding: 6px; cursor: default; }
+.item-cell.filled:hover { border-color: var(--line); }
+.item-choice {
+  text-align: left;
+  padding: 5px 7px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.item-choice:hover { border-color: var(--studio-accent); background: #171f2a; }
+.item-choice[aria-pressed="true"] { border-color: var(--studio-accent); color: var(--studio-accent); }
+
+/* Whether a piece has been fitted by hand belongs beside the placement it
+   describes, so it reads as the heading's own state rather than another field. */
+.item-fitted { margin: 8px 0 2px 2px; }
+.fitted-toggle { display: inline-flex; align-items: center; gap: 7px; color: var(--ink); font-size: 12px; cursor: pointer; }
+.fitted-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.fitted-toggle .switch {
+  position: relative;
+  width: 32px; height: 18px; flex: 0 0 auto;
+  border: 1px solid var(--line); border-radius: 999px; background: #161c26;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+.fitted-toggle .switch::after {
+  content: ""; position: absolute; top: 2px; left: 2px;
+  width: 12px; height: 12px; border-radius: 50%; background: var(--studio-muted);
+  transition: transform 120ms ease, background 120ms ease;
+}
+.fitted-toggle input:checked + .switch { background: #234a2c; border-color: #3f7a4c; }
+.fitted-toggle input:checked + .switch::after { transform: translateX(14px); background: #7fd694; }
+.fitted-toggle input:focus-visible + .switch { outline: 2px solid var(--studio-accent); outline-offset: 2px; }
+.fitted-toggle input:disabled + .switch { opacity: 0.4; }
+/* The same mark the matrix shows, so the two read as one idea. */
+.item-choice { position: relative; }
+.item-cell.filled .item-choice[data-fitted="true"] { border-color: #2f5c39; }
+
+/* Outstanding work on a piece, shown in its lower right. Three glyphs rather
+   than one colour, because they are three different jobs. */
+.status-marks {
+  position: absolute;
+  right: 6px;
+  bottom: 4px;
+  display: flex;
+  gap: 4px;
+  font-size: 11px;
+  line-height: 1;
+}
+.status-mark.unfitted { color: #e0654f; }
+.status-mark.no-inventory { color: #d8443a; }
+.item-cell.filled .item-choice[data-fitted="true"] { border-color: #2f5c39; }
+
+/* The same glyphs the cells use, named once at the top rather than relied on
+   from tooltips a reader has to hunt for. */
+.legend-unmade { color: var(--studio-muted); font-style: normal; }
+.mark-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--studio-muted);
+}
+.mark-legend li { display: flex; align-items: center; gap: 6px; }
+.mark-legend .status-mark { position: static; font-size: 12px; }
+.mark-legend em { font-style: normal; opacity: 0.75; }
+
+/* Two profiles, so switching is one click rather than open-then-choose. */
+.profile-toggle { display: inline-flex; align-items: center; gap: 8px; }
+.profile-toggle .profile-current { font-weight: 600; }
+.profile-toggle .profile-swap { color: var(--studio-accent); }
+.profile-toggle .profile-other { color: var(--studio-muted); }
+
+/* Both bodies side by side, because most gear has to work on both and the
+   difference is only visible when they are next to each other. */
+.stages { gap: 12px; align-items: flex-start; }
+.stage-figure { margin: 0; text-align: center; }
+.stage-figure canvas { touch-action: none; cursor: grab; display: block; }
+.stage-figure figcaption { font-size: 11px; color: var(--studio-muted); padding-top: 4px; }
+.view-tabs { display: inline-flex; gap: 6px; }
+
+.edit-scope { margin: 0; font-size: 11px; color: var(--studio-accent); }
+.grip-placement { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); }
+.grip-placement[hidden] { display: none; }
+.grip-placement .section-heading output { max-width: 130px; overflow: hidden; color: var(--studio-accent); text-align: right; text-overflow: ellipsis; white-space: nowrap; }
+.grip-scope { margin: 0 0 9px; color: var(--studio-accent); font-size: 11px; }
+.grip-target { display: grid; gap: 5px; margin-bottom: 9px; color: var(--studio-muted); font-size: 11px; }
+.grip-target select { width: 100%; min-width: 0; }
+.grip-field-grid { margin-bottom: 10px; }
+.expression-placement { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); }
+.expression-placement .section-heading output { color: #d68cff; }
+.expression-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.expression-fields label { display: grid; gap: 5px; color: var(--studio-muted); font-size: 11px; }
+.expression-fields select { min-width: 0; width: 100%; }
+.expression-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 8px; }
+.expression-actions button { min-width: 0; }
+.expression-actions button:disabled { cursor: default; opacity: .42; }
+.grip-hint { margin: 9px 0 0; color: var(--studio-muted); font-size: 10px; line-height: 1.45; }
+
+/*
+ * Field layout for the React studio.
+ *
+ * The old markup hand-wrote `.field-row` around every input. The shared numeric
+ * control carries its own class instead, so the same three-column layout is
+ * stated once here for any field in a panel.
+ */
+.numeric-control {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 68px;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--studio-muted);
+}
+.numeric-control > span:first-child { overflow: hidden; text-overflow: ellipsis; }
+.numeric-control-fields { display: contents; }
+.numeric-control-slider { min-width: 0; accent-color: var(--studio-accent); }
+.numeric-control-number { min-width: 0; padding: 5px 6px; font-size: 12px; }
+.numeric-control-suffix { color: var(--studio-muted); font-style: normal; }
+
+.panel > #placementBox > label,
+.panel > #placementBox .check {
+  display: grid;
+  gap: 5px;
+  margin: 10px 0;
+  font-size: 11px;
+  color: var(--studio-muted);
+}
+.panel > #placementBox .check { grid-template-columns: auto 1fr; align-items: center; }
+.panel > #placementBox select { width: 100%; min-width: 0; padding: 6px; }
+
+.animation-controls label { display: flex; align-items: center; gap: 6px; color: var(--studio-muted); font-size: 11px; }
+.animation-controls select { padding: 5px 6px; }
+
+/* Each visible body owns an equal share of the stage. The canvases themselves
+   are fitted to those shares at 100% zoom, then may overflow for close work. */
+.canvas-wrap { gap: 0; padding: 0; justify-content: safe center; }
+.stage-figure { flex: 0 0 auto; min-width: 0; }
+
+/* The studio switcher, previously injected by `editor-nav.js`. */
+.editor-nav { position: relative; z-index: 10000; flex: 0 0 auto; }
+.editor-nav__button { width: 38px; height: 38px; padding: 0; display: grid; place-items: center; border-radius: 10px; }
+.editor-nav__icon, .editor-nav__icon::before, .editor-nav__icon::after { display: block; width: 18px; height: 2px; border-radius: 2px; background: currentColor; content: ""; }
+.editor-nav__icon { position: relative; }
+.editor-nav__icon::before { position: absolute; top: -6px; }
+.editor-nav__icon::after { position: absolute; top: 6px; }
+.editor-nav__menu { position: absolute; right: 0; top: calc(100% + 8px); width: 320px; margin: 0; padding: 6px; list-style: none; border: 1px solid #465568; border-radius: 12px; background: #131b24; box-shadow: 0 18px 44px rgba(0,0,0,.5); }
+.editor-nav__menu a { display: grid; gap: 2px; padding: 9px 11px; border-radius: 8px; color: #eef3f8; text-decoration: none; }
+.editor-nav__menu a:hover { background: #22303d; }
+.editor-nav__menu strong { font-size: 12px; }
+.editor-nav__menu span { color: #8792a2; font-size: 10px; line-height: 1.45; }
+.editor-nav__menu li[aria-current="page"] a { background: #2b3a49; }
+
+/*
+ * shadcn primitives, in the studio's colours.
+ *
+ * The controls come from the component library so their focus, keyboard and
+ * ARIA behaviour is Radix's rather than hand-rolled; their palette is mapped
+ * here, so a select or dialog sits in the studio's gold-and-cyan chrome instead
+ * of bringing the launcher's blue-neutral theme into the tool.
+ */
+:root {
+  --background: #121821;
+  --foreground: #f2f4f7;
+  --card: #171e28;
+  --card-foreground: #f2f4f7;
+  --popover: #171e28;
+  --popover-foreground: #f2f4f7;
+  --primary: #f0b24b;
+  --primary-foreground: #181006;
+  --secondary: #1a222d;
+  --secondary-foreground: #f2f4f7;
+  --muted: #1a222d;
+  --muted-foreground: #8792a2;
+  --accent: #232d3a;
+  --accent-foreground: #f2f4f7;
+  --border: #343c49;
+  --input: #343c49;
+  --ring: #76d9e8;
+  --radius: 7px;
+}
+
+/*
+ * Layout for the shadcn primitives, against Radix's shapes rather than the
+ * element names the rules above were written for.
+ */
+.check { display: flex; align-items: center; gap: 7px; color: var(--studio-muted); font-size: 11px; }
+.check label { margin: 0; cursor: pointer; }
+.field { display: grid; gap: 5px; color: var(--studio-muted); font-size: 11px; }
+.field label { margin: 0; }
+.field [data-slot="select-trigger"] { width: 100%; min-width: 0; }
+.animation-controls .field { display: flex; align-items: center; gap: 6px; }
+.animation-controls .field [data-slot="select-trigger"] { min-width: 150px; }
+.animation-controls [data-slot="slider"] { flex: 1 1 140px; min-width: 120px; }
+.zoom-control [data-slot="slider"] { width: 110px; }
+.numeric-control [data-slot="slider"] { width: 100%; min-width: 0; }
+.numeric-control-number { height: auto; }
+.slot-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.view-tabs { display: flex; gap: 6px; }
+
+/* Flex children shrink by default; these three carry their own size. */
+.zoom-control [data-slot="slider"] { flex: 0 0 110px; }
+.animation-controls { min-width: 0; }
+.animation-controls [data-slot="slider"] { flex: 1 1 140px; min-width: 0; }
+
+/*
+ * Two-word field labels ("Knuckle axis", "Across haft") wrapped in the old
+ * 58px column. A little more room, and an ellipsis rather than a second line.
+ */
+.numeric-control { grid-template-columns: 92px minmax(0, 1fr) 62px; }
+.numeric-control > label { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+/*
+ * The slider's unfilled track reads as `--muted`, which in this palette sits
+ * almost on top of the panel it is drawn on. Give it its own contrast, and the
+ * filled part the gold the old `accent-color` gave it.
+ */
+[data-slot="slider-track"] { background: #2c3543; }
+[data-slot="slider-range"] { background: var(--gold, var(--studio-accent, #f0b24b)); }
+[data-slot="slider-thumb"] { border-color: var(--gold, var(--studio-accent, #f0b24b)); background: #f7f9fb; }
+
+/*
+ * The studio stylesheets are unlayered, so their broad `button` rule outranks
+ * every Tailwind utility -- and Radix renders a checkbox as a button. Rather
+ * than exempt the element selector, the primitives that need it are styled
+ * outright here, which also lets them carry the studio's own palette.
+ */
+[data-slot="checkbox"] {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  padding: 0;
+  border: 1px solid #4a5872;
+  border-radius: 4px;
+  background: #0e141c;
+  box-shadow: none;
+  transition: background-color .12s ease, border-color .12s ease;
+}
+[data-slot="checkbox"]:hover { border-color: #6a7c96; background: #151d27; }
+[data-slot="checkbox"][data-state="checked"] {
+  border-color: var(--gold, var(--studio-accent, #f0b24b));
+  background: var(--gold, var(--studio-accent, #f0b24b));
+  color: #181006;
+}
+[data-slot="checkbox-indicator"] { display: grid; width: 100%; height: 100%; place-items: center; }
+[data-slot="checkbox-indicator"] svg { width: 11px; height: 11px; stroke-width: 3.25; }
+
+/*
+ * The panels sit above the stage. The stage's toolbar and transport are wide,
+ * fixed-height rows; when the window is narrow enough for them to overflow
+ * their column they used to paint across the inspector beside them.
+ */
+.panel { position: relative; z-index: 2; }
+.stage-shell { position: relative; z-index: 1; }
+
+.stage-toolbar { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+.stage-toolbar::-webkit-scrollbar { height: 0; }
+
+/* Floating layers sit over the studio, so they carry their own solid surface. */
+[data-slot="select-content"],
+[data-slot="popover-content"] {
+  border: 1px solid #3c485b;
+  background: #182029;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, .55);
+}
+[data-slot="select-item"][data-state="checked"],
+[data-slot="select-item"]:focus { background: #26313f; color: #f2f4f7; }
+
+/* A single-select Radix group reports `data-state`, not `aria-pressed`. */
+[data-slot="toggle-group-item"][data-state="on"] {
+  border-color: var(--studio-accent);
+  background: #2a2113;
+  color: var(--studio-accent);
+}
+
+/*
+ * The studio fills the window, as the rig studio does: the stage takes whatever
+ * the header, the transport and the panels leave, rather than sitting in a
+ * fixed 62vh box with dead space under it.
+ */
+.app-shell { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+.app-header { flex: 0 0 auto; }
+.layout { flex: 1; min-height: 0; align-items: stretch; }
+.layout > .panel { min-height: 0; overflow-y: auto; }
+.stage-shell { min-width: 0; min-height: 0; }
+.canvas-wrap { flex: 1; min-height: 0; max-height: none; align-items: center; }
+.animation-controls { flex: 0 0 auto; }
+
+/* The item grid is a sheet over the studio, so it carries its own surface. */
+.item-modal { width: min(1460px, calc(100vw - 48px)); max-width: none; padding: 0; }
+.item-modal-header { margin: 0; text-align: left; }
+
+/*
+ * A cell can hold several items -- two magical wands, three common shields --
+ * so it grows to fit them rather than clipping all but the first.
+ *
+ * `align-content` matters as much as the row sizing here: the grid is capped at
+ * 70vh, and stretching the rows across that cap divides the slack evenly and
+ * caps every row at the same height, however much any one of them holds.
+ */
+.item-grid {
+  grid-auto-rows: minmax(62px, auto);
+  align-content: start;
+  /* The dialog is itself a grid, so without this the sheet stretches its body
+     to the full row and there is slack for the rows above to absorb. */
+  align-self: start;
+}
+.item-cell.filled { display: grid; align-content: start; gap: 6px; }
+.item-cell.filled button { width: 100%; min-width: 0; text-align: left; }
+.item-cell.unmade { display: grid; align-content: start; gap: 4px; font-size: 11px; }
+.item-cell.empty, .item-cell.not-applicable { display: grid; place-content: center; }
+
+/*
+ * Edge to edge, as the rig studio is.
+ *
+ * The panels were floating cards with a gutter between them, which left the
+ * stage — the thing being judged — boxed inside a box. They are columns now,
+ * divided by a rule rather than byempty space, and the stage runs from the left
+ * rail to the right one and up to its own toolbar.
+ */
+.layout { gap: 0; padding: 0; }
+.layout > .panel { border: 0; border-radius: 0; padding: 12px; }
+.layout > .panel:first-child { border-right: 1px solid var(--line); }
+.layout > .panel:last-child { border-left: 1px solid var(--line); }
+
+.stage-shell { gap: 0; }
+.stage-toolbar { padding: 8px 14px; border-bottom: 1px solid var(--line); }
+.canvas-wrap { border: 0; border-radius: 0; }
+.animation-controls { border: 0; border-top: 1px solid var(--line); border-radius: 0; }

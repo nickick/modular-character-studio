@@ -34,7 +34,7 @@
           "pivotY": 0.387
         }
       },
-      "line": "shortbow",
+      "line": "leather",
       "tier": "common",
       "fitted": true,
       "itemID": "scout_leathers"
@@ -193,9 +193,8 @@
           }
         }
       },
-      "line": "shortbow",
+      "line": "leather",
       "tier": "common",
-      "fitted": true,
       "itemID": "leather_bracers"
     },
     {
@@ -479,7 +478,7 @@
           }
         }
       },
-      "line": "shortbow",
+      "line": "leather",
       "tier": "common",
       "fitted": true,
       "itemID": "leather_boots"
@@ -734,7 +733,7 @@
           "pivotY": 0.56
         }
       },
-      "line": "loud",
+      "line": "mage",
       "tier": "common",
       "fitted": true,
       "itemID": "arcane_circlet"
@@ -799,7 +798,6 @@
           "pivotY": 0.5
         }
       },
-      "fitted": true,
       "itemID": "normal_quiver"
     }
   ],

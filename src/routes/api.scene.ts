@@ -1,9 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { projectHistoryPath, projectScenePath } from '../lib/project-paths'
-import {
-  loadModularCharacterSnapshot,
-  saveModularCharacterSnapshot,
-} from '../lib/scene-store.mjs'
+import { loadSceneSnapshot, saveSceneSnapshot } from '../server/scene-store.ts'
 
 const jsonHeaders = {
   'Cache-Control': 'no-store',
@@ -23,7 +20,7 @@ export const Route = createFileRoute('/api/scene')({
     handlers: {
       GET: async () => {
         try {
-          const snapshot = await loadModularCharacterSnapshot(projectScenePath())
+          const snapshot = await loadSceneSnapshot(projectScenePath())
           return json(snapshot.scene, 200, { ETag: snapshot.revision })
         } catch (error) {
           return json({ error: error instanceof Error ? error.message : String(error) }, 400)
@@ -35,11 +32,11 @@ export const Route = createFileRoute('/api/scene')({
           if (contentLength > 32 * 1024 * 1024) return json({ error: 'Request body exceeds 32 MB' }, 413)
           const source = await request.text()
           if (source.length > 32 * 1024 * 1024) return json({ error: 'Request body exceeds 32 MB' }, 413)
-          const snapshot = await saveModularCharacterSnapshot({
+          const snapshot = await saveSceneSnapshot({
             scenePath: projectScenePath(),
             historyRoot: projectHistoryPath(),
             value: JSON.parse(source),
-            expectedRevision: request.headers.get('if-match') ?? undefined,
+            expectedRevision: request.headers.get('if-match'),
           })
           return json(snapshot.scene, 200, { ETag: snapshot.revision })
         } catch (error) {

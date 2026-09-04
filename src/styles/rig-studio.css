@@ -1,0 +1,441 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #0d1117;
+  color: #f2f4f7;
+  --gold: #f0b24b;
+  --gold-deep: #7f5521;
+  --line: #2b313c;
+  --panel: #121821;
+  --panel-2: #171e28;
+  --studio-muted: #8792a2;
+  --cyan: #55d9e8;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 1060px; overflow: hidden; background: #0d1117; }
+button, input, select { font: inherit; }
+button, select, input[type="number"], input[type="text"], input[type="search"] {
+  border: 1px solid #343c49;
+  border-radius: 7px;
+  background: #1a222d;
+  color: #f2f4f7;
+}
+button { padding: 8px 11px; cursor: pointer; }
+button:hover { border-color: #566478; background: #232d3a; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid #76d9e8; outline-offset: 2px; }
+button.primary { border-color: #ce8e2d; background: linear-gradient(#efb44e, #cc8730); color: #181006; font-weight: 800; }
+button.accent, button[aria-pressed="true"] { border-color: #7e582a; background: #49351f; color: #ffd68e; }
+
+.app-shell { height: 100vh; display: flex; flex-direction: column; }
+.topbar { height: 68px; flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 16px; border-bottom: 1px solid var(--line); background: #0f141b; }
+.brand h1 { margin: 2px 0 0; font-size: 20px; letter-spacing: -.02em; }
+.eyebrow { color: var(--gold); font-size: 10px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+.status { color: #a7b0bd; font-size: 12px; text-align: right; }
+
+.toolbar { min-height: 54px; flex: 0 0 auto; display: flex; align-items: center; gap: 9px; padding: 8px 12px; border-bottom: 1px solid var(--line); background: #141a22; }
+.toolbar label { display: flex; align-items: center; gap: 7px; color: #aeb7c4; font-size: 11px; }
+.toolbar select { min-width: 135px; padding: 7px 9px; }
+.toolbar-spacer { flex: 1; }
+.menu-control { position: relative; }
+.control-menu { position: absolute; z-index: 30; display: grid; gap: 10px; padding: 11px; border: 1px solid #3a4656; border-radius: 9px; background: #171e28; box-shadow: 0 18px 45px rgba(0,0,0,.5); }
+.control-menu[hidden] { display: none; }
+.equip-menu { top: calc(100% + 8px); left: 0; width: 250px; }
+.toolbar .equip-menu label { display: grid; gap: 5px; color: #8e9aaa; font-size: 9px; }
+.toolbar .equip-menu label.check { display: flex; color: #c4ccd7; font-size: 11px; }
+.toolbar .equip-menu select { width: 100%; min-width: 0; }
+
+.workspace { flex: 1; min-height: 0; display: grid; grid-template-columns: 250px minmax(520px, 1fr) 310px; }
+.panel { min-height: 0; overflow-y: auto; background: var(--panel); }
+.panel-left { border-right: 1px solid var(--line); }
+.panel-right { border-left: 1px solid var(--line); }
+.panel-section { padding: 13px; border-bottom: 1px solid var(--line); }
+.section-heading { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 2px 8px; margin-bottom: 10px; }
+.section-heading span { grid-column: 1; color: var(--gold); font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.section-heading strong { grid-column: 1; font-size: 15px; }
+.section-heading output { grid-column: 2; grid-row: 1 / 3; align-self: center; min-width: 26px; padding: 3px 6px; border-radius: 10px; background: #242c37; color: #9da8b5; font-size: 10px; text-align: center; }
+.search { width: 100%; padding: 8px 9px; margin-bottom: 9px; }
+
+.layer-groups { display: grid; gap: 8px; }
+.layer-group h3 { margin: 0 0 4px; color: #7f8c9d; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+.layer-row { display: grid; grid-template-columns: 25px 1fr auto; gap: 4px; align-items: center; margin: 2px 0; }
+.layer-row button { min-width: 0; overflow: hidden; padding: 6px 7px; border-color: transparent; background: transparent; color: #bdc6d2; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.layer-row button:hover, .layer-row button.selected { background: #25303c; color: white; }
+.layer-row .visibility { width: 25px; height: 25px; padding: 0; display: grid; place-items: center; color: var(--gold); }
+.layer-row small { color: #657385; font-size: 9px; }
+
+.stage-shell { min-width: 0; min-height: 0; display: grid; grid-template-rows: 46px minmax(0, 1fr) 58px; background: #0e131a; }
+.stage-toolbar { display: flex; align-items: center; gap: 12px; padding: 7px 10px; border-bottom: 1px solid var(--line); background: #151b24; }
+.segmented { display: flex; }
+.segmented button { border-radius: 0; }
+.segmented button:first-child { border-radius: 7px 0 0 7px; }
+.segmented button:last-child { border-radius: 0 7px 7px 0; }
+.check { color: #adb7c4; font-size: 11px; white-space: nowrap; }
+.check input { margin-right: 5px; accent-color: var(--gold); }
+.check.block { display: block; margin: 9px 0; }
+.zoom-control { margin-left: auto; display: flex; align-items: center; gap: 6px; color: #9da8b6; font-size: 10px; }
+.zoom-control input { width: 92px; }
+
+.stage { position: relative; min-height: 0; overflow: auto; background: radial-gradient(circle at 50% 38%, #1b2430 0, #111820 50%, #0c1117 100%); }
+.canvas-wrap { width: calc(1574px * var(--canvas-scale, .45)); height: calc(1574px * var(--canvas-scale, .45)); margin: 22px auto 56px; box-shadow: 0 22px 75px rgba(0,0,0,.48); }
+#rigCanvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: crosshair; }
+
+/* A row, not a fixed grid: the template was cut for six controls and there are
+   seven, so the last one wrapped and "Review poses" was squeezed into the
+   column meant for the time readout. Laid out as a flex row, the slider takes
+   whatever is left and the rest keep their natural width. */
+.timeline { display: flex; align-items: center; gap: 8px; padding: 7px 11px; border-top: 1px solid var(--line); background: #141a22; }
+.timeline > * { flex: 0 0 auto; white-space: nowrap; }
+/* The slider thumb overhangs its 6px track by 5px either side, so the marker
+   rows below it need more clearance than the old range input asked for. */
+.timeline .timeline-track { position: relative; flex: 1 1 120px; min-width: 80px; padding-bottom: 36px; }
+/* The playhead is a Radix slider: it lays itself out as a flex row, so forcing
+   `display: block` here -- as the old range input needed -- collapsed its track
+   to nothing. Only the minimum width is still ours to state. */
+.timeline #timeline { min-width: 80px; }
+.timeline #playPause { width: 36px; height: 32px; padding: 0; }
+.keyframe-nav { display: flex; gap: 4px; }
+.keyframe-nav button { min-width: 48px; padding: 6px 7px; font-size: 9px; }
+.keyframe-nav button:disabled { cursor: default; opacity: .4; }
+/* Transport buttons carry a glyph, not a word: square, centred, currentColor
+   so the icon follows whatever state the button is in. */
+.icon-button { display: inline-grid; place-items: center; }
+.icon-button svg { width: 11px; height: 11px; fill: currentColor; display: block; }
+.timeline span { color: #aeb8c5; font-size: 10px; font-variant-numeric: tabular-nums; }
+/* The range fills its column; the clip-scope checkbox keeps its own size, or it
+   stretches into the big empty square this rule used to draw. */
+.timeline input[type="range"] { width: 100%; }
+.timeline input { accent-color: var(--gold); }
+.bone-key-markers { position: absolute; right: 7px; bottom: 11px; left: 7px; height: 8px; pointer-events: none; }
+.bone-key-marker { position: absolute; width: 7px; height: 7px; padding: 0; transform: translateX(-50%) rotate(45deg); border: 0; border-radius: 1px; background: #55d9e8; pointer-events: auto; }
+.bone-key-marker.current { background: #fff; box-shadow: 0 0 0 1px #55d9e8; }
+.expression-key-markers { position: absolute; right: 7px; bottom: 21px; left: 7px; height: 8px; pointer-events: none; }
+.expression-key-marker { position: absolute; width: 8px; height: 8px; padding: 0; transform: translateX(-50%); border: 1px solid #190f25; border-radius: 50%; background: #d68cff; pointer-events: auto; }
+.expression-key-marker.current { background: #fff; box-shadow: 0 0 0 2px #d68cff; }
+.timeline label { color: #929dab; font-size: 10px; }
+.timeline select { padding: 5px; }
+.animation-picker-button { position: relative; width: 155px; height: 32px; overflow: hidden; padding: 0 29px 0 10px; color: #d4dbe4; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.animation-picker-button::after { content: "▦"; position: absolute; top: 50%; right: 10px; color: #788598; transform: translateY(-50%); }
+
+.animation-modal {
+  width: min(1040px, calc(100vw - 40px));
+  max-width: none;
+  max-height: calc(100vh - 40px);
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #465366;
+  border-radius: 14px;
+  background: #111821;
+  color: #f2f4f7;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .72);
+}
+.animation-modal-panel { display: grid; grid-template-rows: auto minmax(0, 1fr); max-height: calc(100vh - 42px); }
+.animation-modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 18px 20px 15px; border-bottom: 1px solid var(--line); background: #141c26; }
+.animation-modal-header h2 { margin: 3px 0 2px; font-size: 20px; }
+.animation-modal-header p { margin: 0; color: #8995a5; font-size: 11px; }
+.animation-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-auto-rows: max-content;
+  align-content: start;
+  gap: 10px;
+  padding: 14px;
+  overflow-y: auto;
+}
+.animation-option { display: grid; grid-template-rows: auto minmax(42px, auto); align-content: start; min-width: 0; padding: 0; overflow: hidden; border-color: #303b49; background: #0d131a; text-align: center; }
+.animation-option:hover { border-color: #5b6b80; background: #18222d; }
+.animation-option[aria-selected="true"] { border-color: #e8a942; background: #322514; box-shadow: 0 0 0 1px #e8a942 inset; }
+.animation-option canvas { display: block; width: 100%; aspect-ratio: 1; background: radial-gradient(circle at 50% 42%, #202b38 0, #111820 56%, #0b1016 100%); }
+.animation-option-name { display: flex; align-items: center; justify-content: center; min-height: 42px; padding: 8px 7px; border-top: 1px solid #303b49; color: #e3e8ef; font-size: 12px; font-weight: 700; line-height: 1.25; white-space: normal; }
+.animation-option[aria-selected="true"] .animation-option-name { border-top-color: #8e672c; color: #ffd796; font-weight: 800; }
+
+.profile-card h2 { margin: 5px 0 4px; font-size: 17px; }
+.profile-card p, .hint { margin: 4px 0; color: #8995a5; font-size: 10px; line-height: 1.5; }
+.empty-state { padding: 18px 10px; border: 1px dashed #354150; border-radius: 7px; color: #778496; font-size: 11px; text-align: center; }
+.inspector-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.inspector-grid label { display: grid; gap: 4px; color: #8e9aaa; font-size: 9px; }
+.inspector-grid input[type="number"] { width: 100%; min-width: 0; padding: 6px; font-variant-numeric: tabular-nums; }
+.numeric-control-fields { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) 72px; align-items: center; gap: 8px; width: 100%; }
+.numeric-control-slider { width: 100%; min-width: 0; padding: 0; accent-color: var(--gold); }
+.numeric-control-number { width: 100%; min-width: 0; padding: 6px; color: #f2f4f7; font-variant-numeric: tabular-nums; }
+.detail-line { color: #8995a5; font-size: 10px; }
+code { color: #eec276; }
+#resetLayer, #resetBone { width: 100%; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin: 0; }
+.metrics div { padding: 8px; border-radius: 6px; background: #0f151c; }
+.metrics dt { color: #748192; font-size: 9px; }
+.metrics dd { margin: 3px 0 0; font-size: 11px; font-weight: 700; }
+.metrics .ok { color: #68d8a1; }
+
+.wrist-lab > label { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px; margin: 9px 0; color: #8e9aaa; font-size: 10px; }
+.wrist-lab select { grid-column: 1 / -1; width: 100%; padding: 7px; }
+.wrist-lab input[type="range"] { width: 100%; accent-color: var(--gold); }
+.wrist-lab output { color: #ffd68e; font-variant-numeric: tabular-nums; }
+.channel-key-index { grid-column: 1 / -1; color: #6f7c8d; font-size: 9px; font-variant-numeric: tabular-nums; text-align: right; }
+.channel-key-index.current { color: var(--cyan); font-weight: 700; }
+.wrist-lab button { width: 100%; }
+.finger-target-control { display: grid; gap: 6px; margin: 9px 0; color: #8e9aaa; font-size: 10px; }
+.finger-target-buttons button { flex: 1 1 0; width: auto; min-width: 0; padding: 7px 4px; }
+.finger-target-buttons button + button { margin-left: -1px; }
+.wrist-key-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 9px 0; }
+.wrist-key-actions button { min-width: 0; padding: 7px 5px; font-size: 10px; }
+.wrist-key-actions button:disabled { cursor: default; opacity: .42; }
+.copy-hand-channel { grid-template-columns: minmax(0, 1fr) auto; }
+.copy-hand-channel select { grid-column: auto; }
+.copy-hand-channel button { width: auto; white-space: nowrap; }
+.wrist-key-markers { position: absolute; right: 7px; bottom: 0; left: 7px; height: 12px; pointer-events: none; }
+.wrist-key-marker { position: absolute; width: 9px; height: 9px; padding: 0; border: 1px solid #201506; border-radius: 2px; background: var(--gold); transform: translateX(-50%) rotate(45deg); pointer-events: auto; }
+.wrist-key-marker.current { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.expression-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.expression-fields label { display: grid; gap: 5px; color: #8e9aaa; font-size: 10px; }
+.expression-fields select { width: 100%; min-width: 0; padding: 7px; }
+.expression-key-actions { grid-template-columns: 1fr 1fr; }
+.expression-key-nav { margin-top: 7px; }
+.expression-key-nav button { flex: 1 1 0; }
+.mesh-authoring-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 14px 0 7px; }
+.mesh-authoring-heading strong { font-size: 11px; }
+.mesh-authoring-heading span { color: #738092; font-size: 9px; }
+#wristMeshEditor { display: block; width: 100%; height: auto; border: 1px solid #354150; border-radius: 7px; background: #0b1016; cursor: crosshair; touch-action: none; }
+#fingerPathEditor { display: block; width: 100%; height: auto; border: 1px solid #354150; border-radius: 7px; background: #0b1016; cursor: crosshair; touch-action: none; }
+.finger-path-toolbar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 8px 0; }
+.finger-path-toolbar button, .finger-path-actions button { min-width: 0; padding: 7px 5px; font-size: 10px; }
+.finger-path-toolbar button.active { border-color: var(--gold); background: #3a2a12; color: #ffd68e; }
+.finger-path-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin: 8px 0; }
+.finger-path-actions button:disabled { cursor: default; opacity: .42; }
+.finger-anchor-controls { display: grid; gap: 7px; margin: 8px 0; }
+.finger-anchor-controls label { display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; color: #8e9aaa; font-size: 9px; }
+.finger-anchor-controls input[type="range"] { width: 100%; accent-color: var(--gold); }
+.finger-anchor-controls output { color: #ffd68e; font-variant-numeric: tabular-nums; }
+#resetFingerAnchor { width: 100%; }
+.mesh-density-controls { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 8px 0; }
+.mesh-density-controls label { display: grid; gap: 4px; color: #8e9aaa; font-size: 9px; }
+.mesh-density-controls input[type="number"] { width: 100%; padding: 6px; }
+
+@media (max-width: 1180px) {
+  .workspace { grid-template-columns: 220px minmax(500px, 1fr) 280px; }
+  .stage-toolbar { gap: 7px; }
+}
+
+/*
+ * Panel layout for the React studio.
+ *
+ * The old markup wrapped every field in `.inspector-grid`, which is what gave
+ * panel labels their stacked layout. The components carry their own class
+ * instead, so the same rules are stated once here for any field in a panel
+ * rather than only inside that one wrapper.
+ */
+.panel-section label,
+.numeric-control {
+  display: grid;
+  gap: 4px;
+  margin: 9px 0;
+  color: #8e9aaa;
+  font-size: 10px;
+}
+.panel-section label > span:first-child { line-height: 1.3; }
+.panel-section select,
+.panel-section input[type="search"],
+.panel-section input[type="number"] { width: 100%; min-width: 0; padding: 6px; }
+.numeric-control-suffix { color: #6f7c8d; font-style: normal; }
+.inspector-fields { display: grid; grid-template-columns: 1fr; gap: 2px; }
+
+/* Option ids can be long; the heading wraps rather than spilling out of the panel. */
+#profileTitle { overflow-wrap: anywhere; }
+.panel-section p { overflow-wrap: anywhere; }
+
+/* The expression pair keeps its two-column layout inside the shared rules. */
+.expression-fields label { margin: 0; }
+
+/* The studio switcher, previously injected by `editor-nav.js`. */
+.editor-nav { position: relative; z-index: 10000; flex: 0 0 auto; }
+.editor-nav__button { width: 38px; height: 38px; padding: 0; display: grid; place-items: center; border-radius: 10px; }
+.editor-nav__icon, .editor-nav__icon::before, .editor-nav__icon::after { display: block; width: 18px; height: 2px; border-radius: 2px; background: currentColor; content: ""; }
+.editor-nav__icon { position: relative; }
+.editor-nav__icon::before { position: absolute; top: -6px; }
+.editor-nav__icon::after { position: absolute; top: 6px; }
+.editor-nav__menu { position: absolute; right: 0; top: calc(100% + 8px); width: 320px; margin: 0; padding: 6px; list-style: none; border: 1px solid #465568; border-radius: 12px; background: #131b24; box-shadow: 0 18px 44px rgba(0,0,0,.5); }
+.editor-nav__menu a { display: grid; gap: 2px; padding: 9px 11px; border-radius: 8px; color: #eef3f8; text-decoration: none; }
+.editor-nav__menu a:hover { background: #22303d; }
+.editor-nav__menu strong { font-size: 12px; }
+.editor-nav__menu span { color: #8792a2; font-size: 10px; line-height: 1.45; }
+.editor-nav__menu li[aria-current="page"] a { background: #2b3a49; }
+
+/*
+ * shadcn primitives, in the studio's colours.
+ *
+ * The controls come from the component library so their focus, keyboard and
+ * ARIA behaviour is Radix's rather than hand-rolled; their palette is mapped
+ * here, so a select or dialog sits in the studio's gold-and-cyan chrome instead
+ * of bringing the launcher's blue-neutral theme into the tool.
+ */
+:root {
+  --background: #121821;
+  --foreground: #f2f4f7;
+  --card: #171e28;
+  --card-foreground: #f2f4f7;
+  --popover: #171e28;
+  --popover-foreground: #f2f4f7;
+  --primary: #f0b24b;
+  --primary-foreground: #181006;
+  --secondary: #1a222d;
+  --secondary-foreground: #f2f4f7;
+  --muted: #1a222d;
+  --muted-foreground: #8792a2;
+  --accent: #232d3a;
+  --accent-foreground: #f2f4f7;
+  --border: #343c49;
+  --input: #343c49;
+  --ring: #76d9e8;
+  --radius: 7px;
+}
+
+/*
+ * Layout for the shadcn primitives.
+ *
+ * The rules above were written for `<label><input></label>` markup. Radix
+ * renders a checkbox as a button, a slider as a span, and a select as a
+ * trigger button, so the same intent is restated here against those shapes
+ * rather than the element names.
+ */
+.check { display: flex; align-items: center; gap: 7px; }
+.check label { margin: 0; cursor: pointer; }
+
+/* A labelled field is a row in the toolbars and a stack in the panels. */
+.field { display: flex; align-items: center; gap: 7px; color: #aeb7c4; font-size: 11px; }
+.field label { margin: 0; white-space: nowrap; }
+.toolbar .field [data-slot="select-trigger"] { min-width: 135px; }
+.equip-menu .field,
+.panel-section .field,
+.expression-fields .field { display: grid; gap: 5px; }
+.equip-menu .field [data-slot="select-trigger"],
+.panel-section .field [data-slot="select-trigger"],
+.expression-fields .field [data-slot="select-trigger"] { width: 100%; min-width: 0; }
+
+.zoom-control { gap: 8px; }
+.zoom-control [data-slot="slider"] { width: 92px; }
+.timeline .timeline-track [data-slot="slider"] { width: 100%; }
+.numeric-control [data-slot="slider"] { width: 100%; min-width: 0; }
+.numeric-control-number { height: auto; }
+
+/* The segmented groups keep their joined-button look. */
+.segmented [data-slot="toggle-group-item"],
+.slot-tabs [data-slot="toggle-group-item"],
+.view-tabs [data-slot="toggle-group-item"] { min-width: 0; }
+
+/* The zoom slider carries its own size rather than shrinking with the bar. */
+.zoom-control [data-slot="slider"] { flex: 0 0 92px; }
+
+/*
+ * The slider's unfilled track reads as `--muted`, which in this palette sits
+ * almost on top of the panel it is drawn on. Give it its own contrast, and the
+ * filled part the gold the old `accent-color` gave it.
+ */
+[data-slot="slider-track"] { background: #2c3543; }
+[data-slot="slider-range"] { background: var(--gold, var(--studio-accent, #f0b24b)); }
+[data-slot="slider-thumb"] { border-color: var(--gold, var(--studio-accent, #f0b24b)); background: #f7f9fb; }
+
+/*
+ * The studio stylesheets are unlayered, so their broad `button` rule outranks
+ * every Tailwind utility -- and Radix renders a checkbox as a button. Rather
+ * than exempt the element selector, the primitives that need it are styled
+ * outright here, which also lets them carry the studio's own palette.
+ */
+[data-slot="checkbox"] {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  padding: 0;
+  border: 1px solid #4a5872;
+  border-radius: 4px;
+  background: #0e141c;
+  box-shadow: none;
+  transition: background-color .12s ease, border-color .12s ease;
+}
+[data-slot="checkbox"]:hover { border-color: #6a7c96; background: #151d27; }
+[data-slot="checkbox"][data-state="checked"] {
+  border-color: var(--gold, var(--studio-accent, #f0b24b));
+  background: var(--gold, var(--studio-accent, #f0b24b));
+  color: #181006;
+}
+[data-slot="checkbox-indicator"] { display: grid; width: 100%; height: 100%; place-items: center; }
+[data-slot="checkbox-indicator"] svg { width: 11px; height: 11px; stroke-width: 3.25; }
+
+/*
+ * The panels sit above the stage. The stage's toolbar and transport are wide,
+ * fixed-height rows; when the window is narrow enough for them to overflow
+ * their column they used to paint across the inspector beside them.
+ */
+.panel { position: relative; z-index: 2; }
+.stage-shell { position: relative; z-index: 1; }
+
+/* Those rows clip rather than bleed, and scroll if they genuinely do not fit. */
+.stage-toolbar { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+.stage-toolbar::-webkit-scrollbar { height: 0; }
+.timeline { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+.timeline::-webkit-scrollbar { height: 0; }
+
+/* Step buttons are a glyph apiece: no padding, no minimum width. */
+.keyframe-nav button {
+  display: grid;
+  width: 26px;
+  min-width: 0;
+  height: 26px;
+  padding: 0;
+  place-items: center;
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* Floating layers sit over the studio, so they carry their own solid surface. */
+[data-slot="select-content"],
+[data-slot="popover-content"] {
+  border: 1px solid #3c485b;
+  background: #182029;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, .55);
+}
+[data-slot="select-item"][data-state="checked"],
+[data-slot="select-item"]:focus { background: #26313f; color: #f2f4f7; }
+
+/*
+ * `.timeline > *` pins every control at its natural width, which leaves the
+ * scrubber as the only thing that can give -- and once it hits its floor the
+ * bar overflows. The clip name and the toggle's label can both afford to
+ * shorten, so they yield before anything is pushed out of reach.
+ */
+.timeline .animation-picker-control { flex: 0 1 auto; min-width: 92px; }
+.timeline .animation-picker-button { width: 100%; min-width: 0; }
+.timeline .check { flex: 0 1 auto; min-width: 0; overflow: hidden; }
+.timeline .check label { overflow: hidden; text-overflow: ellipsis; }
+
+/*
+ * The history island. Undo and redo act on the document rather than on what
+ * the character is wearing, and they are not a save either, so they sit apart
+ * from both groups instead of trailing one of them.
+ */
+.toolbar-island {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px;
+  border: 1px solid #2f3946;
+  border-radius: 10px;
+  background: #10161e;
+}
+.toolbar-island .icon-button { width: 30px; height: 28px; padding: 0; }
+.toolbar-island .icon-button svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.1; }
+.toolbar-island .icon-button:disabled { cursor: default; opacity: .38; }
+
+/* Two bodies, so the profile is a divided pill rather than a list to open. */
+.profile-pill [data-slot="toggle-group-item"] { padding: 7px 12px; font-size: 11px; }
+
+/*
+ * The studio marks an active control with `aria-pressed`, but a single-select
+ * Radix group is a radio group -- it reports `data-state` and `aria-checked`
+ * instead, so that rule never reached it and the chosen item was only faintly
+ * shaded. This is the same gold the rest of the studio uses.
+ */
+[data-slot="toggle-group-item"][data-state="on"] {
+  border-color: #7e582a;
+  background: #49351f;
+  color: #ffd68e;
+}

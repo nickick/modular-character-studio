@@ -2,12 +2,12 @@ import assert from 'node:assert/strict'
 import { access, readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { resolve } from 'node:path'
-import { validateModularCharacterScene } from '../public/studio/rig/schema.mjs'
+import { validateModularCharacterScene } from '../src/rig/schema.ts'
 import {
   animationNames,
-  layerMatchesAnimationPreview,
-  resolveProfile,
-} from '../public/studio/rig/rig-model.mjs'
+  layerMatchesAnimationEquipment,
+} from '../src/rig/clips.ts'
+import { resolveProfile } from '../src/rig/skeleton.ts'
 import { analyzeAlpha, decodePngAlpha } from '../scripts/png-alpha.mjs'
 
 const root = resolve(import.meta.dirname, '..')
@@ -89,12 +89,8 @@ test('bow animations never preview staff, weapon, or shield layers', () => {
   assert.deepEqual(bowAnimations, ['bowDraw', 'bowMoveForward', 'bowMoveBackward'])
 
   for (const animation of bowAnimations) {
-    for (const selectedLayerID of equipment) {
-      const visible = equipment.filter((id) => (
-        layerMatchesAnimationPreview({ id }, animation, selectedLayerID)
-      ))
-      assert.deepEqual(visible, ['bow'], `${animation} leaked ${selectedLayerID}`)
-    }
+    const visible = equipment.filter((id) => layerMatchesAnimationEquipment({ id }, animation))
+    assert.deepEqual(visible, ['bow'], `${animation} leaked another held item`)
   }
 })
 

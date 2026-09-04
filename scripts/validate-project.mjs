@@ -1,6 +1,6 @@
 import { access, readFile, stat } from 'node:fs/promises'
 import { resolve, sep } from 'node:path'
-import { validateModularCharacterScene } from '../public/studio/rig/schema.mjs'
+import { validateModularCharacterScene } from '../src/rig/schema.ts'
 import { analyzeAlpha, decodePngAlpha, remoteAlphaComponents } from './png-alpha.mjs'
 
 const projectRoot = resolve(process.env.MCS_PROJECT_ROOT ?? resolve(process.cwd(), 'project'))
