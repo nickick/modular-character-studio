@@ -29,6 +29,48 @@ test('bundled scene carries the public project format', () => {
   assert.equal(scene.shieldOptions.length, 1)
 })
 
+test('bundled boots deform both sides of both ankles through coordinated cages', () => {
+  const byID = Object.fromEntries(scene.layers.map((layer) => [layer.id, layer]))
+  assert.deepEqual(
+    scene.layers.filter((layer) => layer.mesh).map((layer) => layer.id),
+    [
+      'lowerLegL', 'footL', 'handOpenL', 'handClosedL',
+      'lowerLegR', 'footR', 'handOpenR', 'handClosedR',
+    ],
+  )
+
+  for (const side of ['L', 'R']) {
+    const shaft = byID[`lowerLeg${side}`]
+    const overlap = byID[`foot${side}`]
+    assert.equal(shaft.mesh.parentBone, `lowerLeg${side}`)
+    assert.equal(shaft.mesh.childBone, `foot${side}`)
+    assert.equal(overlap.mesh.parentBone, `lowerLeg${side}`)
+    assert.equal(overlap.mesh.childBone, `foot${side}`)
+  }
+
+  for (const option of scene.bootOptions) {
+    for (const profile of ['maleV1', 'femaleV1']) {
+      const resolved = Object.fromEntries(resolveProfile(
+        scene,
+        profile,
+        scene.activeChest,
+        scene.activeArmSet,
+        scene.activeHeadgear,
+        option.id,
+      ).layers.map((layer) => [layer.id, layer]))
+      for (const id of ['lowerLegL', 'footL', 'lowerLegR', 'footR']) {
+        assert.strictEqual(resolved[id].mesh, byID[id].mesh, `${option.id} reuses ${id}'s ankle cage`)
+      }
+    }
+  }
+})
+
+test('ankle cages must join the two endpoints of their direct bone joint', () => {
+  const invalid = structuredClone(scene)
+  invalid.layers.find((layer) => layer.id === 'lowerLegL').mesh.parentBone = 'upperLegL'
+  assert.throws(() => validateModularCharacterScene(invalid), /direct bone joint/)
+})
+
 test('demo catalogue contains the requested armor and held-item families', () => {
   const names = new Set(catalog.items.map((item) => item.name))
   for (const name of [

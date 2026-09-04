@@ -17,6 +17,7 @@ import {
   MESH_HANDLE_GRAB_RADIUS,
   MIN_BEND_AXIS,
   MIN_BEND_SECTIONS,
+  editableJointLayers,
   hitMeshHandle,
   movedMeshHandle,
   resampleSequence,
@@ -96,7 +97,7 @@ test("a pointer maps into canvas pixels however the canvas is displayed", () => 
 })
 
 // ---------------------------------------------------------------------------
-// The wrist cage
+// Joint cages
 // ---------------------------------------------------------------------------
 
 const handMesh = (): WeightedStripMeshV2 =>
@@ -112,6 +113,24 @@ test("the studio edits the cage on the hand of the chosen side", () => {
     assert.ok(layer, `a closed ${side} hand carries a cage`)
     assert.equal(layer.bone, `hand${side}`)
     assert.ok(layer.mesh, "and it is the layer with the mesh on it")
+  }
+})
+
+test("the joint editor offers both active-hand wrists and both sides of each ankle", () => {
+  const layers = editableJointLayers(rig.layers, (candidate) =>
+    layerMatchesHandPose(candidate, "closed"),
+  )
+  assert.deepEqual(
+    layers.map((layer) => layer.id),
+    ["lowerLegL", "footL", "handClosedL", "lowerLegR", "footR", "handClosedR"],
+  )
+  for (const side of ["L", "R"] as const) {
+    const shaft = layers.find((layer) => layer.id === `lowerLeg${side}`)
+    const overlap = layers.find((layer) => layer.id === `foot${side}`)
+    assert.equal(shaft?.mesh?.parentBone, `lowerLeg${side}`)
+    assert.equal(shaft?.mesh?.childBone, `foot${side}`)
+    assert.equal(overlap?.mesh?.parentBone, `lowerLeg${side}`)
+    assert.equal(overlap?.mesh?.childBone, `foot${side}`)
   }
 })
 
@@ -189,8 +208,10 @@ test("the section count is clamped to what the cage supports", () => {
 test("every resampled cage still passes the scene schema", () => {
   for (let count = MIN_BEND_SECTIONS; count <= MAX_BEND_SECTIONS; count += 1) {
     const draft = structuredClone(source)
-    const layer = draft.layers.find((candidate: { id: string }) => candidate.id === "handClosedL")
-    setBendSections(layer.mesh, count)
+    for (const id of ["handClosedL", "lowerLegL", "footL"]) {
+      const layer = draft.layers.find((candidate: { id: string }) => candidate.id === id)
+      setBendSections(layer.mesh, count)
+    }
     assert.doesNotThrow(() => validateThreeQuarterRigScene(draft), `${count} sections validates`)
   }
 })

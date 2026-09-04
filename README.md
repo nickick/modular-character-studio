@@ -1,8 +1,8 @@
 # Modular Character Studio
 
 A local-first editor for modular 2D cutout characters. It combines skeletal
-animation, layered equipment, profile-specific fitting, hand and wrist
-deformation, and equipment previewing in one project format.
+animation, layered equipment, profile-specific fitting, hand, wrist, and
+double-sided ankle deformation, and equipment previewing in one project format.
 
 The repository starts private while its demo asset pack and portable project
 format are validated.

@@ -111,8 +111,10 @@ export const layerBindKeys = [
 export type LayerBindKey = (typeof layerBindKeys)[number]
 
 /**
- * A two-bone, thickness-preserving cage over the wrist bridge. Only the four
- * universal hand layers carry one; the schema rejects it everywhere else.
+ * A two-bone, thickness-preserving cage over a flexible joint bridge. The
+ * universal hands use it at the wrist. Swappable boot shafts and the narrow
+ * raised overlap on boot feet use coordinated cages at the ankle; rigid
+ * artwork on either side of the bridge keeps its shape.
  */
 export interface WeightedStripMeshV2 {
   type: "weightedStripV2"
@@ -120,9 +122,9 @@ export interface WeightedStripMeshV2 {
   childBone: string
   /** Normalized positions of the cross-sections between the two handles. */
   bendStops: number[]
-  /** Cuff-side handle, in normalized sprite space. */
+  /** Parent-side handle, in normalized sprite space. */
   bendStart: Point
-  /** Palm-side handle, in normalized sprite space. */
+  /** Child-side handle, in normalized sprite space. */
   bendEnd: Point
 }
 

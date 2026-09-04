@@ -19,7 +19,7 @@ import { StudioNav } from "@/components/StudioNav.tsx"
 import { AnimationPicker } from "./AnimationPicker.tsx"
 import { ExpressionKeys } from "./ExpressionKeys.tsx"
 import { FingerCutoutEditor } from "./FingerCutoutEditor.tsx"
-import { WristMeshEditor } from "./WristMeshEditor.tsx"
+import { JointMeshEditor } from "./WristMeshEditor.tsx"
 import { Inspector } from "./Inspector.tsx"
 import { LayerPanel } from "./LayerPanel.tsx"
 import { RigStage, ZOOM_MAX, ZOOM_MIN, ZOOM_STEP, type StageViewOptions } from "./RigStage.tsx"
@@ -155,9 +155,13 @@ export function RigStudio() {
               {presentation.headgear}
             </p>
           </section>
+          <JointMeshEditor
+            images={images.resolve}
+            showStageMesh={view.showMesh}
+            onShowStageMeshChange={(showMesh) => setView((current) => ({ ...current, showMesh }))}
+          />
           <ExpressionKeys />
           <WristStudio />
-          <WristMeshEditor images={images.resolve} />
           <FingerCutoutEditor images={images.resolve} />
           <Inspector images={images.resolve} />
         </aside>

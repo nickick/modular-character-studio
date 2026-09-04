@@ -66,6 +66,10 @@ const mouthExpressions = new Set<string>([
 ])
 const armLayerIDs = ["upperArmArmorL", "forearmVambraceL", "upperArmArmorR", "forearmVambraceR"]
 const bootLayerIDs = ["lowerLegL", "footL", "lowerLegR", "footR"]
+const deformableJointLayerIDs = new Set<string>([
+  "handOpenL", "handClosedL", "handOpenR", "handClosedR",
+  "lowerLegL", "lowerLegR", "footL", "footR",
+])
 const gripFingerIDs = ["handClosedLIndex", "handClosedLMiddle", "handClosedLRing", "handClosedLPinky"]
 const gripFingerIDSet = new Set<string>(gripFingerIDs)
 const sides: readonly Side[] = ["L", "R"]
@@ -341,16 +345,17 @@ function weightedMesh(
   if (!isJsonObject(value) || value.type !== "weightedStripV2") {
     throw new Error(`${label}.type must be weightedStripV2`)
   }
-  if (!/^hand(?:Open|Closed)[LR]$/.test(layer.id)) {
-    throw new Error(`${label} is currently supported only on universal hand layers`)
+  if (!deformableJointLayerIDs.has(layer.id)) {
+    throw new Error(`${label} is supported only on universal hand and boot ankle layers`)
   }
   const parentBone = string(value.parentBone, `${label}.parentBone`)
   const childBone = string(value.childBone, `${label}.childBone`)
   if (!boneIDs.has(parentBone) || !boneIDs.has(childBone)) {
     throw new Error(`${label} references an unknown bone`)
   }
-  if (childBone !== layer.bone || parentByBone.get(childBone) !== parentBone) {
-    throw new Error(`${label} must bind the hand layer to its direct forearm parent`)
+  const ownsJointEndpoint = layer.bone === parentBone || layer.bone === childBone
+  if (!ownsJointEndpoint || parentByBone.get(childBone) !== parentBone) {
+    throw new Error(`${label} must bind a layer on one endpoint of a direct bone joint`)
   }
   const bendStart = normalizedPoint(value.bendStart, `${label}.bendStart`)
   const bendEnd = normalizedPoint(value.bendEnd, `${label}.bendEnd`)

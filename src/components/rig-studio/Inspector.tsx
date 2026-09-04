@@ -76,7 +76,7 @@ function describeLayer(layer: ResolvedLayer, images: LayerImageResolver, animati
   const image = images(layer, animation, phase)
   const geometry = layer.mesh && image ? weightedStripMesh(layer.mesh, image.width, image.height) : null
   if (geometry && layer.mesh) {
-    return `${geometry.vertices.length}-vertex two-rail wrist cage · ${layer.mesh.parentBone} + ${layer.mesh.childBone}`
+    return `${geometry.vertices.length}-vertex two-rail joint cage · ${layer.mesh.parentBone} + ${layer.mesh.childBone}`
   }
   return layer.gripFinger ? "rigid finger · root and angle follow the held haft" : "rigid attachment"
 }

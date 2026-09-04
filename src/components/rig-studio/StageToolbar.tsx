@@ -39,7 +39,7 @@ export function StageToolbar({ view, onChange }: StageToolbarProps) {
         onChange={(showReference) => onChange({ showReference })}
       />
       <Toggle label="Grid" checked={view.showGrid} onChange={(showGrid) => onChange({ showGrid })} />
-      <Toggle label="Wrist mesh" checked={view.showMesh} onChange={(showMesh) => onChange({ showMesh })} />
+      <Toggle label="Joint meshes" checked={view.showMesh} onChange={(showMesh) => onChange({ showMesh })} />
       <Toggle
         label="Dim unselected"
         checked={view.dimUnselected}

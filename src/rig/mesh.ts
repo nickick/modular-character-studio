@@ -1,10 +1,11 @@
 /**
  * Attachment geometry: where a sprite sits in bone space, how a yawed plane is
- * sliced for affine renderers, and the small thickness-preserving cage that
- * bends the wrist.
+ * sliced for affine renderers, and the small thickness-preserving cages that
+ * bend wrists and ankles.
  *
- * Only the four universal hand layers deform. Everything else on this rig is a
- * rigid sprite, so most of this file is about placing rigid art precisely.
+ * Only short bridges on the universal hands and boot ankle pieces deform. Everything
+ * else on this rig is a rigid sprite, so most of this file is about placing
+ * rigid art precisely.
  */
 import { smoothstep01 } from "./angles.ts"
 import { localMatrix, multiply, inverse, transformPoint, type MatrixTable } from "./matrix.ts"
@@ -105,10 +106,10 @@ export function rigidLayerMatrix(
   return multiply(multiBoneRigidDelta(bindWorld, currentWorld, layer.fitBones), bindMatrix)
 }
 
-/** One station of the wrist cage, in the sprite's own pixel space. */
+/** One station of a joint cage, in the sprite's own pixel space. */
 export interface MeshVertex {
   source: Point
-  /** How far this station has blended from the forearm to the hand. */
+  /** How far this station has blended from the parent to the child bone. */
   sectionWeight: number
 }
 
@@ -129,10 +130,10 @@ export interface DeformedMesh extends MeshGeometry {
 
 /**
  * Build a two-rail cage around the complete source image. `bendStops` only
- * subdivides the short wrist transition; rigid cap sections are added far
+ * subdivides the short joint transition; rigid cap sections are added far
  * enough along the bend axis to cover every source-image corner. Two vertices
  * at each station share one transform, which lets deformation preserve the
- * distance between the dorsal and palm rails instead of narrowing the wrist.
+ * distance between the two rails instead of narrowing the joint.
  */
 export function weightedStripMesh(
   mesh: WeightedStripMeshV2 | undefined,
@@ -183,7 +184,7 @@ export function weightedStripMesh(
     const nextA = a + 2
     const nextB = a + 3
     // Alternating the diagonal avoids a permanent directional crease through a
-    // bent wrist while keeping the topology deterministic.
+    // bent joint while keeping the topology deterministic.
     if (station % 2 === 0) triangles.push([a, nextA, nextB], [a, nextB, b])
     else triangles.push([a, nextA, b], [b, nextA, nextB])
   }

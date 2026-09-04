@@ -195,7 +195,11 @@ code { color: #eec276; }
 .mesh-authoring-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 14px 0 7px; }
 .mesh-authoring-heading strong { font-size: 11px; }
 .mesh-authoring-heading span { color: #738092; font-size: 9px; }
-#wristMeshEditor { display: block; width: 100%; height: auto; border: 1px solid #354150; border-radius: 7px; background: #0b1016; cursor: crosshair; touch-action: none; }
+.joint-mesh-target { display: grid; gap: 5px; margin: 8px 0; color: #8e9aaa; font-size: 10px; }
+.joint-mesh-target select { width: 100%; padding: 7px; }
+#showJointMeshesOnStage { width: 100%; margin: 0 0 8px; }
+#jointMeshEditor { display: block; width: 100%; height: auto; border: 1px solid #354150; border-radius: 7px; background: #0b1016; cursor: crosshair; touch-action: none; }
+.joint-mesh-coordinates { display: grid; gap: 7px; margin-top: 9px; }
 #fingerPathEditor { display: block; width: 100%; height: auto; border: 1px solid #354150; border-radius: 7px; background: #0b1016; cursor: crosshair; touch-action: none; }
 .finger-path-toolbar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 8px 0; }
 .finger-path-toolbar button, .finger-path-actions button { min-width: 0; padding: 7px 5px; font-size: 10px; }

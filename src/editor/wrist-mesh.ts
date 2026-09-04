@@ -1,10 +1,10 @@
 /**
- * Editing the wrist cage.
+ * Editing a two-bone joint cage.
  *
- * The cage is two rails around the hand sprite, bending between a cuff-side
- * handle and a palm-side one. Everything beyond the palm handle is 100% hand,
- * so the painted palm and fingers move as a rigid unit — which is why the two
- * handles are the whole interface, rather than a vertex-by-vertex mesh.
+ * The same two-rail contract bends a hand between forearm and palm or a boot
+ * between lower leg and foot. Everything beyond the child handle is rigidly
+ * carried by the child bone, which is why the two handles are the whole
+ * interface rather than a vertex-by-vertex mesh.
  */
 import type { Point, ResolvedLayer, RigScene, Side, WeightedStripMeshV2 } from "../rig/types.ts"
 import type { SpriteFrame } from "./sprite-frame.ts"
@@ -96,6 +96,16 @@ export function wristLayerFor(
     layers.find(
       (layer) => layer.mesh && layer.bone === `hand${side}` && matchesHandPose(layer),
     ) ?? null
+  )
+}
+
+/** Mesh layers relevant to the current pose, including both swappable boots. */
+export function editableJointLayers(
+  layers: readonly ResolvedLayer[],
+  matchesHandPose: (layer: ResolvedLayer) => boolean,
+): ResolvedLayer[] {
+  return layers.filter(
+    (layer) => layer.mesh && (!layer.handState || matchesHandPose(layer)),
   )
 }
 

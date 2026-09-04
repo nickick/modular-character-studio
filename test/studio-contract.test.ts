@@ -241,9 +241,12 @@ test("the rig studio renders its rig, transport, and authoring controls", () => 
     "nextBoneKey",
     "profileTitle",
     // The two canvas sub-editors.
-    "wristMeshEditor",
+    "jointMeshLab",
+    "meshJointSelect",
+    "showJointMeshesOnStage",
+    "jointMeshEditor",
     "meshLayerName",
-    "resetWristMesh",
+    "resetJointMesh",
     "fingerPathEditor",
     "fingerPenTool",
     "fingerEditTool",
@@ -262,6 +265,19 @@ test("the rig studio renders its rig, transport, and authoring controls", () => 
     "exportPng",
   ]) {
     assert.ok(hasID(rigMarkup, id), `the rig studio renders #${id}`)
+  }
+})
+
+test("joint deformation is the first inspector editor and exposes its stage overlay", () => {
+  const deformation = rigMarkup.indexOf('id="jointMeshLab"')
+  const expressions = rigMarkup.indexOf('id="expressionEyes"')
+  const wrists = rigMarkup.indexOf('id="setWristKey"')
+  assert.ok(deformation >= 0)
+  assert.ok(deformation < expressions)
+  assert.ok(deformation < wrists)
+  assert.match(rigMarkup, /id="showJointMeshesOnStage"[^>]*aria-pressed="false"/)
+  for (const label of ["Parent handle X", "Parent handle Y", "Child handle X", "Child handle Y"]) {
+    assert.ok(rigMarkup.includes(label), `${label} is directly editable`)
   }
 })
 

@@ -45,7 +45,7 @@ export interface PaintContext {
   heldLayer: ResolvedLayer | null
   /** Sampled hand controls for a layer's own side. */
   handControls: (layer: ResolvedLayer) => Partial<GripControls>
-  /** Draw the wrist cage over the deformed hand. */
+  /** Draw joint cages over deformed hands and both boot-ankle pieces. */
   showMesh?: boolean
   /** Fade every layer except this one, for inspecting a single attachment. */
   soloLayerID?: string | null

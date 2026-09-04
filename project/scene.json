@@ -3199,6 +3199,26 @@
           "pivotY": 0.2
         }
       },
+      "mesh": {
+        "type": "weightedStripV2",
+        "parentBone": "lowerLegL",
+        "childBone": "footL",
+        "bendStops": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "bendStart": {
+          "x": 0.4848,
+          "y": 0.6561
+        },
+        "bendEnd": {
+          "x": 0.4206,
+          "y": 0.9683
+        }
+      },
       "drawOrder": 22,
       "visible": true
     },
@@ -3228,6 +3248,26 @@
           "scaleY": 0.3915,
           "pivotX": 0.7,
           "pivotY": 0.17
+        }
+      },
+      "mesh": {
+        "type": "weightedStripV2",
+        "parentBone": "lowerLegL",
+        "childBone": "footL",
+        "bendStops": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "bendStart": {
+          "x": 0.7,
+          "y": 0.02
+        },
+        "bendEnd": {
+          "x": 0.7,
+          "y": 0.2
         }
       },
       "drawOrder": 20,
@@ -4066,6 +4106,26 @@
           "pivotY": 0.2
         }
       },
+      "mesh": {
+        "type": "weightedStripV2",
+        "parentBone": "lowerLegR",
+        "childBone": "footR",
+        "bendStops": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "bendStart": {
+          "x": 0.5997,
+          "y": 0.4226
+        },
+        "bendEnd": {
+          "x": 0.5,
+          "y": 0.98
+        }
+      },
       "drawOrder": 26,
       "visible": true
     },
@@ -4095,6 +4155,26 @@
           "scaleY": 0.3823,
           "pivotX": 0.7,
           "pivotY": 0.17
+        }
+      },
+      "mesh": {
+        "type": "weightedStripV2",
+        "parentBone": "lowerLegR",
+        "childBone": "footR",
+        "bendStops": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "bendStart": {
+          "x": 0.6641,
+          "y": 0.1736
+        },
+        "bendEnd": {
+          "x": 0.7164,
+          "y": 0.3781
         }
       },
       "drawOrder": 24,
