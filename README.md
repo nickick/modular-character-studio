@@ -28,6 +28,8 @@ the same layout.
 The demo contains two body profiles, three armor directions (leather, mage,
 and metal), and one sword, axe, staff, bow, and shield. The source code is MIT
 licensed. The bundled demo art is CC0; see [ASSETS-LICENSE.md](ASSETS-LICENSE.md).
+The retained generation prompts and their output gallery are under
+[prompts/](prompts/README.md).
 
 ## Project layout
 

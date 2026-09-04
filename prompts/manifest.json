@@ -1,0 +1,128 @@
+{
+  "format": "modular-character-studio-prompt-manifest-v1",
+  "note": "Historical prompt records mapped to the final CC0 assets they helped produce. Outputs may be cropped, keyed, corrected, or otherwise derived from generated source sheets.",
+  "records": [
+    {
+      "record": "records/head-layers.md",
+      "outputs": [
+        "Layers/Head/standardizedV1/maleV1/headBaseNoNeckV2.png",
+        "Layers/Head/standardizedV1/maleV1/hairBack.png",
+        "Layers/Head/standardizedV1/maleV1/hairFront.png",
+        "Layers/Head/standardizedV1/maleV1/faceMark.png",
+        "Layers/Head/standardizedV1/maleV1/eyeL.png",
+        "Layers/Head/standardizedV1/maleV1/eyeR.png",
+        "Layers/Head/standardizedV1/maleV1/browL.png",
+        "Layers/Head/standardizedV1/maleV1/browR.png",
+        "Layers/Head/standardizedV1/maleV1/nose.png",
+        "Layers/Head/standardizedV1/maleV1/mouth.png",
+        "Layers/Head/standardizedV1/femaleV1/headBaseNoNeckV2.png",
+        "Layers/Head/standardizedV1/femaleV1/hairBack.png",
+        "Layers/Head/standardizedV1/femaleV1/hairFront.png",
+        "Layers/Head/standardizedV1/femaleV1/faceMark.png",
+        "Layers/Head/standardizedV1/femaleV1/eyeL.png",
+        "Layers/Head/standardizedV1/femaleV1/eyeR.png",
+        "Layers/Head/standardizedV1/femaleV1/browL.png",
+        "Layers/Head/standardizedV1/femaleV1/browR.png",
+        "Layers/Head/standardizedV1/femaleV1/nose.png",
+        "Layers/Head/standardizedV1/femaleV1/mouth.png"
+      ]
+    },
+    {
+      "record": "records/facial-expressions.md",
+      "outputs": [
+        "Layers/Head/maleV1/Expressions/eyeLBlinkV1.png",
+        "Layers/Head/maleV1/Expressions/eyeRBlinkV1.png",
+        "Layers/Head/maleV1/Expressions/eyeLWideV1.png",
+        "Layers/Head/maleV1/Expressions/eyeRWideV1.png",
+        "Layers/Head/maleV1/Expressions/eyeLFocusedV1.png",
+        "Layers/Head/maleV1/Expressions/eyeRFocusedV1.png",
+        "Layers/Head/maleV1/Expressions/eyeLWinceV1.png",
+        "Layers/Head/maleV1/Expressions/eyeRWinceV1.png",
+        "Layers/Head/maleV1/Expressions/mouthSmileV1.png",
+        "Layers/Head/maleV1/Expressions/mouthSmirkV1.png",
+        "Layers/Head/maleV1/Expressions/mouthShoutV1.png",
+        "Layers/Head/maleV1/Expressions/mouthSurprisedV1.png",
+        "Layers/Head/maleV1/Expressions/mouthFrownV1.png",
+        "Layers/Head/maleV1/Expressions/mouthPainV1.png",
+        "Layers/Head/maleV1/Expressions/mouthGritV1.png",
+        "Layers/Head/maleV1/Expressions/mouthTalkV1.png",
+        "Layers/Head/femaleV1/Expressions/eyeLBlinkV1.png",
+        "Layers/Head/femaleV1/Expressions/eyeRBlinkV1.png",
+        "Layers/Head/femaleV1/Expressions/eyeLWideV1.png",
+        "Layers/Head/femaleV1/Expressions/eyeRWideV1.png",
+        "Layers/Head/femaleV1/Expressions/eyeLFocusedV1.png",
+        "Layers/Head/femaleV1/Expressions/eyeRFocusedV1.png",
+        "Layers/Head/femaleV1/Expressions/eyeLWinceV1.png",
+        "Layers/Head/femaleV1/Expressions/eyeRWinceV1.png",
+        "Layers/Head/femaleV1/Expressions/mouthSmileV1.png",
+        "Layers/Head/femaleV1/Expressions/mouthSmirkV1.png",
+        "Layers/Head/femaleV1/Expressions/mouthShoutV1.png",
+        "Layers/Head/femaleV1/Expressions/mouthSurprisedV1.png",
+        "Layers/Head/femaleV1/Expressions/mouthFrownV1.png",
+        "Layers/Head/femaleV1/Expressions/mouthPainV1.png",
+        "Layers/Head/femaleV1/Expressions/mouthGritV1.png",
+        "Layers/Head/femaleV1/Expressions/mouthTalkV1.png"
+      ]
+    },
+    {
+      "record": "records/chest-armor.md",
+      "outputs": [
+        "Layers/Chest/ArcaneRobes/maleV1/chestBodyShortSkirtV1.png",
+        "Layers/Chest/ArcaneRobes/femaleV1/chestBodyShortSkirtV1.png",
+        "Layers/Chest/VanguardPlate/maleV1/chestBodyShortSkirtV1.png",
+        "Layers/Chest/VanguardPlate/femaleV1/chestBodyShortSkirtV1.png"
+      ]
+    },
+    {
+      "record": "records/equipment-matrix.md",
+      "outputs": [
+        "Layers/GeneratedMatrix/Body/Shortbow/trail-scout-leathers/maleV1/chestBodyShortSkirtV1.png",
+        "Layers/GeneratedMatrix/Body/Shortbow/trail-scout-leathers/femaleV1/chestBodyShortSkirtV1.png",
+        "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/upperArmInside.png",
+        "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/forearmInside.png",
+        "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/upperArmOutside.png",
+        "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/forearmOutside.png",
+        "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootShaftL.png",
+        "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootFootL.png",
+        "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootShaftR.png",
+        "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootFootR.png",
+        "Layers/Headgear/cutthroat-hood.png",
+        "Layers/GeneratedMatrix/Headgear/Loud/hedge-crown.png"
+      ]
+    },
+    {
+      "record": "records/boot-sets.md",
+      "outputs": [
+        "Layers/BootUnits/frostweaveV1/bootShaftL.png",
+        "Layers/BootUnits/frostweaveV1/bootFootL.png",
+        "Layers/BootUnits/frostweaveV1/bootShaftR.png",
+        "Layers/BootUnits/frostweaveV1/bootFootR.png",
+        "Layers/BootUnits/ironGuardV1/bootShaftL.png",
+        "Layers/BootUnits/ironGuardV1/bootFootL.png",
+        "Layers/BootUnits/ironGuardV1/bootShaftR.png",
+        "Layers/BootUnits/ironGuardV1/bootFootR.png"
+      ]
+    },
+    {
+      "record": "records/boot-corrections.md",
+      "outputs": [
+        "Layers/BootUnits/frostweaveV1/bootShaftL.png",
+        "Layers/BootUnits/frostweaveV1/bootFootL.png",
+        "Layers/BootUnits/frostweaveV1/bootShaftR.png",
+        "Layers/BootUnits/frostweaveV1/bootFootR.png",
+        "Layers/BootUnits/ironGuardV1/bootShaftL.png",
+        "Layers/BootUnits/ironGuardV1/bootFootL.png",
+        "Layers/BootUnits/ironGuardV1/bootShaftR.png",
+        "Layers/BootUnits/ironGuardV1/bootFootR.png"
+      ]
+    },
+    {
+      "record": "records/simple-bow.md",
+      "outputs": ["Layers/Equipment/simpleWoodenBow.png"]
+    },
+    {
+      "record": "records/pendant.md",
+      "outputs": ["Layers/Accessories/Necklaces/simple-pendant.png"]
+    }
+  ]
+}

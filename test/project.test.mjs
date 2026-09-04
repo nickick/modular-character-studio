@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { access, readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { resolve } from 'node:path'
 import { validateModularCharacterScene } from '../public/studio/rig/schema.mjs'
@@ -10,6 +10,8 @@ const scene = validateModularCharacterScene(
   JSON.parse(await readFile(resolve(root, 'project/scene.json'), 'utf8')),
 )
 const catalog = JSON.parse(await readFile(resolve(root, 'project/equipment-catalog.json'), 'utf8'))
+const promptManifest = JSON.parse(await readFile(resolve(root, 'prompts/manifest.json'), 'utf8'))
+const promptGallery = await readFile(resolve(root, 'prompts/README.md'), 'utf8')
 
 test('bundled scene carries the public project format', () => {
   assert.equal(scene.format, 'modular-character-studio-scene-v1')
@@ -57,4 +59,21 @@ test('each bundled headgear option resolves its own asset and hides front hair',
   bareHead.layers.find((layer) => layer.id === 'headgear').visible = false
   const rig = resolveProfile(bareHead, bareHead.activeProfile)
   assert.equal(rig.layers.find((layer) => layer.id === 'hairFront').visible, true)
+})
+
+test('prompt records map to visible bundled outputs', async () => {
+  assert.equal(promptManifest.format, 'modular-character-studio-prompt-manifest-v1')
+  assert.equal(promptManifest.records.length, 8)
+
+  for (const entry of promptManifest.records) {
+    await access(resolve(root, 'prompts', entry.record))
+    assert.ok(entry.outputs.length > 0, `${entry.record} has no mapped outputs`)
+    for (const output of entry.outputs) {
+      await access(resolve(root, 'project/assets', output))
+      assert.ok(
+        promptGallery.includes(`../project/assets/${output}`),
+        `${output} is absent from the rendered gallery`,
+      )
+    }
+  }
 })
