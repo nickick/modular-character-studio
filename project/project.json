@@ -1,0 +1,8 @@
+{
+  "format": "modular-character-studio-project-v1",
+  "name": "Bundled Demo",
+  "scene": "scene.json",
+  "catalog": "equipment-catalog.json",
+  "matrix": "equipment-matrix.json",
+  "assets": "assets"
+}

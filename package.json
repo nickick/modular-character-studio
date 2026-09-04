@@ -1,0 +1,31 @@
+{
+  "name": "modular-character-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "dev": "vite dev --host 127.0.0.1",
+    "build": "vite build && tsc --noEmit",
+    "start": "node .output/server/index.mjs",
+    "test": "vitest run && node --test test/*.test.mjs",
+    "validate:project": "node scripts/validate-project.mjs"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "1.170.32",
+    "@tanstack/react-start": "1.168.49",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "@vitejs/plugin-react": "6.0.1",
+    "jsdom": "27.2.0",
+    "nitro": "3.0.260311-beta",
+    "typescript": "6.0.2",
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
+  }
+}

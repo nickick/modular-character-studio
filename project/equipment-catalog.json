@@ -1,0 +1,229 @@
+{
+  "format": "modular-character-studio-equipment-catalog-v1",
+  "note": "Small CC0 demo catalogue bundled with Modular Character Studio.",
+  "items": [
+    {
+      "id": "scout_leathers",
+      "name": "Scout Leathers",
+      "kind": "equipment",
+      "slot": "body",
+      "level": 1,
+      "rarity": "common",
+      "line": "leather",
+      "category": null,
+      "inventoryArt": false
+    },
+    {
+      "id": "arcane_robes",
+      "name": "Arcane Robes",
+      "kind": "equipment",
+      "slot": "body",
+      "level": 1,
+      "rarity": "common",
+      "line": "mage",
+      "category": null,
+      "inventoryArt": false
+    },
+    {
+      "id": "vanguard_plate_armor",
+      "name": "Vanguard Plate",
+      "kind": "equipment",
+      "slot": "body",
+      "level": 1,
+      "rarity": "common",
+      "line": "metal",
+      "category": null,
+      "inventoryArt": false
+    },
+    {
+      "id": "leather_bracers",
+      "name": "Leather Bracers",
+      "kind": "equipment",
+      "slot": "bracers",
+      "level": 1,
+      "rarity": "common",
+      "line": "leather",
+      "category": null,
+      "inventoryArt": false
+    },
+    {
+      "id": "arcane_focus_vambraces",
+      "name": "Arcane Guards",
+      "kind": "equipment",
+      "slot": "bracers",
+      "level": 1,
+      "rarity": "common",
+      "line": "mage",
+      "category": null,
+      "inventoryArt": false
+    },
+    {
+      "id": "heavy_plate_vambraces",
+      "name": "Plate Guards",
+      "kind": "equipment",
+      "slot": "bracers",
+      "level": 1,
+      "rarity": "common",
+      "line": "metal",
+      "category": null,
+      "inventoryArt": false
+    },
+    {
+      "id": "leather_boots",
+      "name": "Leather Boots",
+      "kind": "equipment",
+      "slot": "boots",
+      "level": 1,
+      "rarity": "common",
+      "line": "leather",
+      "category": null,
+      "inventoryArt": false
+    },
+    {
+      "id": "frostweave_boots",
+      "name": "Arcane Boots",
+      "kind": "equipment",
+      "slot": "boots",
+      "level": 1,
+      "rarity": "common",
+      "line": "mage",
+      "category": null,
+      "inventoryArt": false
+    },
+    {
+      "id": "iron_guard_boots",
+      "name": "Plate Sabatons",
+      "kind": "equipment",
+      "slot": "boots",
+      "level": 1,
+      "rarity": "common",
+      "line": "metal",
+      "category": null,
+      "inventoryArt": false
+    },
+    {
+      "id": "scout_hood",
+      "name": "Scout Hood",
+      "kind": "equipment",
+      "slot": "head",
+      "editorSlot": "headgear",
+      "level": 1,
+      "rarity": "common",
+      "line": "leather",
+      "category": null,
+      "inventoryArt": false
+    },
+    {
+      "id": "arcane_circlet",
+      "name": "Arcane Circlet",
+      "kind": "equipment",
+      "slot": "head",
+      "editorSlot": "headgear",
+      "level": 1,
+      "rarity": "common",
+      "line": "mage",
+      "category": null,
+      "inventoryArt": false
+    },
+    {
+      "id": "iron_guard_helm",
+      "name": "Vanguard Helm",
+      "kind": "equipment",
+      "slot": "head",
+      "editorSlot": "headgear",
+      "level": 1,
+      "rarity": "common",
+      "line": "metal",
+      "category": null,
+      "inventoryArt": false
+    },
+    {
+      "id": "arming_sword",
+      "name": "Arming Sword",
+      "kind": "equipment",
+      "slot": "mainHand",
+      "level": 1,
+      "rarity": "common",
+      "line": "utility",
+      "category": "blade",
+      "inventoryArt": false
+    },
+    {
+      "id": "raider_bearded_axe",
+      "name": "Bearded Axe",
+      "kind": "equipment",
+      "slot": "mainHand",
+      "level": 1,
+      "rarity": "common",
+      "line": "utility",
+      "category": "axe",
+      "inventoryArt": false
+    },
+    {
+      "id": "oak_sun_staff",
+      "name": "Oak Staff",
+      "kind": "equipment",
+      "slot": "mainHand",
+      "level": 1,
+      "rarity": "common",
+      "line": "utility",
+      "category": "staff",
+      "inventoryArt": false
+    },
+    {
+      "id": "simple_wooden_bow",
+      "name": "Hunting Bow",
+      "kind": "equipment",
+      "slot": "ranged",
+      "level": 1,
+      "rarity": "common",
+      "line": "utility",
+      "category": "bow",
+      "inventoryArt": false
+    },
+    {
+      "id": "round_shield",
+      "name": "Round Shield",
+      "kind": "equipment",
+      "slot": "offHand",
+      "level": 1,
+      "rarity": "common",
+      "line": "utility",
+      "category": "shield",
+      "inventoryArt": false
+    },
+    {
+      "id": "simple_pendant",
+      "name": "Simple Pendant",
+      "kind": "equipment",
+      "slot": "necklace",
+      "level": 1,
+      "rarity": "common",
+      "line": "utility",
+      "category": "accessory",
+      "inventoryArt": false
+    },
+    {
+      "id": "normal_quiver",
+      "name": "Leather Quiver",
+      "kind": "equipment",
+      "slot": "quiver",
+      "level": 1,
+      "rarity": "common",
+      "line": "utility",
+      "category": "quiver",
+      "inventoryArt": false
+    },
+    {
+      "id": "veilstep_ring",
+      "name": "Simple Ring",
+      "kind": "equipment",
+      "slot": "ring",
+      "level": 1,
+      "rarity": "common",
+      "line": "utility",
+      "category": "accessory",
+      "inventoryArt": false
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+node_modules/
+.output/
+.tanstack/
+.DS_Store
+project/.history/
+*.log

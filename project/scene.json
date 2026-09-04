@@ -1,0 +1,5031 @@
+{
+  "format": "modular-character-studio-scene-v1",
+  "canvas": {
+    "width": 1254,
+    "height": 1254
+  },
+  "activeProfile": "femaleV1",
+  "activeChest": "scout_leathers",
+  "chestOptions": [
+    {
+      "id": "scout_leathers",
+      "label": "Scout Leathers",
+      "assetByProfile": {
+        "maleV1": "Layers/GeneratedMatrix/Body/Shortbow/trail-scout-leathers/maleV1/chestBodyShortSkirtV1.png",
+        "femaleV1": "Layers/GeneratedMatrix/Body/Shortbow/trail-scout-leathers/femaleV1/chestBodyShortSkirtV1.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 5.22,
+          "y": 43.31,
+          "rotation": 0,
+          "scaleX": 0.48,
+          "scaleY": 0.44,
+          "pivotX": 0.5,
+          "pivotY": 0.4165
+        },
+        "femaleV1": {
+          "x": -3.49,
+          "y": 68.3,
+          "rotation": 0,
+          "scaleX": 0.5,
+          "scaleY": 0.43,
+          "pivotX": 0.5,
+          "pivotY": 0.387
+        }
+      },
+      "line": "shortbow",
+      "tier": "common",
+      "fitted": true,
+      "itemID": "scout_leathers"
+    },
+    {
+      "id": "arcaneRobes",
+      "label": "Arcane Robes",
+      "assetByProfile": {
+        "maleV1": "Layers/Chest/ArcaneRobes/maleV1/chestBodyShortSkirtV1.png",
+        "femaleV1": "Layers/Chest/ArcaneRobes/femaleV1/chestBodyShortSkirtV1.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 3.03,
+          "y": 96.19,
+          "rotation": 0,
+          "scaleX": 0.34,
+          "scaleY": 0.47,
+          "pivotX": 0.5,
+          "pivotY": 0.4165
+        },
+        "femaleV1": {
+          "x": -4.94,
+          "y": 73.73,
+          "rotation": 0,
+          "scaleX": 0.35,
+          "scaleY": 0.37,
+          "pivotX": 0.5,
+          "pivotY": 0.387
+        }
+      },
+      "fitted": true,
+      "itemID": "arcane_robes"
+    },
+    {
+      "id": "vanguardPlate",
+      "label": "Vanguard Plate",
+      "assetByProfile": {
+        "maleV1": "Layers/Chest/VanguardPlate/maleV1/chestBodyShortSkirtV1.png",
+        "femaleV1": "Layers/Chest/VanguardPlate/femaleV1/chestBodyShortSkirtV1.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 5.22,
+          "y": 43.31,
+          "rotation": 0,
+          "scaleX": 0.34,
+          "scaleY": 0.35,
+          "pivotX": 0.5,
+          "pivotY": 0.4165
+        },
+        "femaleV1": {
+          "x": -3.49,
+          "y": 68.3,
+          "rotation": 0,
+          "scaleX": 0.35,
+          "scaleY": 0.35,
+          "pivotX": 0.5,
+          "pivotY": 0.387
+        }
+      },
+      "fitted": true,
+      "itemID": "vanguard_plate_armor"
+    }
+  ],
+  "activeArmSet": "leather_bracers",
+  "armOptions": [
+    {
+      "id": "leather_bracers",
+      "label": "Leather Bracers",
+      "assetByLayer": {
+        "upperArmArmorL": "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/upperArmInside.png",
+        "forearmVambraceL": "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/forearmInside.png",
+        "upperArmArmorR": "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/upperArmOutside.png",
+        "forearmVambraceR": "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/forearmOutside.png"
+      },
+      "bindByLayer": {
+        "upperArmArmorL": {
+          "maleV1": {
+            "x": 0,
+            "y": -25,
+            "rotation": -5,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.55,
+            "pivotY": 0.16
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": -20,
+            "rotation": -5,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.55,
+            "pivotY": 0.16
+          }
+        },
+        "forearmVambraceL": {
+          "maleV1": {
+            "x": 0,
+            "y": 0.3,
+            "rotation": -14,
+            "scaleX": 0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.72,
+            "pivotY": 0.14
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": 0.3,
+            "rotation": -14,
+            "scaleX": 0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.72,
+            "pivotY": 0.14
+          }
+        },
+        "upperArmArmorR": {
+          "maleV1": {
+            "x": -0.19,
+            "y": -20.06,
+            "rotation": 12,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.55,
+            "pivotY": 0.16
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": -25,
+            "rotation": 12,
+            "scaleX": -0.45,
+            "scaleY": 0.44,
+            "pivotX": 0.55,
+            "pivotY": 0.16
+          }
+        },
+        "forearmVambraceR": {
+          "maleV1": {
+            "x": 0.02,
+            "y": -0.16,
+            "rotation": -16,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.28,
+            "pivotY": 0.14
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": 0,
+            "rotation": -16,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.28,
+            "pivotY": 0.14
+          }
+        }
+      },
+      "line": "shortbow",
+      "tier": "common",
+      "fitted": true,
+      "itemID": "leather_bracers"
+    },
+    {
+      "id": "arcaneFocusV1",
+      "label": "Arcane Guards",
+      "assetByLayer": {
+        "upperArmArmorL": "Layers/ArmUnits/arcaneFocusV1/upperArmInside.png",
+        "forearmVambraceL": "Layers/ArmUnits/arcaneFocusV1/forearmInside.png",
+        "upperArmArmorR": "Layers/ArmUnits/arcaneFocusV1/upperArmOutside.png",
+        "forearmVambraceR": "Layers/ArmUnits/arcaneFocusV1/forearmOutside.png"
+      },
+      "bindByLayer": {
+        "upperArmArmorL": {
+          "maleV1": {
+            "x": 0,
+            "y": -25,
+            "rotation": -5,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.55,
+            "pivotY": 0.16
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": -20,
+            "rotation": -5,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.55,
+            "pivotY": 0.16
+          }
+        },
+        "forearmVambraceL": {
+          "maleV1": {
+            "x": 0,
+            "y": 0.3,
+            "rotation": -12,
+            "scaleX": 0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.72,
+            "pivotY": 0.14
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": 0.3,
+            "rotation": -12,
+            "scaleX": 0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.72,
+            "pivotY": 0.14
+          }
+        },
+        "upperArmArmorR": {
+          "maleV1": {
+            "x": -0.19,
+            "y": -20.06,
+            "rotation": 12,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.55,
+            "pivotY": 0.16
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": -25,
+            "rotation": 12,
+            "scaleX": -0.45,
+            "scaleY": 0.44,
+            "pivotX": 0.55,
+            "pivotY": 0.16
+          }
+        },
+        "forearmVambraceR": {
+          "maleV1": {
+            "x": 0.02,
+            "y": -0.16,
+            "rotation": -16,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.28,
+            "pivotY": 0.14
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": 0,
+            "rotation": -16,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.28,
+            "pivotY": 0.14
+          }
+        }
+      },
+      "fitted": true,
+      "itemID": "arcane_focus_vambraces"
+    },
+    {
+      "id": "heavyPlateV1",
+      "label": "Plate Guards",
+      "assetByLayer": {
+        "upperArmArmorL": "Layers/ArmUnits/heavyPlateV1/upperArmInside.png",
+        "forearmVambraceL": "Layers/ArmUnits/heavyPlateV1/forearmInside.png",
+        "upperArmArmorR": "Layers/ArmUnits/heavyPlateV1/upperArmOutside.png",
+        "forearmVambraceR": "Layers/ArmUnits/heavyPlateV1/forearmOutside.png"
+      },
+      "bindByLayer": {
+        "upperArmArmorL": {
+          "maleV1": {
+            "x": 0,
+            "y": -25,
+            "rotation": -5,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.55,
+            "pivotY": 0.16
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": -20,
+            "rotation": -5,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.55,
+            "pivotY": 0.16
+          }
+        },
+        "forearmVambraceL": {
+          "maleV1": {
+            "x": 0,
+            "y": 0.3,
+            "rotation": -14,
+            "scaleX": 0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.72,
+            "pivotY": 0.14
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": 0.3,
+            "rotation": -14,
+            "scaleX": 0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.72,
+            "pivotY": 0.14
+          }
+        },
+        "upperArmArmorR": {
+          "maleV1": {
+            "x": -0.19,
+            "y": -20.06,
+            "rotation": 12,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.55,
+            "pivotY": 0.16
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": -25,
+            "rotation": 12,
+            "scaleX": -0.45,
+            "scaleY": 0.55,
+            "pivotX": 0.55,
+            "pivotY": 0.16
+          }
+        },
+        "forearmVambraceR": {
+          "maleV1": {
+            "x": 0.02,
+            "y": -0.16,
+            "rotation": -16,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.28,
+            "pivotY": 0.14
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": 0,
+            "rotation": -16,
+            "scaleX": -0.45,
+            "scaleY": 0.45,
+            "pivotX": 0.28,
+            "pivotY": 0.14
+          }
+        }
+      },
+      "itemID": "heavy_plate_vambraces"
+    }
+  ],
+  "activeBootSet": "leather_boots",
+  "bootOptions": [
+    {
+      "id": "leather_boots",
+      "label": "Leather Boots",
+      "assetByLayer": {
+        "lowerLegL": "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootShaftL.png",
+        "footL": "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootFootL.png",
+        "lowerLegR": "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootShaftR.png",
+        "footR": "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootFootR.png"
+      },
+      "bindByLayer": {
+        "lowerLegL": {
+          "maleV1": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 0.5771,
+            "scaleY": 0.48,
+            "pivotX": 0.5,
+            "pivotY": 0.2
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 0.5771,
+            "scaleY": 0.48,
+            "pivotX": 0.5,
+            "pivotY": 0.2
+          }
+        },
+        "footL": {
+          "maleV1": {
+            "x": -3.76,
+            "y": 1.78,
+            "rotation": 0,
+            "scaleX": 0.6,
+            "scaleY": 0.3915,
+            "pivotX": 0.7,
+            "pivotY": 0.17
+          },
+          "femaleV1": {
+            "x": -3.76,
+            "y": 1.78,
+            "rotation": 0,
+            "scaleX": 0.6,
+            "scaleY": 0.3915,
+            "pivotX": 0.7,
+            "pivotY": 0.17
+          }
+        },
+        "lowerLegR": {
+          "maleV1": {
+            "x": 0.02,
+            "y": -0.29,
+            "rotation": -3,
+            "scaleX": 0.5771,
+            "scaleY": 0.52,
+            "pivotX": 0.5,
+            "pivotY": 0.2
+          },
+          "femaleV1": {
+            "x": 0.02,
+            "y": -0.29,
+            "rotation": -3,
+            "scaleX": 0.5771,
+            "scaleY": 0.52,
+            "pivotX": 0.5,
+            "pivotY": 0.2
+          }
+        },
+        "footR": {
+          "maleV1": {
+            "x": 4,
+            "y": 4,
+            "rotation": 12,
+            "scaleX": 0.66,
+            "scaleY": 0.5,
+            "pivotX": 0.7,
+            "pivotY": 0.17
+          },
+          "femaleV1": {
+            "x": 4,
+            "y": 4,
+            "rotation": 12,
+            "scaleX": 0.66,
+            "scaleY": 0.5,
+            "pivotX": 0.7,
+            "pivotY": 0.17
+          }
+        }
+      },
+      "line": "shortbow",
+      "tier": "common",
+      "fitted": true,
+      "itemID": "leather_boots"
+    },
+    {
+      "id": "frostweaveV1",
+      "label": "Arcane Boots",
+      "assetByLayer": {
+        "lowerLegL": "Layers/BootUnits/frostweaveV1/bootShaftL.png",
+        "footL": "Layers/BootUnits/frostweaveV1/bootFootL.png",
+        "lowerLegR": "Layers/BootUnits/frostweaveV1/bootShaftR.png",
+        "footR": "Layers/BootUnits/frostweaveV1/bootFootR.png"
+      },
+      "bindByLayer": {
+        "lowerLegL": {
+          "maleV1": {
+            "x": 0,
+            "y": -2,
+            "rotation": 0,
+            "scaleX": 0.5771,
+            "scaleY": 0.5,
+            "pivotX": 0.5,
+            "pivotY": 0.2
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": -2,
+            "rotation": 0,
+            "scaleX": 0.5771,
+            "scaleY": 0.5,
+            "pivotX": 0.5,
+            "pivotY": 0.2
+          }
+        },
+        "footL": {
+          "maleV1": {
+            "x": -3.76,
+            "y": 1.78,
+            "rotation": 0,
+            "scaleX": 0.6,
+            "scaleY": 0.3915,
+            "pivotX": 0.7,
+            "pivotY": 0.17
+          },
+          "femaleV1": {
+            "x": -3.76,
+            "y": 1.78,
+            "rotation": 0,
+            "scaleX": 0.6,
+            "scaleY": 0.3915,
+            "pivotX": 0.7,
+            "pivotY": 0.17
+          }
+        },
+        "lowerLegR": {
+          "maleV1": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 0.59,
+            "scaleY": 0.55,
+            "pivotX": 0.5,
+            "pivotY": 0.2
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 0.59,
+            "scaleY": 0.55,
+            "pivotX": 0.5,
+            "pivotY": 0.2
+          }
+        },
+        "footR": {
+          "maleV1": {
+            "x": -3,
+            "y": 6.96,
+            "rotation": 5,
+            "scaleX": 0.74,
+            "scaleY": 0.5,
+            "pivotX": 0.7,
+            "pivotY": 0.17
+          },
+          "femaleV1": {
+            "x": -3,
+            "y": 6.96,
+            "rotation": 5,
+            "scaleX": 0.74,
+            "scaleY": 0.5,
+            "pivotX": 0.7,
+            "pivotY": 0.17
+          }
+        }
+      },
+      "fitted": true,
+      "itemID": "frostweave_boots"
+    },
+    {
+      "id": "ironGuardV1",
+      "label": "Plate Sabatons",
+      "assetByLayer": {
+        "lowerLegL": "Layers/BootUnits/ironGuardV1/bootShaftL.png",
+        "footL": "Layers/BootUnits/ironGuardV1/bootFootL.png",
+        "lowerLegR": "Layers/BootUnits/ironGuardV1/bootShaftR.png",
+        "footR": "Layers/BootUnits/ironGuardV1/bootFootR.png"
+      },
+      "bindByLayer": {
+        "lowerLegL": {
+          "maleV1": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 0.5771,
+            "scaleY": 0.5,
+            "pivotX": 0.5,
+            "pivotY": 0.2
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 0.5771,
+            "scaleY": 0.5,
+            "pivotX": 0.5,
+            "pivotY": 0.2
+          }
+        },
+        "footL": {
+          "maleV1": {
+            "x": -3.76,
+            "y": 1.78,
+            "rotation": 0,
+            "scaleX": 0.6,
+            "scaleY": 0.3915,
+            "pivotX": 0.7,
+            "pivotY": 0.17
+          },
+          "femaleV1": {
+            "x": -3.76,
+            "y": 1.78,
+            "rotation": 0,
+            "scaleX": 0.6,
+            "scaleY": 0.3915,
+            "pivotX": 0.7,
+            "pivotY": 0.17
+          }
+        },
+        "lowerLegR": {
+          "maleV1": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 0.59,
+            "scaleY": 0.55,
+            "pivotX": 0.5,
+            "pivotY": 0.2
+          },
+          "femaleV1": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 0.59,
+            "scaleY": 0.55,
+            "pivotX": 0.5,
+            "pivotY": 0.2
+          }
+        },
+        "footR": {
+          "maleV1": {
+            "x": -3,
+            "y": 6.96,
+            "rotation": 5,
+            "scaleX": 0.74,
+            "scaleY": 0.5,
+            "pivotX": 0.7,
+            "pivotY": 0.17
+          },
+          "femaleV1": {
+            "x": -3,
+            "y": 6.96,
+            "rotation": 5,
+            "scaleX": 0.74,
+            "scaleY": 0.5,
+            "pivotX": 0.7,
+            "pivotY": 0.17
+          }
+        }
+      },
+      "fitted": true,
+      "itemID": "iron_guard_boots"
+    }
+  ],
+  "activeHeadgear": "scout_hood",
+  "headgearOptions": [
+    {
+      "id": "scout_hood",
+      "label": "Scout Hood",
+      "assetByProfile": {
+        "maleV1": "Layers/GeneratedMatrix/Headgear/Shortbow/trail-scout-cap.png",
+        "femaleV1": "Layers/GeneratedMatrix/Headgear/Shortbow/trail-scout-cap.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -55,
+          "y": -45,
+          "rotation": 0,
+          "scaleX": 0.4,
+          "scaleY": 0.38,
+          "pivotX": 0.38,
+          "pivotY": 0.56
+        },
+        "femaleV1": {
+          "x": -44,
+          "y": -35,
+          "rotation": 0,
+          "scaleX": 0.4,
+          "scaleY": 0.38,
+          "pivotX": 0.38,
+          "pivotY": 0.56
+        }
+      },
+      "line": "shortbow",
+      "tier": "common",
+      "fitted": true,
+      "itemID": "scout_hood"
+    },
+    {
+      "id": "arcane_circlet",
+      "label": "Arcane Circlet",
+      "assetByProfile": {
+        "maleV1": "Layers/GeneratedMatrix/Headgear/Loud/hedge-crown.png",
+        "femaleV1": "Layers/GeneratedMatrix/Headgear/Loud/hedge-crown.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -55,
+          "y": -45,
+          "rotation": 0,
+          "scaleX": 0.4,
+          "scaleY": 0.38,
+          "pivotX": 0.38,
+          "pivotY": 0.56
+        },
+        "femaleV1": {
+          "x": -44,
+          "y": -35,
+          "rotation": 0,
+          "scaleX": 0.4,
+          "scaleY": 0.38,
+          "pivotX": 0.38,
+          "pivotY": 0.56
+        }
+      },
+      "line": "loud",
+      "tier": "common",
+      "fitted": true,
+      "itemID": "arcane_circlet"
+    },
+    {
+      "id": "bandedIronV1",
+      "label": "Vanguard Helm",
+      "assetByProfile": {
+        "maleV1": "Layers/Headgear/vanguard-helm.png",
+        "femaleV1": "Layers/Headgear/vanguard-helm.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -55,
+          "y": -45,
+          "rotation": 0,
+          "scaleX": 0.4,
+          "scaleY": 0.38,
+          "pivotX": 0.38,
+          "pivotY": 0.56
+        },
+        "femaleV1": {
+          "x": -44,
+          "y": -35,
+          "rotation": 0,
+          "scaleX": 0.4,
+          "scaleY": 0.38,
+          "pivotX": 0.38,
+          "pivotY": 0.56
+        }
+      },
+      "fitted": true,
+      "itemID": "iron_guard_helm"
+    }
+  ],
+  "activeQuiver": "normal_quiver",
+  "quiverOptions": [
+    {
+      "id": "normal_quiver",
+      "label": "Leather Quiver",
+      "assetByProfile": {
+        "maleV1": "Layers/Equipment/Quivers/normalQuiver.png",
+        "femaleV1": "Layers/Equipment/Quivers/normalQuiver.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 60,
+          "y": -40,
+          "rotation": 30,
+          "scaleX": 0.41,
+          "scaleY": 0.41,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        },
+        "femaleV1": {
+          "x": 80,
+          "y": 29.693,
+          "rotation": 30,
+          "scaleX": 0.41,
+          "scaleY": 0.41,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        }
+      },
+      "fitted": true,
+      "itemID": "normal_quiver"
+    }
+  ],
+  "profileReference": {
+    "originalLandmarks": "Bundled demo profiles",
+    "sizingRule": "Shared body skeleton; female head matches male rendered height; tunicBody provides the profile-specific chest and short-skirt silhouette.",
+    "torsoRatioRule": "The torso is one neck/chest/belt/short-skirt sprite with a dark painted underlayer closing every panel gap.",
+    "tunicRegionsByProfile": {
+      "maleV1": {
+        "neckTopY": 0,
+        "chestTopY": 180,
+        "beltTopY": 780,
+        "beltBottomY": 970,
+        "skirtBottomY": 1344
+      },
+      "femaleV1": {
+        "neckTopY": 0,
+        "chestTopY": 170,
+        "beltTopY": 730,
+        "beltBottomY": 905,
+        "skirtBottomY": 1285
+      }
+    },
+    "canonicalTargetPixels": {
+      "baseline": 1190,
+      "centerX": 600,
+      "headCenterY": 300,
+      "neckY": 450,
+      "chestY": 560,
+      "visualChestY": 430,
+      "chestTopY": 427,
+      "hipsY": 730,
+      "shoulderY": 530,
+      "shoulderHalfWidth": 155,
+      "hipJointY": 747,
+      "hipHalfWidth": 77,
+      "upperArmLength": 132.28,
+      "forearmLength": 83.95,
+      "thighLength": 197.65,
+      "shinLength": 156.46,
+      "ankleToGround": 90,
+      "chestThroughBelt": 303,
+      "torsoLength": 300,
+      "chestControlDrop": 130,
+      "shoulderRise": -100,
+      "collarRise": -20,
+      "headDrop": 150,
+      "maleHeadRenderedSourceScale": 1.03
+    }
+  },
+  "referenceByProfile": {
+    "maleV1": "reference/blank.png",
+    "femaleV1": "reference/blank.png"
+  },
+  "wristKeyframes": {
+    "sneakAttack": {
+      "L": [
+        {
+          "phase": 0.4,
+          "angle": 0,
+          "gripRotation": 0
+        },
+        {
+          "phase": 0.5217,
+          "angle": -32,
+          "gripRotation": -20,
+          "knuckleAxis": -7,
+          "fingerAngles": {
+            "handClosedLIndex": 13,
+            "handClosedLMiddle": 13,
+            "handClosedLRing": 13,
+            "handClosedLPinky": 13
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -77,
+              "across": 31
+            },
+            "handClosedLMiddle": {
+              "along": -77,
+              "across": 31
+            },
+            "handClosedLRing": {
+              "along": -77,
+              "across": 31
+            },
+            "handClosedLPinky": {
+              "along": -77,
+              "across": 31
+            }
+          }
+        },
+        {
+          "phase": 0.72,
+          "angle": 0,
+          "gripRotation": 0,
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -77,
+              "across": 57
+            },
+            "handClosedLMiddle": {
+              "along": -77,
+              "across": 57
+            },
+            "handClosedLRing": {
+              "along": -77,
+              "across": 57
+            },
+            "handClosedLPinky": {
+              "along": -77,
+              "across": 57
+            }
+          }
+        }
+      ]
+    },
+    "swordSwing": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -80,
+              "across": 55
+            },
+            "handClosedLMiddle": {
+              "along": -80,
+              "across": 55
+            },
+            "handClosedLRing": {
+              "along": -80,
+              "across": 55
+            },
+            "handClosedLPinky": {
+              "along": -80,
+              "across": 55
+            }
+          }
+        },
+        {
+          "phase": 0.259,
+          "angle": 21.9,
+          "gripRotation": 3.4,
+          "knuckleAxis": -8,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -75,
+              "across": 52
+            },
+            "handClosedLMiddle": {
+              "along": -75,
+              "across": 52
+            },
+            "handClosedLRing": {
+              "along": -75,
+              "across": 52
+            },
+            "handClosedLPinky": {
+              "along": -75,
+              "across": 52
+            }
+          }
+        },
+        {
+          "phase": 0.414,
+          "angle": 32,
+          "gripRotation": 5,
+          "knuckleAxis": -14,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -75,
+              "across": 55
+            },
+            "handClosedLMiddle": {
+              "along": -75,
+              "across": 55
+            },
+            "handClosedLRing": {
+              "along": -75,
+              "across": 55
+            },
+            "handClosedLPinky": {
+              "along": -75,
+              "across": 55
+            }
+          }
+        },
+        {
+          "phase": 0.494,
+          "angle": -22,
+          "gripRotation": 0,
+          "knuckleAxis": -10,
+          "fingerAngles": {
+            "handClosedLIndex": 9,
+            "handClosedLMiddle": 9,
+            "handClosedLRing": 9,
+            "handClosedLPinky": 9
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -78,
+              "across": 54
+            },
+            "handClosedLMiddle": {
+              "along": -78,
+              "across": 54
+            },
+            "handClosedLRing": {
+              "along": -78,
+              "across": 54
+            },
+            "handClosedLPinky": {
+              "along": -78,
+              "across": 54
+            }
+          }
+        },
+        {
+          "phase": 0.527,
+          "angle": -22,
+          "gripRotation": -21,
+          "knuckleAxis": -13,
+          "fingerAngles": {
+            "handClosedLIndex": 8,
+            "handClosedLMiddle": 8,
+            "handClosedLRing": 8,
+            "handClosedLPinky": 8
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -75,
+              "across": 28
+            },
+            "handClosedLMiddle": {
+              "along": -75,
+              "across": 28
+            },
+            "handClosedLRing": {
+              "along": -75,
+              "across": 28
+            },
+            "handClosedLPinky": {
+              "along": -75,
+              "across": 28
+            }
+          }
+        },
+        {
+          "phase": 0.633,
+          "angle": 8,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          }
+        }
+      ]
+    },
+    "spellCast": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0
+        },
+        {
+          "phase": 0.257,
+          "angle": -43
+        },
+        {
+          "phase": 0.359,
+          "angle": -43
+        },
+        {
+          "phase": 0.558,
+          "angle": 20
+        }
+      ]
+    },
+    "bowDraw": {
+      "L": [
+        {
+          "phase": 0.378,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -5,
+          "fingerAngles": {
+            "handClosedLIndex": 8,
+            "handClosedLMiddle": 8,
+            "handClosedLRing": 8,
+            "handClosedLPinky": 8
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -73,
+              "across": 60
+            },
+            "handClosedLMiddle": {
+              "along": -73,
+              "across": 60
+            },
+            "handClosedLRing": {
+              "along": -73,
+              "across": 60
+            },
+            "handClosedLPinky": {
+              "along": -73,
+              "across": 60
+            }
+          }
+        }
+      ]
+    },
+    "bowMoveForward": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": 0,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 60
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 60
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 60
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 60
+            }
+          }
+        }
+      ]
+    },
+    "bowMoveBackward": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": 0,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 60
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 60
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 60
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 60
+            }
+          }
+        }
+      ]
+    },
+    "staffMoveForward": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "grips": {
+            "staff": {
+              "gripRotation": 0,
+              "knuckleAxis": -10,
+              "fingerAngles": {
+                "handClosedLIndex": 5,
+                "handClosedLMiddle": 5,
+                "handClosedLRing": 5,
+                "handClosedLPinky": 5
+              },
+              "fingerOffsets": {
+                "handClosedLIndex": {
+                  "along": -76,
+                  "across": 49
+                },
+                "handClosedLMiddle": {
+                  "along": -76,
+                  "across": 49
+                },
+                "handClosedLRing": {
+                  "along": -76,
+                  "across": 49
+                },
+                "handClosedLPinky": {
+                  "along": -76,
+                  "across": 49
+                }
+              }
+            }
+          }
+        },
+        {
+          "phase": 0.1083,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        }
+      ]
+    },
+    "staffIdle": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        },
+        {
+          "phase": 0.1627,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -79,
+              "across": 47
+            },
+            "handClosedLMiddle": {
+              "along": -79,
+              "across": 47
+            },
+            "handClosedLRing": {
+              "along": -79,
+              "across": 47
+            },
+            "handClosedLPinky": {
+              "along": -79,
+              "across": 47
+            }
+          }
+        }
+      ]
+    },
+    "staffMoveBackward": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        }
+      ]
+    },
+    "run": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -11,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        },
+        {
+          "phase": 0.527,
+          "angle": 0
+        }
+      ]
+    },
+    "shieldUp": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -11,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        }
+      ]
+    },
+    "staffShieldUp": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        }
+      ]
+    },
+    "shieldMoveForward": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        }
+      ]
+    },
+    "shieldMoveBackward": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        }
+      ]
+    },
+    "staffShieldMoveForward": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        }
+      ]
+    },
+    "staffShieldMoveBackward": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        }
+      ]
+    },
+    "dodgeForward": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        }
+      ]
+    },
+    "dodgeBackward": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        }
+      ]
+    },
+    "idle": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        },
+        {
+          "phase": 0.244,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -6,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLMiddle": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLRing": {
+              "along": 0,
+              "across": 0
+            },
+            "handClosedLPinky": {
+              "along": 0,
+              "across": 0
+            }
+          }
+        },
+        {
+          "phase": 0.259,
+          "angle": 0
+        },
+        {
+          "phase": 0.414,
+          "angle": 0
+        },
+        {
+          "phase": 0.494,
+          "angle": 0
+        },
+        {
+          "phase": 0.527,
+          "angle": 0
+        },
+        {
+          "phase": 0.627,
+          "angle": 0
+        }
+      ]
+    },
+    "__grip_weapon": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -7,
+          "fingerAngles": {
+            "handClosedLIndex": 19,
+            "handClosedLMiddle": 19,
+            "handClosedLRing": 19,
+            "handClosedLPinky": 19
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -80,
+              "across": 55
+            },
+            "handClosedLMiddle": {
+              "along": -80,
+              "across": 55
+            },
+            "handClosedLRing": {
+              "along": -80,
+              "across": 55
+            },
+            "handClosedLPinky": {
+              "along": -80,
+              "across": 55
+            }
+          }
+        },
+        {
+          "phase": 0.244,
+          "angle": 0,
+          "gripRotation": 3.4,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLMiddle": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLRing": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLPinky": {
+              "along": -82,
+              "across": 55
+            }
+          }
+        },
+        {
+          "phase": 0.259,
+          "angle": 0,
+          "gripRotation": 3.4,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLMiddle": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLRing": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLPinky": {
+              "along": -82,
+              "across": 55
+            }
+          }
+        },
+        {
+          "phase": 0.414,
+          "angle": 0,
+          "gripRotation": 5,
+          "knuckleAxis": -10,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLMiddle": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLRing": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLPinky": {
+              "along": -82,
+              "across": 55
+            }
+          }
+        },
+        {
+          "phase": 0.494,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -14,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLMiddle": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLRing": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLPinky": {
+              "along": -82,
+              "across": 55
+            }
+          }
+        },
+        {
+          "phase": 0.527,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -13,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLMiddle": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLRing": {
+              "along": -82,
+              "across": 55
+            },
+            "handClosedLPinky": {
+              "along": -82,
+              "across": 55
+            }
+          }
+        },
+        {
+          "phase": 0.633,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -12,
+          "fingerAngles": {
+            "handClosedLIndex": 0,
+            "handClosedLMiddle": 0,
+            "handClosedLRing": 0,
+            "handClosedLPinky": 0
+          }
+        }
+      ]
+    },
+    "__grip_staff": {
+      "L": [
+        {
+          "phase": 0,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -10,
+          "fingerAngles": {
+            "handClosedLIndex": 5,
+            "handClosedLMiddle": 5,
+            "handClosedLRing": 5,
+            "handClosedLPinky": 5
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -76,
+              "across": 49
+            },
+            "handClosedLMiddle": {
+              "along": -76,
+              "across": 49
+            },
+            "handClosedLRing": {
+              "along": -76,
+              "across": 49
+            },
+            "handClosedLPinky": {
+              "along": -76,
+              "across": 49
+            }
+          }
+        }
+      ]
+    },
+    "__grip_bow": {
+      "L": [
+        {
+          "phase": 0.378,
+          "angle": 0,
+          "gripRotation": 0,
+          "knuckleAxis": -5,
+          "fingerAngles": {
+            "handClosedLIndex": 8,
+            "handClosedLMiddle": 8,
+            "handClosedLRing": 8,
+            "handClosedLPinky": 8
+          },
+          "fingerOffsets": {
+            "handClosedLIndex": {
+              "along": -73,
+              "across": 60
+            },
+            "handClosedLMiddle": {
+              "along": -73,
+              "across": 60
+            },
+            "handClosedLRing": {
+              "along": -73,
+              "across": 60
+            },
+            "handClosedLPinky": {
+              "along": -73,
+              "across": 60
+            }
+          }
+        }
+      ]
+    }
+  },
+  "boneKeyframes": {
+    "sneakAttack": {
+      "upperArmR": [
+        {
+          "phase": 0,
+          "x": 0,
+          "y": 0,
+          "rotation": 0
+        },
+        {
+          "phase": 0.4,
+          "x": 0,
+          "y": 0,
+          "rotation": 5.89
+        },
+        {
+          "phase": 0.5217,
+          "x": 0,
+          "y": 0,
+          "rotation": 7.455
+        },
+        {
+          "phase": 0.72,
+          "x": 0,
+          "y": 0,
+          "rotation": 2.269
+        },
+        {
+          "phase": 1,
+          "x": 0,
+          "y": 0,
+          "rotation": 0
+        }
+      ],
+      "lowerArmR": [
+        {
+          "phase": 0,
+          "x": 0,
+          "y": 0,
+          "rotation": 0
+        },
+        {
+          "phase": 0.4,
+          "x": 0,
+          "y": 0,
+          "rotation": -37.359
+        },
+        {
+          "phase": 0.5217,
+          "x": 0,
+          "y": 0,
+          "rotation": -49.496
+        },
+        {
+          "phase": 0.72,
+          "x": 0,
+          "y": 0,
+          "rotation": -25.67
+        },
+        {
+          "phase": 1,
+          "x": 0,
+          "y": 0,
+          "rotation": 0
+        }
+      ]
+    }
+  },
+  "expressionKeyframes": {
+    "idle": [
+      {
+        "phase": 0,
+        "eyes": "neutral",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.38,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.43,
+        "eyes": "neutral",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.78,
+        "eyes": "blink",
+        "mouth": "smile"
+      },
+      {
+        "phase": 0.83,
+        "eyes": "neutral",
+        "mouth": "smile"
+      },
+      {
+        "phase": 0.92,
+        "eyes": "neutral",
+        "mouth": "neutral"
+      }
+    ],
+    "staffIdle": [
+      {
+        "phase": 0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.44,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.5,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.82,
+        "eyes": "neutral",
+        "mouth": "smirk"
+      },
+      {
+        "phase": 0.92,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "staffMoveForward": [
+      {
+        "phase": 0,
+        "eyes": "focused",
+        "mouth": "frown"
+      },
+      {
+        "phase": 0.48,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.68,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "staffMoveBackward": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "frown"
+      },
+      {
+        "phase": 0.38,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.68,
+        "eyes": "wide",
+        "mouth": "frown"
+      }
+    ],
+    "run": [
+      {
+        "phase": 0,
+        "eyes": "focused",
+        "mouth": "frown"
+      },
+      {
+        "phase": 0.42,
+        "eyes": "blink",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.47,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.68,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "shieldUp": [
+      {
+        "phase": 0,
+        "eyes": "focused",
+        "mouth": "frown"
+      },
+      {
+        "phase": 0.52,
+        "eyes": "wince",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "staffShieldUp": [
+      {
+        "phase": 0,
+        "eyes": "focused",
+        "mouth": "frown"
+      },
+      {
+        "phase": 0.5,
+        "eyes": "wince",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "shieldMoveForward": [
+      {
+        "phase": 0,
+        "eyes": "focused",
+        "mouth": "frown"
+      },
+      {
+        "phase": 0.46,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.7,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "shieldMoveBackward": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "frown"
+      },
+      {
+        "phase": 0.42,
+        "eyes": "wince",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.66,
+        "eyes": "wide",
+        "mouth": "frown"
+      }
+    ],
+    "staffShieldMoveForward": [
+      {
+        "phase": 0,
+        "eyes": "focused",
+        "mouth": "frown"
+      },
+      {
+        "phase": 0.46,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.7,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "staffShieldMoveBackward": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "frown"
+      },
+      {
+        "phase": 0.42,
+        "eyes": "wince",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.66,
+        "eyes": "wide",
+        "mouth": "frown"
+      }
+    ],
+    "dodgeForward": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "surprised"
+      },
+      {
+        "phase": 0.2,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "wince",
+        "mouth": "pain"
+      },
+      {
+        "phase": 0.88,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "dodgeBackward": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "surprised"
+      },
+      {
+        "phase": 0.24,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.7,
+        "eyes": "wince",
+        "mouth": "pain"
+      },
+      {
+        "phase": 0.88,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "swordSwing": [
+      {
+        "phase": 0,
+        "eyes": "focused",
+        "mouth": "frown"
+      },
+      {
+        "phase": 0.3,
+        "eyes": "wide",
+        "mouth": "shout"
+      },
+      {
+        "phase": 0.62,
+        "eyes": "wince",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.84,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "blocked": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "surprised"
+      },
+      {
+        "phase": 0.18,
+        "eyes": "wince",
+        "mouth": "pain"
+      },
+      {
+        "phase": 0.62,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.88,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "sneakAttack": [
+      {
+        "phase": 0,
+        "eyes": "focused",
+        "mouth": "smirk"
+      },
+      {
+        "phase": 0.4,
+        "eyes": "wide",
+        "mouth": "shout"
+      },
+      {
+        "phase": 0.64,
+        "eyes": "wince",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.84,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "spellCast": [
+      {
+        "phase": 0,
+        "eyes": "focused",
+        "mouth": "talk"
+      },
+      {
+        "phase": 0.38,
+        "eyes": "wide",
+        "mouth": "shout"
+      },
+      {
+        "phase": 0.7,
+        "eyes": "wide",
+        "mouth": "smile"
+      },
+      {
+        "phase": 0.9,
+        "eyes": "neutral",
+        "mouth": "neutral"
+      }
+    ],
+    "spellMoveForward": [
+      {
+        "phase": 0,
+        "eyes": "focused",
+        "mouth": "talk"
+      },
+      {
+        "phase": 0.46,
+        "eyes": "wide",
+        "mouth": "shout"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "spellMoveBackward": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "talk"
+      },
+      {
+        "phase": 0.42,
+        "eyes": "wince",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.7,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "bowDraw": [
+      {
+        "phase": 0,
+        "eyes": "focused",
+        "mouth": "frown"
+      },
+      {
+        "phase": 0.44,
+        "eyes": "wince",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.76,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.92,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "bowMoveForward": [
+      {
+        "phase": 0,
+        "eyes": "focused",
+        "mouth": "frown"
+      },
+      {
+        "phase": 0.48,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "bowMoveBackward": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "frown"
+      },
+      {
+        "phase": 0.44,
+        "eyes": "wince",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.7,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ]
+  },
+  "bones": [
+    {
+      "id": "root",
+      "label": "root",
+      "parent": null,
+      "bindByProfile": {
+        "maleV1": {
+          "x": 600,
+          "y": 1190,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 600,
+          "y": 1190,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "hips",
+      "label": "pelvis",
+      "parent": "root",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 1.417,
+          "y": -448.654,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": -460,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "spine",
+      "label": "spine1",
+      "parent": "hips",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": -126,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": -6.106,
+          "y": -91.688,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "chest",
+      "label": "spine2",
+      "parent": "spine",
+      "bindByProfile": {
+        "maleV1": {
+          "x": -0.579,
+          "y": -111.973,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 8.814,
+          "y": -121.005,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "neck",
+      "label": "neck",
+      "parent": "chest",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 9.828,
+          "y": -45.245,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": -6.194,
+          "y": -38.103,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      },
+      "fitBones": [
+        "hips",
+        "spine",
+        "chest"
+      ]
+    },
+    {
+      "id": "head",
+      "label": "head",
+      "parent": "neck",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 10.3,
+          "y": -155.934,
+          "rotation": 0,
+          "scaleX": 0.75,
+          "scaleY": 0.75
+        },
+        "femaleV1": {
+          "x": 13.82,
+          "y": -144.124,
+          "rotation": 0,
+          "scaleX": 0.8,
+          "scaleY": 0.8
+        }
+      }
+    },
+    {
+      "id": "necklaceAnchorL",
+      "label": "necklace top L",
+      "parent": "chest",
+      "bindByProfile": {
+        "maleV1": {
+          "x": -58.1829,
+          "y": -110,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": -55.6798,
+          "y": -110,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      },
+      "fitBones": [
+        "hips",
+        "spine",
+        "chest"
+      ]
+    },
+    {
+      "id": "necklace",
+      "label": "necklace",
+      "parent": "chest",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": -110,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": -110,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      },
+      "fitBones": [
+        "hips",
+        "spine",
+        "chest"
+      ]
+    },
+    {
+      "id": "necklaceAnchorR",
+      "label": "necklace top R",
+      "parent": "chest",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 71.5165,
+          "y": -110,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 57.2875,
+          "y": -110,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      },
+      "fitBones": [
+        "hips",
+        "spine",
+        "chest"
+      ]
+    },
+    {
+      "id": "shoulderL",
+      "label": "shoulderL",
+      "parent": "chest",
+      "bindByProfile": {
+        "maleV1": {
+          "x": -105.787,
+          "y": -29.085,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": -101.236,
+          "y": -4.297,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      },
+      "fitBones": [
+        "hips",
+        "spine",
+        "chest"
+      ]
+    },
+    {
+      "id": "upperArmL",
+      "label": "armL1",
+      "parent": "shoulderL",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": -4.78,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": -11.124,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "lowerArmL",
+      "label": "armL2",
+      "parent": "upperArmL",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 15,
+          "y": 140,
+          "rotation": 13.2,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 15,
+          "y": 130,
+          "rotation": 20.006,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "handL",
+      "label": "handL",
+      "parent": "lowerArmL",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 140,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 140,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "shoulderR",
+      "label": "shoulderR",
+      "parent": "chest",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 130.03,
+          "y": -43.385,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 104.159,
+          "y": -11.24,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      },
+      "fitBones": [
+        "hips",
+        "spine",
+        "chest"
+      ]
+    },
+    {
+      "id": "upperArmR",
+      "label": "armR1",
+      "parent": "shoulderR",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": -23.563,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": -21.383,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "lowerArmR",
+      "label": "armR2",
+      "parent": "upperArmR",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 140,
+          "rotation": 0.009,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 150,
+          "rotation": 26.465,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "handR",
+      "label": "handR",
+      "parent": "lowerArmR",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 160,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 160,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "upperLegL",
+      "label": "legL1",
+      "parent": "hips",
+      "bindByProfile": {
+        "maleV1": {
+          "x": -52.891,
+          "y": 14.658,
+          "rotation": 4.64,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": -66.073,
+          "y": 21.767,
+          "rotation": 4.64,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "lowerLegL",
+      "label": "legL2",
+      "parent": "upperLegL",
+      "bindByProfile": {
+        "maleV1": {
+          "x": -4.47,
+          "y": 217.293,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 197.65,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "footL",
+      "label": "footL",
+      "parent": "lowerLegL",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 156.46,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 156.46,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "upperLegR",
+      "label": "legR1",
+      "parent": "hips",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 61.088,
+          "y": 12.488,
+          "rotation": -4.64,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 58.794,
+          "y": 15.053,
+          "rotation": -4.64,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "lowerLegR",
+      "label": "legR2",
+      "parent": "upperLegR",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 6.144,
+          "y": 214.465,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 197.65,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "footR",
+      "label": "footR",
+      "parent": "lowerLegR",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 156.46,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 156.46,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "skirtL",
+      "label": "skirtL1",
+      "parent": "hips",
+      "bindByProfile": {
+        "maleV1": {
+          "x": -115.5,
+          "y": 34,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": -115.5,
+          "y": 34,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "skirtFront",
+      "label": "skirtFront1",
+      "parent": "hips",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 30,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 30,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    },
+    {
+      "id": "skirtR",
+      "label": "skirtR1",
+      "parent": "hips",
+      "bindByProfile": {
+        "maleV1": {
+          "x": 115.5,
+          "y": 34,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        "femaleV1": {
+          "x": 115.5,
+          "y": 34,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      }
+    }
+  ],
+  "layers": [
+    {
+      "id": "hairBack",
+      "group": "Head",
+      "bone": "head",
+      "assetByProfile": {
+        "maleV1": "Layers/Head/standardizedV1/maleV1/hairBack.png",
+        "femaleV1": "Layers/Head/standardizedV1/femaleV1/hairBack.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -15,
+          "y": -40,
+          "rotation": 0,
+          "scaleX": 1.3973,
+          "scaleY": 1.3973,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        },
+        "femaleV1": {
+          "x": 84.55,
+          "y": -54.46,
+          "rotation": 0,
+          "scaleX": 1.3973,
+          "scaleY": 1.3973,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        }
+      },
+      "drawOrder": 10,
+      "visible": true
+    },
+    {
+      "id": "upperLegL",
+      "group": "Legs",
+      "bone": "upperLegL",
+      "assetByProfile": {
+        "maleV1": "Layers/LowerBody/neutralV1/pantsUpperDarkL.png",
+        "femaleV1": "Layers/LowerBody/neutralV1/pantsUpperDarkL.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -0.04,
+          "y": -0.43,
+          "rotation": 5,
+          "scaleX": 1.0568,
+          "scaleY": 0.85,
+          "pivotX": 0.5,
+          "pivotY": 0.05
+        },
+        "femaleV1": {
+          "x": -0.04,
+          "y": -0.43,
+          "rotation": 5,
+          "scaleX": 1.0568,
+          "scaleY": 0.8256,
+          "pivotX": 0.5,
+          "pivotY": 0.05
+        }
+      },
+      "drawOrder": 21,
+      "visible": true
+    },
+    {
+      "id": "lowerLegL",
+      "group": "Legs",
+      "bone": "lowerLegL",
+      "assetByProfile": {
+        "maleV1": "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootShaftL.png",
+        "femaleV1": "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootShaftL.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 0.5771,
+          "scaleY": 0.4182,
+          "pivotX": 0.5,
+          "pivotY": 0.2
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 0.5771,
+          "scaleY": 0.52,
+          "pivotX": 0.5,
+          "pivotY": 0.2
+        }
+      },
+      "drawOrder": 22,
+      "visible": true
+    },
+    {
+      "id": "footL",
+      "group": "Legs",
+      "bone": "footL",
+      "assetByProfile": {
+        "maleV1": "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootFootL.png",
+        "femaleV1": "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootFootL.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -3.76,
+          "y": 1.78,
+          "rotation": 0,
+          "scaleX": 0.6,
+          "scaleY": 0.3915,
+          "pivotX": 0.7,
+          "pivotY": 0.17
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 1.78,
+          "rotation": 0,
+          "scaleX": 0.5,
+          "scaleY": 0.3915,
+          "pivotX": 0.7,
+          "pivotY": 0.17
+        }
+      },
+      "drawOrder": 20,
+      "visible": true
+    },
+    {
+      "id": "handOpenL",
+      "group": "Hands",
+      "bone": "handL",
+      "assetByProfile": {
+        "maleV1": "Layers/ArmUnits/universalV1/handOpenL.png",
+        "femaleV1": "Layers/ArmUnits/universalV1/handOpenL.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -19,
+          "y": 18,
+          "rotation": -5,
+          "scaleX": 0.65,
+          "scaleY": 0.65,
+          "pivotX": 0.5,
+          "pivotY": 0.07
+        },
+        "femaleV1": {
+          "x": -19,
+          "y": 18,
+          "rotation": -5,
+          "scaleX": 0.65,
+          "scaleY": 0.65,
+          "pivotX": 0.5,
+          "pivotY": 0.07
+        }
+      },
+      "drawOrder": 17,
+      "visible": true,
+      "handState": "open",
+      "mesh": {
+        "type": "weightedStripV2",
+        "parentBone": "lowerArmL",
+        "childBone": "handL",
+        "bendStops": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "bendStart": {
+          "x": 0.5,
+          "y": 0
+        },
+        "bendEnd": {
+          "x": 0.5,
+          "y": 0.28
+        }
+      }
+    },
+    {
+      "id": "handClosedL",
+      "group": "Hands",
+      "bone": "handL",
+      "assetByProfile": {
+        "maleV1": "Layers/ArmUnits/universalV1/handGripPalmBaseV2.png",
+        "femaleV1": "Layers/ArmUnits/universalV1/handGripPalmBaseV2.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -7,
+          "y": 9,
+          "rotation": -60,
+          "scaleX": 0.65,
+          "scaleY": 0.65,
+          "pivotX": 0.9,
+          "pivotY": 0.17
+        },
+        "femaleV1": {
+          "x": -7,
+          "y": 9,
+          "rotation": -60,
+          "scaleX": 0.65,
+          "scaleY": 0.65,
+          "pivotX": 0.9,
+          "pivotY": 0.17
+        }
+      },
+      "drawOrder": 15,
+      "visible": true,
+      "handState": "closed",
+      "mesh": {
+        "type": "weightedStripV2",
+        "parentBone": "lowerArmL",
+        "childBone": "handL",
+        "bendStops": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "bendStart": {
+          "x": 0.99,
+          "y": 0.16
+        },
+        "bendEnd": {
+          "x": 0.79,
+          "y": 0.35
+        }
+      }
+    },
+    {
+      "id": "handClosedLPinky",
+      "group": "Hands",
+      "bone": "handL",
+      "assetByProfile": {
+        "maleV1": "Layers/ArmUnits/universalV1/handGripFingerTriangleV1.png",
+        "femaleV1": "Layers/ArmUnits/universalV1/handGripFingerTriangleV1.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -7,
+          "y": 9,
+          "rotation": -60,
+          "scaleX": 0.5304,
+          "scaleY": 0.5478,
+          "pivotX": 0.98,
+          "pivotY": 0.59
+        },
+        "femaleV1": {
+          "x": -7,
+          "y": 9,
+          "rotation": -60,
+          "scaleX": 0.5304,
+          "scaleY": 0.5478,
+          "pivotX": 0.98,
+          "pivotY": 0.59
+        }
+      },
+      "drawOrder": 17,
+      "visible": true,
+      "handState": "closed",
+      "gripFinger": {
+        "along": 23.0596,
+        "across": -10.3633,
+        "angleOffset": 7,
+        "basePivot": {
+          "x": 1,
+          "y": 0.57
+        }
+      },
+      "clipPath": {
+        "type": "bezierPathV1",
+        "closed": true,
+        "nodes": [
+          {
+            "x": 0.0785,
+            "y": 0.7275
+          },
+          {
+            "x": 0.2024,
+            "y": 0.8728
+          },
+          {
+            "x": 0.411,
+            "y": 0.8996,
+            "in": {
+              "x": 0.3423,
+              "y": 0.9063
+            },
+            "out": {
+              "x": 0.4797,
+              "y": 0.8929
+            }
+          },
+          {
+            "x": 0.5636,
+            "y": 0.7995,
+            "in": {
+              "x": 0.5395,
+              "y": 0.8484
+            },
+            "out": {
+              "x": 0.5877,
+              "y": 0.7506
+            }
+          },
+          {
+            "x": 0.778,
+            "y": 0.504
+          },
+          {
+            "x": 0.7702,
+            "y": 0.2249,
+            "in": {
+              "x": 0.8325,
+              "y": 0.3363
+            },
+            "out": {
+              "x": 0.7079,
+              "y": 0.1135
+            }
+          },
+          {
+            "x": 0.6518,
+            "y": 0.1325,
+            "in": {
+              "x": 0.6683,
+              "y": 0.1264
+            },
+            "out": {
+              "x": 0.6353,
+              "y": 0.1386
+            }
+          },
+          {
+            "x": 0.3188,
+            "y": 0.2489,
+            "in": {
+              "x": 0.4594,
+              "y": 0.1545
+            },
+            "out": {
+              "x": 0.1782,
+              "y": 0.3433
+            }
+          },
+          {
+            "x": 0.1372,
+            "y": 0.4064
+          },
+          {
+            "x": 0.0898,
+            "y": 0.5815,
+            "in": {
+              "x": 0.1123,
+              "y": 0.43
+            },
+            "out": {
+              "x": 0.0673,
+              "y": 0.733
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "handClosedLRing",
+      "group": "Hands",
+      "bone": "handL",
+      "assetByProfile": {
+        "maleV1": "Layers/ArmUnits/universalV1/handGripFingerTriangleV1.png",
+        "femaleV1": "Layers/ArmUnits/universalV1/handGripFingerTriangleV1.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -7,
+          "y": 9,
+          "rotation": -60,
+          "scaleX": 0.6365,
+          "scaleY": 0.6574,
+          "pivotX": 0.98,
+          "pivotY": 0.59
+        },
+        "femaleV1": {
+          "x": -7,
+          "y": 9,
+          "rotation": -60,
+          "scaleX": 0.6365,
+          "scaleY": 0.6574,
+          "pivotX": 0.98,
+          "pivotY": 0.59
+        }
+      },
+      "drawOrder": 17.1,
+      "visible": true,
+      "handState": "closed",
+      "gripFinger": {
+        "along": 27.7496,
+        "across": -22.9332,
+        "angleOffset": 7,
+        "basePivot": {
+          "x": 1,
+          "y": 0.57
+        }
+      },
+      "clipPath": {
+        "type": "bezierPathV1",
+        "closed": true,
+        "nodes": [
+          {
+            "x": 0.0785,
+            "y": 0.7275
+          },
+          {
+            "x": 0.2024,
+            "y": 0.8728
+          },
+          {
+            "x": 0.411,
+            "y": 0.8996,
+            "in": {
+              "x": 0.3423,
+              "y": 0.9063
+            },
+            "out": {
+              "x": 0.4797,
+              "y": 0.8929
+            }
+          },
+          {
+            "x": 0.5636,
+            "y": 0.7995,
+            "in": {
+              "x": 0.5395,
+              "y": 0.8484
+            },
+            "out": {
+              "x": 0.5877,
+              "y": 0.7506
+            }
+          },
+          {
+            "x": 0.778,
+            "y": 0.504
+          },
+          {
+            "x": 0.7702,
+            "y": 0.2249,
+            "in": {
+              "x": 0.8325,
+              "y": 0.3363
+            },
+            "out": {
+              "x": 0.7079,
+              "y": 0.1135
+            }
+          },
+          {
+            "x": 0.6518,
+            "y": 0.1325,
+            "in": {
+              "x": 0.6683,
+              "y": 0.1264
+            },
+            "out": {
+              "x": 0.6353,
+              "y": 0.1386
+            }
+          },
+          {
+            "x": 0.3188,
+            "y": 0.2489,
+            "in": {
+              "x": 0.4594,
+              "y": 0.1545
+            },
+            "out": {
+              "x": 0.1782,
+              "y": 0.3433
+            }
+          },
+          {
+            "x": 0.1372,
+            "y": 0.4064
+          },
+          {
+            "x": 0.0898,
+            "y": 0.5815,
+            "in": {
+              "x": 0.1123,
+              "y": 0.43
+            },
+            "out": {
+              "x": 0.0673,
+              "y": 0.733
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "handClosedLMiddle",
+      "group": "Hands",
+      "bone": "handL",
+      "assetByProfile": {
+        "maleV1": "Layers/ArmUnits/universalV1/handGripFingerTriangleV1.png",
+        "femaleV1": "Layers/ArmUnits/universalV1/handGripFingerTriangleV1.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -7,
+          "y": 9,
+          "rotation": -60,
+          "scaleX": 0.6365,
+          "scaleY": 0.6574,
+          "pivotX": 0.98,
+          "pivotY": 0.59
+        },
+        "femaleV1": {
+          "x": -7,
+          "y": 9,
+          "rotation": -60,
+          "scaleX": 0.6365,
+          "scaleY": 0.6574,
+          "pivotX": 0.98,
+          "pivotY": 0.59
+        }
+      },
+      "drawOrder": 17.2,
+      "visible": true,
+      "handState": "closed",
+      "gripFinger": {
+        "along": 30.3452,
+        "across": -36.285,
+        "angleOffset": 7,
+        "basePivot": {
+          "x": 1,
+          "y": 0.57
+        }
+      },
+      "clipPath": {
+        "type": "bezierPathV1",
+        "closed": true,
+        "nodes": [
+          {
+            "x": 0.0785,
+            "y": 0.7275
+          },
+          {
+            "x": 0.2024,
+            "y": 0.8728
+          },
+          {
+            "x": 0.411,
+            "y": 0.8996,
+            "in": {
+              "x": 0.3423,
+              "y": 0.9063
+            },
+            "out": {
+              "x": 0.4797,
+              "y": 0.8929
+            }
+          },
+          {
+            "x": 0.5636,
+            "y": 0.7995,
+            "in": {
+              "x": 0.5395,
+              "y": 0.8484
+            },
+            "out": {
+              "x": 0.5877,
+              "y": 0.7506
+            }
+          },
+          {
+            "x": 0.778,
+            "y": 0.504
+          },
+          {
+            "x": 0.7702,
+            "y": 0.2249,
+            "in": {
+              "x": 0.8325,
+              "y": 0.3363
+            },
+            "out": {
+              "x": 0.7079,
+              "y": 0.1135
+            }
+          },
+          {
+            "x": 0.6518,
+            "y": 0.1325,
+            "in": {
+              "x": 0.6683,
+              "y": 0.1264
+            },
+            "out": {
+              "x": 0.6353,
+              "y": 0.1386
+            }
+          },
+          {
+            "x": 0.3188,
+            "y": 0.2489,
+            "in": {
+              "x": 0.4594,
+              "y": 0.1545
+            },
+            "out": {
+              "x": 0.1782,
+              "y": 0.3433
+            }
+          },
+          {
+            "x": 0.1372,
+            "y": 0.4064
+          },
+          {
+            "x": 0.0898,
+            "y": 0.5815,
+            "in": {
+              "x": 0.1123,
+              "y": 0.43
+            },
+            "out": {
+              "x": 0.0673,
+              "y": 0.733
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "handClosedLIndex",
+      "group": "Hands",
+      "bone": "handL",
+      "assetByProfile": {
+        "maleV1": "Layers/ArmUnits/universalV1/handGripFingerTriangleV1.png",
+        "femaleV1": "Layers/ArmUnits/universalV1/handGripFingerTriangleV1.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -7,
+          "y": 9,
+          "rotation": -60,
+          "scaleX": 0.6365,
+          "scaleY": 0.6574,
+          "pivotX": 0.98,
+          "pivotY": 0.59
+        },
+        "femaleV1": {
+          "x": -7,
+          "y": 9,
+          "rotation": -60,
+          "scaleX": 0.6365,
+          "scaleY": 0.6574,
+          "pivotX": 0.98,
+          "pivotY": 0.59
+        }
+      },
+      "drawOrder": 17.3,
+      "visible": true,
+      "handState": "closed",
+      "gripFinger": {
+        "along": 30.8456,
+        "across": -50.4184,
+        "angleOffset": 7,
+        "basePivot": {
+          "x": 1,
+          "y": 0.57
+        }
+      },
+      "clipPath": {
+        "type": "bezierPathV1",
+        "closed": true,
+        "nodes": [
+          {
+            "x": 0.0785,
+            "y": 0.7275
+          },
+          {
+            "x": 0.2024,
+            "y": 0.8728
+          },
+          {
+            "x": 0.411,
+            "y": 0.8996,
+            "in": {
+              "x": 0.3423,
+              "y": 0.9063
+            },
+            "out": {
+              "x": 0.4797,
+              "y": 0.8929
+            }
+          },
+          {
+            "x": 0.5636,
+            "y": 0.7995,
+            "in": {
+              "x": 0.5395,
+              "y": 0.8484
+            },
+            "out": {
+              "x": 0.5877,
+              "y": 0.7506
+            }
+          },
+          {
+            "x": 0.778,
+            "y": 0.504
+          },
+          {
+            "x": 0.7702,
+            "y": 0.2249,
+            "in": {
+              "x": 0.8325,
+              "y": 0.3363
+            },
+            "out": {
+              "x": 0.7079,
+              "y": 0.1135
+            }
+          },
+          {
+            "x": 0.6518,
+            "y": 0.1325,
+            "in": {
+              "x": 0.6683,
+              "y": 0.1264
+            },
+            "out": {
+              "x": 0.6353,
+              "y": 0.1386
+            }
+          },
+          {
+            "x": 0.3188,
+            "y": 0.2489,
+            "in": {
+              "x": 0.4594,
+              "y": 0.1545
+            },
+            "out": {
+              "x": 0.1782,
+              "y": 0.3433
+            }
+          },
+          {
+            "x": 0.1372,
+            "y": 0.4064
+          },
+          {
+            "x": 0.0898,
+            "y": 0.5815,
+            "in": {
+              "x": 0.1123,
+              "y": 0.43
+            },
+            "out": {
+              "x": 0.0673,
+              "y": 0.733
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "handClosedLThumb",
+      "group": "Hands",
+      "bone": "handL",
+      "assetByProfile": {
+        "maleV1": "Layers/ArmUnits/universalV1/handGripThumbFrontV2.png",
+        "femaleV1": "Layers/ArmUnits/universalV1/handGripThumbFrontV2.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -7,
+          "y": 9,
+          "rotation": -60,
+          "scaleX": 0.65,
+          "scaleY": 0.65,
+          "pivotX": 1.833,
+          "pivotY": 0.2514
+        },
+        "femaleV1": {
+          "x": -7,
+          "y": 9,
+          "rotation": -60,
+          "scaleX": 0.65,
+          "scaleY": 0.65,
+          "pivotX": 1.833,
+          "pivotY": 0.2514
+        }
+      },
+      "drawOrder": 17.4,
+      "visible": true,
+      "handState": "closed"
+    },
+    {
+      "id": "upperArmArmorL",
+      "group": "Arms",
+      "bone": "upperArmL",
+      "assetByProfile": {
+        "maleV1": "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/upperArmInside.png",
+        "femaleV1": "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/upperArmInside.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": -25,
+          "rotation": -5,
+          "scaleX": -0.45,
+          "scaleY": 0.45,
+          "pivotX": 0.55,
+          "pivotY": 0.16
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": -20,
+          "rotation": -5,
+          "scaleX": -0.45,
+          "scaleY": 0.45,
+          "pivotX": 0.55,
+          "pivotY": 0.16
+        }
+      },
+      "drawOrder": 18,
+      "visible": true
+    },
+    {
+      "id": "forearmVambraceL",
+      "group": "Arms",
+      "bone": "lowerArmL",
+      "assetByProfile": {
+        "maleV1": "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/forearmInside.png",
+        "femaleV1": "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/forearmInside.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 0.3,
+          "rotation": -14,
+          "scaleX": 0.45,
+          "scaleY": 0.45,
+          "pivotX": 0.72,
+          "pivotY": 0.14
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 0.3,
+          "rotation": -12,
+          "scaleX": 0.45,
+          "scaleY": 0.45,
+          "pivotX": 0.72,
+          "pivotY": 0.14
+        }
+      },
+      "drawOrder": 19,
+      "visible": true
+    },
+    {
+      "id": "tunicBody",
+      "group": "Body",
+      "bone": "chest",
+      "assetByProfile": {
+        "maleV1": "Layers/GeneratedMatrix/Body/Shortbow/trail-scout-leathers/maleV1/chestBodyShortSkirtV1.png",
+        "femaleV1": "Layers/GeneratedMatrix/Body/Shortbow/trail-scout-leathers/femaleV1/chestBodyShortSkirtV1.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 5.22,
+          "y": 43.31,
+          "rotation": 0,
+          "scaleX": 0.34,
+          "scaleY": 0.35,
+          "pivotX": 0.5,
+          "pivotY": 0.4165
+        },
+        "femaleV1": {
+          "x": -3.49,
+          "y": 68.3,
+          "rotation": 0,
+          "scaleX": 0.35,
+          "scaleY": 0.35,
+          "pivotX": 0.5,
+          "pivotY": 0.387
+        }
+      },
+      "drawOrder": 40,
+      "visible": true,
+      "fitBones": [
+        "hips",
+        "spine",
+        "chest"
+      ]
+    },
+    {
+      "id": "upperLegR",
+      "group": "Legs",
+      "bone": "upperLegR",
+      "assetByProfile": {
+        "maleV1": "Layers/LowerBody/neutralV1/pantsUpperDarkR.png",
+        "femaleV1": "Layers/LowerBody/neutralV1/pantsUpperDarkR.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0.21,
+          "y": -0.18,
+          "rotation": -2,
+          "scaleX": 1.0458,
+          "scaleY": 0.85,
+          "pivotX": 0.5,
+          "pivotY": 0.05
+        },
+        "femaleV1": {
+          "x": 0.21,
+          "y": -0.18,
+          "rotation": -2,
+          "scaleX": 1.0458,
+          "scaleY": 0.817,
+          "pivotX": 0.5,
+          "pivotY": 0.05
+        }
+      },
+      "drawOrder": 25,
+      "visible": true
+    },
+    {
+      "id": "lowerLegR",
+      "group": "Legs",
+      "bone": "lowerLegR",
+      "assetByProfile": {
+        "maleV1": "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootShaftR.png",
+        "femaleV1": "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootShaftR.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": -0.5803,
+          "scaleY": 0.4205,
+          "pivotX": 0.5,
+          "pivotY": 0.2
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": -0.5803,
+          "scaleY": 0.45,
+          "pivotX": 0.5,
+          "pivotY": 0.2
+        }
+      },
+      "drawOrder": 26,
+      "visible": true
+    },
+    {
+      "id": "footR",
+      "group": "Legs",
+      "bone": "footR",
+      "assetByProfile": {
+        "maleV1": "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootFootR.png",
+        "femaleV1": "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootFootR.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 7.72,
+          "y": 6.96,
+          "rotation": 5,
+          "scaleX": 0.6,
+          "scaleY": 0.3823,
+          "pivotX": 0.7,
+          "pivotY": 0.17
+        },
+        "femaleV1": {
+          "x": 7.72,
+          "y": 6.96,
+          "rotation": 5,
+          "scaleX": 0.6,
+          "scaleY": 0.3823,
+          "pivotX": 0.7,
+          "pivotY": 0.17
+        }
+      },
+      "drawOrder": 24,
+      "visible": true
+    },
+    {
+      "id": "headBase",
+      "group": "Head",
+      "bone": "head",
+      "assetByProfile": {
+        "maleV1": "Layers/Head/standardizedV1/maleV1/headBaseNoNeckV2.png",
+        "femaleV1": "Layers/Head/standardizedV1/femaleV1/headBaseNoNeckV2.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -24.78,
+          "y": -0.66,
+          "rotation": 0,
+          "scaleX": 1.3,
+          "scaleY": 1.4,
+          "pivotX": 0.5,
+          "pivotY": 0.4942
+        },
+        "femaleV1": {
+          "x": -0.2,
+          "y": 0.19,
+          "rotation": 0,
+          "scaleX": 1.3973,
+          "scaleY": 1.3973,
+          "pivotX": 0.5,
+          "pivotY": 0.4942
+        }
+      },
+      "drawOrder": 55,
+      "visible": true
+    },
+    {
+      "id": "eyeL",
+      "group": "Face",
+      "bone": "head",
+      "assetByProfile": {
+        "maleV1": "Layers/Head/standardizedV1/maleV1/eyeL.png",
+        "femaleV1": "Layers/Head/standardizedV1/femaleV1/eyeL.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -113,
+          "y": 7,
+          "rotation": 0,
+          "scaleX": 0.69,
+          "scaleY": 0.66,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        },
+        "femaleV1": {
+          "x": -98.6865,
+          "y": 1.5374,
+          "rotation": 0,
+          "scaleX": 0.58,
+          "scaleY": 0.58,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        }
+      },
+      "drawOrder": 58,
+      "visible": true
+    },
+    {
+      "id": "eyeR",
+      "group": "Face",
+      "bone": "head",
+      "assetByProfile": {
+        "maleV1": "Layers/Head/standardizedV1/maleV1/eyeR.png",
+        "femaleV1": "Layers/Head/standardizedV1/femaleV1/eyeR.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -21,
+          "y": 9,
+          "rotation": 0,
+          "scaleX": 0.63,
+          "scaleY": 0.6,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        },
+        "femaleV1": {
+          "x": -17,
+          "y": 4,
+          "rotation": 0,
+          "scaleX": 0.6,
+          "scaleY": 0.6,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        }
+      },
+      "drawOrder": 59,
+      "visible": true
+    },
+    {
+      "id": "browL",
+      "group": "Face",
+      "bone": "head",
+      "assetByProfile": {
+        "maleV1": "Layers/Head/standardizedV1/maleV1/browL.png",
+        "femaleV1": "Layers/Head/standardizedV1/femaleV1/browL.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -105,
+          "y": -40,
+          "rotation": 0,
+          "scaleX": 0.5,
+          "scaleY": 0.5,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        },
+        "femaleV1": {
+          "x": -104,
+          "y": -40,
+          "rotation": 0,
+          "scaleX": 0.44,
+          "scaleY": 0.44,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        }
+      },
+      "drawOrder": 60,
+      "visible": true
+    },
+    {
+      "id": "browR",
+      "group": "Face",
+      "bone": "head",
+      "assetByProfile": {
+        "maleV1": "Layers/Head/standardizedV1/maleV1/browR.png",
+        "femaleV1": "Layers/Head/standardizedV1/femaleV1/browR.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -15,
+          "y": -44.27,
+          "rotation": 0,
+          "scaleX": 0.5,
+          "scaleY": 0.5,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        },
+        "femaleV1": {
+          "x": -18,
+          "y": -40,
+          "rotation": 0,
+          "scaleX": 0.44,
+          "scaleY": 0.44,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        }
+      },
+      "drawOrder": 61,
+      "visible": true
+    },
+    {
+      "id": "nose",
+      "group": "Face",
+      "bone": "head",
+      "assetByProfile": {
+        "maleV1": "Layers/Head/standardizedV1/maleV1/nose.png",
+        "femaleV1": "Layers/Head/standardizedV1/femaleV1/nose.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -72.9948,
+          "y": 58,
+          "rotation": 0,
+          "scaleX": 0.72,
+          "scaleY": 0.72,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        },
+        "femaleV1": {
+          "x": -68.9948,
+          "y": 42,
+          "rotation": 0,
+          "scaleX": 0.4,
+          "scaleY": 0.4,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        }
+      },
+      "drawOrder": 62,
+      "visible": true
+    },
+    {
+      "id": "mouth",
+      "group": "Face",
+      "bone": "head",
+      "assetByProfile": {
+        "maleV1": "Layers/Head/standardizedV1/maleV1/mouth.png",
+        "femaleV1": "Layers/Head/standardizedV1/femaleV1/mouth.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -60.3694,
+          "y": 92,
+          "rotation": 0,
+          "scaleX": 0.52,
+          "scaleY": 0.52,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        },
+        "femaleV1": {
+          "x": -60.3694,
+          "y": 86,
+          "rotation": 0,
+          "scaleX": 0.52,
+          "scaleY": 0.52,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        }
+      },
+      "drawOrder": 63,
+      "visible": true
+    },
+    {
+      "id": "faceMark",
+      "group": "Face",
+      "bone": "head",
+      "assetByProfile": {
+        "maleV1": "Layers/Head/standardizedV1/maleV1/faceMark.png",
+        "femaleV1": "Layers/Head/standardizedV1/femaleV1/faceMark.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 21.798,
+          "y": 43.3021,
+          "rotation": 0,
+          "scaleX": 0.4812,
+          "scaleY": 0.4812,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        },
+        "femaleV1": {
+          "x": 21.798,
+          "y": 43.3021,
+          "rotation": 0,
+          "scaleX": 0.4812,
+          "scaleY": 0.4812,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        }
+      },
+      "drawOrder": 64,
+      "visible": true
+    },
+    {
+      "id": "hairFront",
+      "group": "Head",
+      "bone": "head",
+      "assetByProfile": {
+        "maleV1": "Layers/Head/standardizedV1/maleV1/hairFront.png",
+        "femaleV1": "Layers/Head/standardizedV1/femaleV1/hairFront.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -35.53,
+          "y": -95.71,
+          "rotation": 0,
+          "scaleX": 1.3,
+          "scaleY": 1.2,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        },
+        "femaleV1": {
+          "x": -32.18,
+          "y": -20.29,
+          "rotation": 0,
+          "scaleX": 1.3943,
+          "scaleY": 1.3943,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        }
+      },
+      "drawOrder": 70,
+      "visible": true
+    },
+    {
+      "id": "handOpenR",
+      "group": "Hands",
+      "bone": "handR",
+      "assetByProfile": {
+        "maleV1": "Layers/ArmUnits/universalV1/handOpenR.png",
+        "femaleV1": "Layers/ArmUnits/universalV1/handOpenR.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -14,
+          "y": -15,
+          "rotation": 6,
+          "scaleX": 0.65,
+          "scaleY": 0.65,
+          "pivotX": 0.5,
+          "pivotY": 0.07
+        },
+        "femaleV1": {
+          "x": -14,
+          "y": -15,
+          "rotation": 6,
+          "scaleX": 0.65,
+          "scaleY": 0.65,
+          "pivotX": 0.5,
+          "pivotY": 0.07
+        }
+      },
+      "drawOrder": 75,
+      "visible": true,
+      "handState": "open",
+      "mesh": {
+        "type": "weightedStripV2",
+        "parentBone": "lowerArmR",
+        "childBone": "handR",
+        "bendStops": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "bendStart": {
+          "x": 0.5,
+          "y": 0
+        },
+        "bendEnd": {
+          "x": 0.5,
+          "y": 0.28
+        }
+      }
+    },
+    {
+      "id": "handClosedR",
+      "group": "Hands",
+      "bone": "handR",
+      "assetByProfile": {
+        "maleV1": "Layers/ArmUnits/universalV1/handClosedDorsalV3.png",
+        "femaleV1": "Layers/ArmUnits/universalV1/handClosedDorsalV3.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -0.27,
+          "y": 0.32,
+          "rotation": 60,
+          "scaleX": 0.6,
+          "scaleY": 0.6,
+          "pivotX": 0.2,
+          "pivotY": 0.08
+        },
+        "femaleV1": {
+          "x": -0.27,
+          "y": 0.32,
+          "rotation": 60,
+          "scaleX": 0.6,
+          "scaleY": 0.6,
+          "pivotX": 0.2,
+          "pivotY": 0.08
+        }
+      },
+      "drawOrder": 75,
+      "visible": true,
+      "handState": "closed",
+      "mesh": {
+        "type": "weightedStripV2",
+        "parentBone": "lowerArmR",
+        "childBone": "handR",
+        "bendStops": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "bendStart": {
+          "x": 0.05,
+          "y": 0.02
+        },
+        "bendEnd": {
+          "x": 0.42,
+          "y": 0.44
+        }
+      }
+    },
+    {
+      "id": "upperArmArmorR",
+      "group": "Arms",
+      "bone": "upperArmR",
+      "assetByProfile": {
+        "maleV1": "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/upperArmOutside.png",
+        "femaleV1": "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/upperArmOutside.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -0.19,
+          "y": -20.06,
+          "rotation": 12,
+          "scaleX": -0.45,
+          "scaleY": 0.45,
+          "pivotX": 0.55,
+          "pivotY": 0.16
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": -25,
+          "rotation": 10,
+          "scaleX": -0.45,
+          "scaleY": 0.48,
+          "pivotX": 0.55,
+          "pivotY": 0.16
+        }
+      },
+      "drawOrder": 76,
+      "visible": true
+    },
+    {
+      "id": "forearmVambraceR",
+      "group": "Arms",
+      "bone": "lowerArmR",
+      "assetByProfile": {
+        "maleV1": "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/forearmOutside.png",
+        "femaleV1": "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/forearmOutside.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0.02,
+          "y": -0.16,
+          "rotation": -16,
+          "scaleX": -0.45,
+          "scaleY": 0.45,
+          "pivotX": 0.28,
+          "pivotY": 0.14
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": -16,
+          "scaleX": -0.45,
+          "scaleY": 0.45,
+          "pivotX": 0.28,
+          "pivotY": 0.14
+        }
+      },
+      "drawOrder": 77,
+      "visible": true
+    },
+    {
+      "id": "headgear",
+      "group": "Headgear",
+      "bone": "head",
+      "assetByProfile": {
+        "maleV1": "Layers/GeneratedMatrix/Headgear/Shortbow/trail-scout-cap.png",
+        "femaleV1": "Layers/GeneratedMatrix/Headgear/Shortbow/trail-scout-cap.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -55,
+          "y": -45,
+          "rotation": 0,
+          "scaleX": 0.4,
+          "scaleY": 0.38,
+          "pivotX": 0.38,
+          "pivotY": 0.56
+        },
+        "femaleV1": {
+          "x": -55,
+          "y": -35,
+          "rotation": 0,
+          "scaleX": 0.4,
+          "scaleY": 0.38,
+          "pivotX": 0.38,
+          "pivotY": 0.56
+        }
+      },
+      "drawOrder": 71,
+      "visible": true
+    },
+    {
+      "id": "quiver",
+      "group": "Equipment",
+      "bone": "chest",
+      "assetByProfile": {
+        "maleV1": "Layers/Equipment/Quivers/normalQuiver.png",
+        "femaleV1": "Layers/Equipment/Quivers/normalQuiver.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 184.162,
+          "y": 43.627,
+          "rotation": 17,
+          "scaleX": 0.41,
+          "scaleY": 0.41,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        },
+        "femaleV1": {
+          "x": 182.292,
+          "y": 29.693,
+          "rotation": 17,
+          "scaleX": 0.41,
+          "scaleY": 0.41,
+          "pivotX": 0.5,
+          "pivotY": 0.5
+        }
+      },
+      "drawOrder": 8,
+      "visible": true
+    },
+    {
+      "id": "weapon",
+      "group": "Equipment",
+      "bone": "handL",
+      "assetByProfile": {
+        "maleV1": "Layers/Equipment/ironLongsword.png",
+        "femaleV1": "Layers/Equipment/ironLongsword.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 90,
+          "rotation": -90,
+          "scaleX": 0.6,
+          "scaleY": 0.8,
+          "pivotX": 0.2153,
+          "pivotY": 0.622
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 90,
+          "rotation": -90,
+          "scaleX": 0.6,
+          "scaleY": 0.8,
+          "pivotX": 0.2153,
+          "pivotY": 0.622
+        }
+      },
+      "drawOrder": 16,
+      "visible": true
+    },
+    {
+      "id": "staff",
+      "group": "Equipment",
+      "bone": "handL",
+      "assetByProfile": {
+        "maleV1": "Layers/Equipment/oakSunStaff.png",
+        "femaleV1": "Layers/Equipment/oakSunStaff.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -41.52,
+          "y": 104.61,
+          "rotation": -90,
+          "scaleX": 0.8,
+          "scaleY": 0.9,
+          "pivotX": 0.486,
+          "pivotY": 0.4394
+        },
+        "femaleV1": {
+          "x": -41.52,
+          "y": 104.61,
+          "rotation": -90,
+          "scaleX": 0.8,
+          "scaleY": 0.9,
+          "pivotX": 0.486,
+          "pivotY": 0.4394
+        }
+      },
+      "drawOrder": 16,
+      "visible": true
+    },
+    {
+      "id": "shield",
+      "group": "Equipment",
+      "bone": "handR",
+      "assetByProfile": {
+        "maleV1": "Layers/Equipment/roundShield.png",
+        "femaleV1": "Layers/Equipment/roundShield.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -0.83,
+          "y": -29.99,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "pivotX": 0.7376,
+          "pivotY": 0.5702
+        },
+        "femaleV1": {
+          "x": -0.83,
+          "y": -29.99,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "pivotX": 0.7376,
+          "pivotY": 0.5702
+        }
+      },
+      "drawOrder": 78,
+      "visible": true
+    },
+    {
+      "id": "bow",
+      "group": "Equipment",
+      "bone": "handL",
+      "assetByProfile": {
+        "maleV1": "Layers/Equipment/simpleWoodenBow.png",
+        "femaleV1": "Layers/Equipment/simpleWoodenBow.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 90,
+          "rotation": -90,
+          "scaleX": 0.6,
+          "scaleY": 0.8,
+          "pivotX": 0.2153,
+          "pivotY": 0.622
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 90,
+          "rotation": -90,
+          "scaleX": 0.6,
+          "scaleY": 0.8,
+          "pivotX": 0.2153,
+          "pivotY": 0.622
+        }
+      },
+      "drawOrder": 16,
+      "visible": true
+    },
+    {
+      "id": "necklace",
+      "group": "Accessories",
+      "bone": "necklace",
+      "assetByProfile": {
+        "maleV1": "Layers/Accessories/Necklaces/simple-pendant.png",
+        "femaleV1": "Layers/Accessories/Necklaces/simple-pendant.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 5,
+          "rotation": 0,
+          "scaleX": 0.12,
+          "scaleY": 0.12,
+          "pivotX": 0.505,
+          "pivotY": 0.175
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 40,
+          "rotation": 5,
+          "scaleX": 0.12,
+          "scaleY": 0.12,
+          "pivotX": 0.5426,
+          "pivotY": 0.0728
+        }
+      },
+      "drawOrder": 45,
+      "visible": true,
+      "fitBones": [
+        "necklaceAnchorL",
+        "necklaceAnchorR"
+      ]
+    },
+    {
+      "id": "ring",
+      "group": "Accessories",
+      "bone": "handR",
+      "assetByProfile": {
+        "maleV1": "Layers/Accessories/Rings/veilstepRing.png",
+        "femaleV1": "Layers/Accessories/Rings/veilstepRing.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 0.0295,
+          "scaleY": 0.0295,
+          "pivotX": 0.4972,
+          "pivotY": 0.49
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 0.0295,
+          "scaleY": 0.0295,
+          "pivotX": 0.4972,
+          "pivotY": 0.49
+        }
+      },
+      "drawOrder": 80,
+      "visible": true
+    }
+  ],
+  "weaponOptions": [
+    {
+      "id": "ironLongsword",
+      "label": "Arming Sword",
+      "assetByProfile": {
+        "maleV1": "Layers/Equipment/ironLongsword.png",
+        "femaleV1": "Layers/Equipment/ironLongsword.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 40,
+          "y": 90,
+          "rotation": -90,
+          "scaleX": 0.6,
+          "scaleY": 0.8,
+          "pivotX": 0.2153,
+          "pivotY": 0.622
+        },
+        "femaleV1": {
+          "x": 40,
+          "y": 90,
+          "rotation": -90,
+          "scaleX": 0.6,
+          "scaleY": 0.8,
+          "pivotX": 0.2153,
+          "pivotY": 0.622
+        }
+      },
+      "fitted": true,
+      "itemID": "arming_sword"
+    },
+    {
+      "id": "raiderBeardedAxe",
+      "label": "Bearded Axe",
+      "assetByProfile": {
+        "maleV1": "Layers/Equipment/raiderBeardedAxe.png",
+        "femaleV1": "Layers/Equipment/raiderBeardedAxe.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 90,
+          "rotation": -90,
+          "scaleX": 1,
+          "scaleY": 0.8,
+          "pivotX": 0.2153,
+          "pivotY": 0.622
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 90,
+          "rotation": -90,
+          "scaleX": 1,
+          "scaleY": 0.8,
+          "pivotX": 0.2153,
+          "pivotY": 0.622
+        }
+      },
+      "fitted": true,
+      "itemID": "raider_bearded_axe"
+    }
+  ],
+  "activeWeapon": "ironLongsword",
+  "staffOptions": [
+    {
+      "id": "oakSunStaff",
+      "label": "Oak Staff",
+      "assetByProfile": {
+        "maleV1": "Layers/Equipment/oakSunStaff.png",
+        "femaleV1": "Layers/Equipment/oakSunStaff.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 29,
+          "y": -180,
+          "rotation": -90,
+          "scaleX": 0.8,
+          "scaleY": 0.9,
+          "pivotX": 0.486,
+          "pivotY": 0.4394
+        },
+        "femaleV1": {
+          "x": 29,
+          "y": -180,
+          "rotation": -90,
+          "scaleX": 0.8,
+          "scaleY": 0.9,
+          "pivotX": 0.486,
+          "pivotY": 0.4394
+        }
+      },
+      "fitted": true,
+      "itemID": "oak_sun_staff"
+    }
+  ],
+  "activeStaff": "oakSunStaff",
+  "bowOptions": [
+    {
+      "id": "simpleWoodenBow",
+      "label": "Hunting Bow",
+      "assetByProfile": {
+        "maleV1": "Layers/Equipment/simpleWoodenBow.png",
+        "femaleV1": "Layers/Equipment/simpleWoodenBow.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -9,
+          "y": 80,
+          "rotation": -90,
+          "scaleX": 1.01,
+          "scaleY": 1.09,
+          "pivotX": 0.2153,
+          "pivotY": 0.622
+        },
+        "femaleV1": {
+          "x": -9,
+          "y": 80,
+          "rotation": -90,
+          "scaleX": 1.01,
+          "scaleY": 1.09,
+          "pivotX": 0.2153,
+          "pivotY": 0.622
+        }
+      },
+      "fitted": true,
+      "itemID": "simple_wooden_bow"
+    }
+  ],
+  "activeBow": "simpleWoodenBow",
+  "shieldOptions": [
+    {
+      "id": "roundShield",
+      "label": "Round Shield",
+      "assetByProfile": {
+        "maleV1": "Layers/Equipment/roundShield.png",
+        "femaleV1": "Layers/Equipment/roundShield.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": -25,
+          "y": 17,
+          "rotation": -90,
+          "scaleX": 1.2,
+          "scaleY": 1.2,
+          "pivotX": 0.7376,
+          "pivotY": 0.5702
+        },
+        "femaleV1": {
+          "x": -25,
+          "y": 17,
+          "rotation": -90,
+          "scaleX": 1.2,
+          "scaleY": 1.2,
+          "pivotX": 0.7376,
+          "pivotY": 0.5702
+        }
+      },
+      "fitted": true,
+      "itemID": "round_shield"
+    }
+  ],
+  "activeShield": "roundShield",
+  "necklaceOptions": [
+    {
+      "id": "simplePendant",
+      "label": "Simple Pendant",
+      "assetByProfile": {
+        "maleV1": "Layers/Accessories/Necklaces/simple-pendant.png",
+        "femaleV1": "Layers/Accessories/Necklaces/simple-pendant.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 0.2,
+          "scaleY": 0.2,
+          "pivotX": 0.505,
+          "pivotY": 0.175
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 44,
+          "rotation": 0,
+          "scaleX": 0.15,
+          "scaleY": 0.15,
+          "pivotX": 0.505,
+          "pivotY": 0.175
+        }
+      },
+      "fitted": true,
+      "itemID": "simple_pendant"
+    }
+  ],
+  "activeNecklace": "simplePendant",
+  "ringOptions": [
+    {
+      "id": "veilstepRing",
+      "label": "Simple Ring",
+      "assetByProfile": {
+        "maleV1": "Layers/Accessories/Rings/veilstepRing.png",
+        "femaleV1": "Layers/Accessories/Rings/veilstepRing.png"
+      },
+      "bindByProfile": {
+        "maleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 0.0295,
+          "scaleY": 0.0295,
+          "pivotX": 0.4972,
+          "pivotY": 0.49
+        },
+        "femaleV1": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 0.0295,
+          "scaleY": 0.0295,
+          "pivotX": 0.4972,
+          "pivotY": 0.49
+        }
+      },
+      "fitted": true,
+      "itemID": "veilstep_ring"
+    }
+  ],
+  "activeRing": "veilstepRing"
+}

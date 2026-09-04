@@ -1,0 +1,89 @@
+{
+  "format": "modular-character-studio-facial-expression-assets-v1",
+  "sourceLayout": {
+    "columns": 4,
+    "rows": 4,
+    "builder": "asset-pipeline"
+  },
+  "profiles": {
+    "maleV1": {
+      "faceMask": "Layers/Head/maleV1/faceFeatureMaskV1.png",
+      "eyes": {
+        "neutral": {
+          "left": "Layers/Head/maleV1/Expressions/eyeLFocusedV1.png",
+          "right": "Layers/Head/maleV1/Expressions/eyeRFocusedV1.png"
+        },
+        "blink": {
+          "left": "Layers/Head/maleV1/Expressions/eyeLBlinkV1.png",
+          "right": "Layers/Head/maleV1/Expressions/eyeRBlinkV1.png"
+        },
+        "wide": {
+          "left": "Layers/Head/maleV1/Expressions/eyeLWideV1.png",
+          "right": "Layers/Head/maleV1/Expressions/eyeRWideV1.png"
+        },
+        "focused": {
+          "left": "Layers/Head/maleV1/Expressions/eyeLFocusedV1.png",
+          "right": "Layers/Head/maleV1/Expressions/eyeRFocusedV1.png"
+        },
+        "wince": {
+          "left": "Layers/Head/maleV1/Expressions/eyeLWinceV1.png",
+          "right": "Layers/Head/maleV1/Expressions/eyeRWinceV1.png"
+        }
+      },
+      "mouths": {
+        "smile": "Layers/Head/maleV1/Expressions/mouthSmileV1.png",
+        "smirk": "Layers/Head/maleV1/Expressions/mouthSmirkV1.png",
+        "shout": "Layers/Head/maleV1/Expressions/mouthShoutV1.png",
+        "surprised": "Layers/Head/maleV1/Expressions/mouthSurprisedV1.png",
+        "frown": "Layers/Head/maleV1/Expressions/mouthFrownV1.png",
+        "pain": "Layers/Head/maleV1/Expressions/mouthPainV1.png",
+        "grit": "Layers/Head/maleV1/Expressions/mouthGritV1.png",
+        "talk": "Layers/Head/maleV1/Expressions/mouthTalkV1.png"
+      }
+    },
+    "femaleV1": {
+      "faceMask": "Layers/Head/femaleV1/faceFeatureMaskV1.png",
+      "eyes": {
+        "neutral": {
+          "left": "Layers/Head/standardizedV1/femaleV1/eyeL.png",
+          "right": "Layers/Head/standardizedV1/femaleV1/eyeR.png"
+        },
+        "blink": {
+          "left": "Layers/Head/femaleV1/Expressions/eyeLBlinkV1.png",
+          "right": "Layers/Head/femaleV1/Expressions/eyeRBlinkV1.png"
+        },
+        "wide": {
+          "left": "Layers/Head/femaleV1/Expressions/eyeLWideV1.png",
+          "right": "Layers/Head/femaleV1/Expressions/eyeRWideV1.png"
+        },
+        "focused": {
+          "left": "Layers/Head/femaleV1/Expressions/eyeLFocusedV1.png",
+          "right": "Layers/Head/femaleV1/Expressions/eyeRFocusedV1.png"
+        },
+        "wince": {
+          "left": "Layers/Head/femaleV1/Expressions/eyeLWinceV1.png",
+          "right": "Layers/Head/femaleV1/Expressions/eyeRWinceV1.png"
+        }
+      },
+      "mouths": {
+        "smile": "Layers/Head/femaleV1/Expressions/mouthSmileV1.png",
+        "smirk": "Layers/Head/femaleV1/Expressions/mouthSmirkV1.png",
+        "shout": "Layers/Head/femaleV1/Expressions/mouthShoutV1.png",
+        "surprised": "Layers/Head/femaleV1/Expressions/mouthSurprisedV1.png",
+        "frown": "Layers/Head/femaleV1/Expressions/mouthFrownV1.png",
+        "pain": "Layers/Head/femaleV1/Expressions/mouthPainV1.png",
+        "grit": "Layers/Head/femaleV1/Expressions/mouthGritV1.png",
+        "talk": "Layers/Head/femaleV1/Expressions/mouthTalkV1.png"
+      }
+    }
+  },
+  "browAnimation": {
+    "assets": "existing browL and browR attachments",
+    "keyframeChannels": [
+      "offsetX",
+      "offsetY",
+      "rotation"
+    ]
+  },
+  "status": "assetsReadyEditorKeyframesPending"
+}

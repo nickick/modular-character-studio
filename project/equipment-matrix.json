@@ -1,0 +1,47 @@
+{
+  "format": "modular-character-studio-equipment-matrix-v1",
+  "applicability": {
+    "weapon": [
+      "utility"
+    ],
+    "staff": [
+      "utility"
+    ],
+    "bow": [
+      "utility"
+    ],
+    "shield": [
+      "utility"
+    ],
+    "necklace": [
+      "utility"
+    ],
+    "quiver": [
+      "utility"
+    ],
+    "ring": [
+      "utility"
+    ],
+    "tunicBody": [
+      "leather",
+      "mage",
+      "metal"
+    ],
+    "headgear": [
+      "leather",
+      "mage",
+      "metal"
+    ],
+    "boots": [
+      "leather",
+      "mage",
+      "metal"
+    ],
+    "arms": [
+      "leather",
+      "mage",
+      "metal"
+    ]
+  },
+  "items": []
+}
