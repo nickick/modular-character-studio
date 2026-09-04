@@ -1,6 +1,7 @@
 import { access, readFile, stat } from 'node:fs/promises'
 import { resolve, sep } from 'node:path'
 import { validateModularCharacterScene } from '../public/studio/rig/schema.mjs'
+import { analyzeAlpha, decodePngAlpha, remoteAlphaComponents } from './png-alpha.mjs'
 
 const projectRoot = resolve(process.env.MCS_PROJECT_ROOT ?? resolve(process.cwd(), 'project'))
 const scene = validateModularCharacterScene(
@@ -28,6 +29,8 @@ for (const relative of referenced) {
   if (path !== root && !path.startsWith(`${root}${sep}`)) throw new Error(`Unsafe asset path: ${relative}`)
   await access(path)
   if (!(await stat(path)).isFile()) throw new Error(`Not a file: ${relative}`)
+  const alpha = analyzeAlpha(decodePngAlpha(await readFile(path)))
+  if (remoteAlphaComponents(alpha).length) throw new Error(`Remote alpha fragment: ${relative}`)
 }
 
 if (!Array.isArray(catalog.items) || catalog.items.length < 1) throw new Error('Catalog is empty')

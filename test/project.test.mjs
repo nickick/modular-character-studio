@@ -8,6 +8,7 @@ import {
   layerMatchesAnimationPreview,
   resolveProfile,
 } from '../public/studio/rig/rig-model.mjs'
+import { analyzeAlpha, decodePngAlpha } from '../scripts/png-alpha.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const scene = validateModularCharacterScene(
@@ -95,4 +96,21 @@ test('bow animations never preview staff, weapon, or shield layers', () => {
       assert.deepEqual(visible, ['bow'], `${animation} leaked ${selectedLayerID}`)
     }
   }
+})
+
+test('corrected bundled PNGs retain complete and clean alpha bounds', async () => {
+  const inspect = async (relative) => analyzeAlpha(decodePngAlpha(
+    await readFile(resolve(root, 'project/assets', relative)),
+  ))
+
+  const forearm = await inspect(
+    'Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/forearmInside.png',
+  )
+  assert.deepEqual(forearm.bounds, [8, 17, 230, 425])
+
+  const quiver = await inspect('Layers/Equipment/Quivers/normalQuiver.png')
+  assert.deepEqual(quiver.bounds, [442, 71, 815, 1251])
+
+  const blank = decodePngAlpha(await readFile(resolve(root, 'project/assets/reference/blank.png')))
+  assert.deepEqual([blank.width, blank.height, ...blank.alpha], [1, 1, 0])
 })
