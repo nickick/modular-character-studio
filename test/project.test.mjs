@@ -26,6 +26,7 @@ test('demo catalogue contains the requested armor and held-item families', () =>
   const names = new Set(catalog.items.map((item) => item.name))
   for (const name of [
     'Scout Leathers', 'Arcane Robes', 'Vanguard Plate',
+    'Cutthroat Hood',
     'Arming Sword', 'Bearded Axe', 'Oak Staff', 'Hunting Bow', 'Round Shield',
   ]) assert.ok(names.has(name), `missing ${name}`)
 })

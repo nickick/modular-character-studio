@@ -673,39 +673,39 @@
       "itemID": "iron_guard_boots"
     }
   ],
-  "activeHeadgear": "scout_hood",
+  "activeHeadgear": "cutthroat_hood",
   "headgearOptions": [
     {
-      "id": "scout_hood",
-      "label": "Scout Hood",
+      "id": "cutthroat_hood",
+      "label": "Cutthroat Hood",
       "assetByProfile": {
-        "maleV1": "Layers/GeneratedMatrix/Headgear/Shortbow/trail-scout-cap.png",
-        "femaleV1": "Layers/GeneratedMatrix/Headgear/Shortbow/trail-scout-cap.png"
+        "maleV1": "Layers/Headgear/cutthroat-hood.png",
+        "femaleV1": "Layers/Headgear/cutthroat-hood.png"
       },
       "bindByProfile": {
         "maleV1": {
-          "x": -55,
-          "y": -45,
+          "x": -54.35,
+          "y": 35.92,
           "rotation": 0,
-          "scaleX": 0.4,
-          "scaleY": 0.38,
+          "scaleX": 0.45,
+          "scaleY": 0.61,
           "pivotX": 0.38,
           "pivotY": 0.56
         },
         "femaleV1": {
-          "x": -44,
-          "y": -35,
+          "x": -39.11,
+          "y": 32.07,
           "rotation": 0,
-          "scaleX": 0.4,
-          "scaleY": 0.38,
+          "scaleX": 0.45,
+          "scaleY": 0.55,
           "pivotX": 0.38,
           "pivotY": 0.56
         }
       },
-      "line": "shortbow",
+      "line": "leather",
       "tier": "common",
       "fitted": true,
-      "itemID": "scout_hood"
+      "itemID": "cutthroat_hood"
     },
     {
       "id": "arcane_circlet",
@@ -4552,25 +4552,25 @@
       "group": "Headgear",
       "bone": "head",
       "assetByProfile": {
-        "maleV1": "Layers/GeneratedMatrix/Headgear/Shortbow/trail-scout-cap.png",
-        "femaleV1": "Layers/GeneratedMatrix/Headgear/Shortbow/trail-scout-cap.png"
+        "maleV1": "Layers/Headgear/cutthroat-hood.png",
+        "femaleV1": "Layers/Headgear/cutthroat-hood.png"
       },
       "bindByProfile": {
         "maleV1": {
-          "x": -55,
-          "y": -45,
+          "x": -54.35,
+          "y": 35.92,
           "rotation": 0,
-          "scaleX": 0.4,
-          "scaleY": 0.38,
+          "scaleX": 0.45,
+          "scaleY": 0.61,
           "pivotX": 0.38,
           "pivotY": 0.56
         },
         "femaleV1": {
-          "x": -55,
-          "y": -35,
+          "x": -39.11,
+          "y": 32.07,
           "rotation": 0,
-          "scaleX": 0.4,
-          "scaleY": 0.38,
+          "scaleX": 0.45,
+          "scaleY": 0.55,
           "pivotX": 0.38,
           "pivotY": 0.56
         }

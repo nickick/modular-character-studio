@@ -102,8 +102,8 @@
       "inventoryArt": false
     },
     {
-      "id": "scout_hood",
-      "name": "Scout Hood",
+      "id": "cutthroat_hood",
+      "name": "Cutthroat Hood",
       "kind": "equipment",
       "slot": "head",
       "editorSlot": "headgear",
