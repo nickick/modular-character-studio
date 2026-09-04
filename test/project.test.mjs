@@ -3,7 +3,11 @@ import { access, readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { resolve } from 'node:path'
 import { validateModularCharacterScene } from '../public/studio/rig/schema.mjs'
-import { resolveProfile } from '../public/studio/rig/rig-model.mjs'
+import {
+  animationNames,
+  layerMatchesAnimationPreview,
+  resolveProfile,
+} from '../public/studio/rig/rig-model.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const scene = validateModularCharacterScene(
@@ -74,6 +78,21 @@ test('prompt records map to visible bundled outputs', async () => {
         promptGallery.includes(`../project/assets/${output}`),
         `${output} is absent from the rendered gallery`,
       )
+    }
+  }
+})
+
+test('bow animations never preview staff, weapon, or shield layers', () => {
+  const equipment = ['weapon', 'staff', 'shield', 'bow']
+  const bowAnimations = animationNames.filter((name) => name.startsWith('bow'))
+  assert.deepEqual(bowAnimations, ['bowDraw', 'bowMoveForward', 'bowMoveBackward'])
+
+  for (const animation of bowAnimations) {
+    for (const selectedLayerID of equipment) {
+      const visible = equipment.filter((id) => (
+        layerMatchesAnimationPreview({ id }, animation, selectedLayerID)
+      ))
+      assert.deepEqual(visible, ['bow'], `${animation} leaked ${selectedLayerID}`)
     }
   }
 })

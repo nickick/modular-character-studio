@@ -3,6 +3,7 @@ import {
   animationHandPose,
   handPoseNames,
   layerMatchesAnimationEquipment as layerDrawsUnderAnimation,
+  layerMatchesAnimationPreview as layerDrawsInEditor,
   layerMatchesHandPose as layerDrawsUnderHandPose,
   animationNames,
   animationPose,
@@ -1807,8 +1808,8 @@ import { enhanceNumericControls, syncNumericControls } from "./numeric-control.m
   function layerMatchesAnimationEquipment(layer) {
     // The layer being edited always draws. A staff ships only in its own idle,
     // but placing it means judging the grip against a turn, a run and a lunge.
-    return layer.id === state.selectedLayer
-      || layerDrawsUnderAnimation(layer, state.animation);
+    // Bow clips are the exception: their preview is an exclusive bow loadout.
+    return layerDrawsInEditor(layer, state.animation, state.selectedLayer);
   }
 
   function layerMatchesPresentation(layer) {

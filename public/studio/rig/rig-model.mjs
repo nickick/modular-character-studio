@@ -1045,6 +1045,18 @@ export function layerMatchesAnimationEquipment(layer, animation) {
   return (animationEquipment[animation] ?? []).includes(layer.id);
 }
 
+/**
+ * The editor normally keeps a selected equipment layer visible outside its
+ * authored clips so its placement can be reviewed. Bow clips are deliberately
+ * strict: selecting a sword, staff, or shield must never leak it into a ranged
+ * preview beside the bow.
+ */
+export function layerMatchesAnimationPreview(layer, animation, selectedLayerID = null) {
+  const belongsToClip = layerMatchesAnimationEquipment(layer, animation);
+  if (String(animation).startsWith("bow")) return belongsToClip;
+  return layer.id === selectedLayerID || belongsToClip;
+}
+
 const TAU = Math.PI * 2;
 const clamp01 = (value) => Math.max(0, Math.min(1, value));
 const cycle = (phase, offset = 0) => Math.sin((phase + offset) * TAU);
