@@ -31,6 +31,12 @@ test('bundled scene carries the public project format', () => {
 
 test('bundled boots deform both sides of both ankles through coordinated cages', () => {
   const byID = Object.fromEntries(scene.layers.map((layer) => [layer.id, layer]))
+  const authoredMeshes = {
+    lowerLegL: { parentBone: 'lowerLegL', childBone: 'footL', bendStart: { x: 0.4848, y: 0.6561 }, bendEnd: { x: 0.4206, y: 0.9683 } },
+    footL: { parentBone: 'lowerLegL', childBone: 'footL', bendStart: { x: 0.7, y: 0.02 }, bendEnd: { x: 0.7, y: 0.2 } },
+    lowerLegR: { parentBone: 'lowerLegR', childBone: 'footR', bendStart: { x: 0.5997, y: 0.4226 }, bendEnd: { x: 0.5, y: 0.98 } },
+    footR: { parentBone: 'lowerLegR', childBone: 'footR', bendStart: { x: 0.6641, y: 0.1736 }, bendEnd: { x: 0.7164, y: 0.3781 } },
+  }
   assert.deepEqual(
     scene.layers.filter((layer) => layer.mesh).map((layer) => layer.id),
     [
@@ -48,6 +54,17 @@ test('bundled boots deform both sides of both ankles through coordinated cages',
     assert.equal(overlap.mesh.childBone, `foot${side}`)
   }
 
+  for (const [layerID, expected] of Object.entries(authoredMeshes)) {
+    assert.deepEqual(byID[layerID].mesh, {
+      type: 'weightedStripV2',
+      parentBone: expected.parentBone,
+      childBone: expected.childBone,
+      bendStops: [0, 0.25, 0.5, 0.75, 1],
+      bendStart: expected.bendStart,
+      bendEnd: expected.bendEnd,
+    })
+  }
+
   for (const option of scene.bootOptions) {
     for (const profile of ['maleV1', 'femaleV1']) {
       const resolved = Object.fromEntries(resolveProfile(
@@ -60,6 +77,42 @@ test('bundled boots deform both sides of both ankles through coordinated cages',
       ).layers.map((layer) => [layer.id, layer]))
       for (const id of ['lowerLegL', 'footL', 'lowerLegR', 'footR']) {
         assert.strictEqual(resolved[id].mesh, byID[id].mesh, `${option.id} reuses ${id}'s ankle cage`)
+      }
+    }
+  }
+})
+
+test('bundled boots preserve their authored segment placements for both profiles', () => {
+  const fields = ['x', 'y', 'rotation', 'scaleX', 'scaleY', 'pivotX', 'pivotY']
+  const expected = {
+    leather_boots: {
+      lowerLegL: [0, 0, 0, 0.5771, 0.48, 0.5, 0.2],
+      footL: [-3.76, -3.5, 0, 0.6, 0.425, 0.7, 0.17],
+      lowerLegR: [0.02, -0.29, -3, 0.5771, 0.54, 0.5, 0.2],
+      footR: [4, 1, 12, 0.66, 0.53, 0.7, 0.17],
+    },
+    frostweaveV1: {
+      lowerLegL: [0, -2, 0, 0.5771, 0.5, 0.5, 0.2],
+      footL: [-3.76, 1.78, 0, 0.6, 0.3915, 0.7, 0.17],
+      lowerLegR: [0, 0, 0, 0.59, 0.55, 0.5, 0.2],
+      footR: [-3, 6.96, 5, 0.74, 0.5, 0.7, 0.17],
+    },
+    ironGuardV1: {
+      lowerLegL: [0, -8, 0, 0.5771, 0.5, 0.5, 0.2],
+      footL: [-3.76, 1.78, 0, 0.6, 0.3915, 0.7, 0.17],
+      lowerLegR: [0, 0, 0, 0.5771, 0.4973, 0.5, 0.2],
+      footR: [-3, 6.96, 5, 0.74, 0.5, 0.7, 0.17],
+    },
+  }
+
+  for (const option of scene.bootOptions) {
+    for (const [layerID, values] of Object.entries(expected[option.id])) {
+      for (const profile of ['maleV1', 'femaleV1']) {
+        assert.deepEqual(
+          fields.map((field) => option.bindByLayer[layerID][profile][field]),
+          values,
+          `${option.id} ${layerID} ${profile}`,
+        )
       }
     }
   }

@@ -420,19 +420,19 @@
         "footL": {
           "maleV1": {
             "x": -3.76,
-            "y": 1.78,
+            "y": -3.5,
             "rotation": 0,
             "scaleX": 0.6,
-            "scaleY": 0.3915,
+            "scaleY": 0.425,
             "pivotX": 0.7,
             "pivotY": 0.17
           },
           "femaleV1": {
             "x": -3.76,
-            "y": 1.78,
+            "y": -3.5,
             "rotation": 0,
             "scaleX": 0.6,
-            "scaleY": 0.3915,
+            "scaleY": 0.425,
             "pivotX": 0.7,
             "pivotY": 0.17
           }
@@ -443,7 +443,7 @@
             "y": -0.29,
             "rotation": -3,
             "scaleX": 0.5771,
-            "scaleY": 0.52,
+            "scaleY": 0.54,
             "pivotX": 0.5,
             "pivotY": 0.2
           },
@@ -452,7 +452,7 @@
             "y": -0.29,
             "rotation": -3,
             "scaleX": 0.5771,
-            "scaleY": 0.52,
+            "scaleY": 0.54,
             "pivotX": 0.5,
             "pivotY": 0.2
           }
@@ -460,19 +460,19 @@
         "footR": {
           "maleV1": {
             "x": 4,
-            "y": 4,
+            "y": 1,
             "rotation": 12,
             "scaleX": 0.66,
-            "scaleY": 0.5,
+            "scaleY": 0.53,
             "pivotX": 0.7,
             "pivotY": 0.17
           },
           "femaleV1": {
             "x": 4,
-            "y": 4,
+            "y": 1,
             "rotation": 12,
             "scaleX": 0.66,
-            "scaleY": 0.5,
+            "scaleY": 0.53,
             "pivotX": 0.7,
             "pivotY": 0.17
           }
@@ -590,7 +590,7 @@
         "lowerLegL": {
           "maleV1": {
             "x": 0,
-            "y": 0,
+            "y": -8,
             "rotation": 0,
             "scaleX": 0.5771,
             "scaleY": 0.5,
@@ -599,7 +599,7 @@
           },
           "femaleV1": {
             "x": 0,
-            "y": 0,
+            "y": -8,
             "rotation": 0,
             "scaleX": 0.5771,
             "scaleY": 0.5,
@@ -632,8 +632,8 @@
             "x": 0,
             "y": 0,
             "rotation": 0,
-            "scaleX": 0.59,
-            "scaleY": 0.55,
+            "scaleX": 0.5771,
+            "scaleY": 0.4973,
             "pivotX": 0.5,
             "pivotY": 0.2
           },
@@ -641,8 +641,8 @@
             "x": 0,
             "y": 0,
             "rotation": 0,
-            "scaleX": 0.59,
-            "scaleY": 0.55,
+            "scaleX": 0.5771,
+            "scaleY": 0.4973,
             "pivotX": 0.5,
             "pivotY": 0.2
           }
