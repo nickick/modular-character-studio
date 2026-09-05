@@ -115,81 +115,81 @@
         "upperArmArmorL": {
           "maleV1": {
             "x": 0,
-            "y": -25,
-            "rotation": -5,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.55,
+            "y": -20,
+            "rotation": -12.2347,
+            "scaleX": -0.4873,
+            "scaleY": 0.5756,
+            "pivotX": 0.3992,
             "pivotY": 0.16
           },
           "femaleV1": {
             "x": 0,
             "y": -20,
-            "rotation": -5,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.55,
+            "rotation": -13.046,
+            "scaleX": -0.4873,
+            "scaleY": 0.5394,
+            "pivotX": 0.3992,
             "pivotY": 0.16
           }
         },
         "forearmVambraceL": {
           "maleV1": {
             "x": 0,
-            "y": 0.3,
-            "rotation": -14,
-            "scaleX": 0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.72,
-            "pivotY": 0.14
+            "y": 0,
+            "rotation": -15.2872,
+            "scaleX": 0.4421,
+            "scaleY": 0.4185,
+            "pivotX": 0.6685,
+            "pivotY": 0.18
           },
           "femaleV1": {
             "x": 0,
-            "y": 0.3,
-            "rotation": -14,
-            "scaleX": 0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.72,
-            "pivotY": 0.14
+            "y": 0,
+            "rotation": -15.2872,
+            "scaleX": 0.4421,
+            "scaleY": 0.4185,
+            "pivotX": 0.6685,
+            "pivotY": 0.18
           }
         },
         "upperArmArmorR": {
           "maleV1": {
-            "x": -0.19,
-            "y": -20.06,
-            "rotation": 12,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.55,
+            "x": 0,
+            "y": -20,
+            "rotation": 6.6436,
+            "scaleX": -0.4936,
+            "scaleY": 0.583,
+            "pivotX": 0.5353,
             "pivotY": 0.16
           },
           "femaleV1": {
             "x": 0,
-            "y": -25,
-            "rotation": 12,
-            "scaleX": -0.45,
-            "scaleY": 0.44,
-            "pivotX": 0.55,
+            "y": -20,
+            "rotation": 6.2512,
+            "scaleX": -0.4936,
+            "scaleY": 0.62,
+            "pivotX": 0.5353,
             "pivotY": 0.16
           }
         },
         "forearmVambraceR": {
           "maleV1": {
-            "x": 0.02,
-            "y": -0.16,
-            "rotation": -16,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.28,
-            "pivotY": 0.14
+            "x": 0,
+            "y": 0,
+            "rotation": -14.9743,
+            "scaleX": -0.4698,
+            "scaleY": 0.4684,
+            "pivotX": 0.3109,
+            "pivotY": 0.18
           },
           "femaleV1": {
             "x": 0,
             "y": 0,
-            "rotation": -16,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.28,
-            "pivotY": 0.14
+            "rotation": -14.9743,
+            "scaleX": -0.4698,
+            "scaleY": 0.4684,
+            "pivotX": 0.3109,
+            "pivotY": 0.18
           }
         }
       },
@@ -210,81 +210,81 @@
         "upperArmArmorL": {
           "maleV1": {
             "x": 0,
-            "y": -25,
-            "rotation": -5,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.55,
+            "y": -20,
+            "rotation": -7.6132,
+            "scaleX": -0.4084,
+            "scaleY": 0.5312,
+            "pivotX": 0.4704,
             "pivotY": 0.16
           },
           "femaleV1": {
             "x": 0,
             "y": -20,
-            "rotation": -5,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.55,
+            "rotation": -8.1171,
+            "scaleX": -0.4084,
+            "scaleY": 0.4983,
+            "pivotX": 0.4704,
             "pivotY": 0.16
           }
         },
         "forearmVambraceL": {
           "maleV1": {
             "x": 0,
-            "y": 0.3,
-            "rotation": -12,
-            "scaleX": 0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.72,
-            "pivotY": 0.14
+            "y": 0,
+            "rotation": -8.245,
+            "scaleX": 0.3718,
+            "scaleY": 0.3971,
+            "pivotX": 0.5736,
+            "pivotY": 0.18
           },
           "femaleV1": {
             "x": 0,
-            "y": 0.3,
-            "rotation": -12,
-            "scaleX": 0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.72,
-            "pivotY": 0.14
+            "y": 0,
+            "rotation": -8.245,
+            "scaleX": 0.3718,
+            "scaleY": 0.3971,
+            "pivotX": 0.5736,
+            "pivotY": 0.18
           }
         },
         "upperArmArmorR": {
           "maleV1": {
-            "x": -0.19,
-            "y": -20.06,
-            "rotation": 12,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.55,
+            "x": 0,
+            "y": -20,
+            "rotation": 5.3533,
+            "scaleX": -0.4205,
+            "scaleY": 0.5364,
+            "pivotX": 0.5589,
             "pivotY": 0.16
           },
           "femaleV1": {
             "x": 0,
-            "y": -25,
-            "rotation": 12,
-            "scaleX": -0.45,
-            "scaleY": 0.44,
-            "pivotX": 0.55,
+            "y": -20,
+            "rotation": 5.0376,
+            "scaleX": -0.4205,
+            "scaleY": 0.5702,
+            "pivotX": 0.5589,
             "pivotY": 0.16
           }
         },
         "forearmVambraceR": {
           "maleV1": {
-            "x": 0.02,
-            "y": -0.16,
-            "rotation": -16,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.28,
-            "pivotY": 0.14
+            "x": 0,
+            "y": 0,
+            "rotation": -6.0772,
+            "scaleX": -0.3643,
+            "scaleY": 0.4403,
+            "pivotX": 0.4421,
+            "pivotY": 0.18
           },
           "femaleV1": {
             "x": 0,
             "y": 0,
-            "rotation": -16,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.28,
-            "pivotY": 0.14
+            "rotation": -6.0772,
+            "scaleX": -0.3643,
+            "scaleY": 0.4403,
+            "pivotX": 0.4421,
+            "pivotY": 0.18
           }
         }
       },
@@ -304,81 +304,81 @@
         "upperArmArmorL": {
           "maleV1": {
             "x": 0,
-            "y": -25,
-            "rotation": -5,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.55,
+            "y": -20,
+            "rotation": -9.8875,
+            "scaleX": -0.3707,
+            "scaleY": 0.5358,
+            "pivotX": 0.4623,
             "pivotY": 0.16
           },
           "femaleV1": {
             "x": 0,
             "y": -20,
-            "rotation": -5,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.55,
+            "rotation": -10.5422,
+            "scaleX": -0.3707,
+            "scaleY": 0.5024,
+            "pivotX": 0.4623,
             "pivotY": 0.16
           }
         },
         "forearmVambraceL": {
           "maleV1": {
             "x": 0,
-            "y": 0.3,
-            "rotation": -14,
-            "scaleX": 0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.72,
-            "pivotY": 0.14
+            "y": 0,
+            "rotation": -9.6272,
+            "scaleX": 0.3534,
+            "scaleY": 0.3891,
+            "pivotX": 0.611,
+            "pivotY": 0.18
           },
           "femaleV1": {
             "x": 0,
-            "y": 0.3,
-            "rotation": -14,
-            "scaleX": 0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.72,
-            "pivotY": 0.14
+            "y": 0,
+            "rotation": -9.6272,
+            "scaleX": 0.3534,
+            "scaleY": 0.3891,
+            "pivotX": 0.611,
+            "pivotY": 0.18
           }
         },
         "upperArmArmorR": {
           "maleV1": {
-            "x": -0.19,
-            "y": -20.06,
-            "rotation": 12,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.55,
+            "x": 0,
+            "y": -20,
+            "rotation": 5.4174,
+            "scaleX": -0.3849,
+            "scaleY": 0.5328,
+            "pivotX": 0.5356,
             "pivotY": 0.16
           },
           "femaleV1": {
             "x": 0,
-            "y": -25,
-            "rotation": 12,
-            "scaleX": -0.45,
-            "scaleY": 0.55,
-            "pivotX": 0.55,
+            "y": -20,
+            "rotation": 5.0979,
+            "scaleX": -0.3849,
+            "scaleY": 0.5664,
+            "pivotX": 0.5356,
             "pivotY": 0.16
           }
         },
         "forearmVambraceR": {
           "maleV1": {
-            "x": 0.02,
-            "y": -0.16,
-            "rotation": -16,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.28,
-            "pivotY": 0.14
+            "x": 0,
+            "y": 0,
+            "rotation": -8.6537,
+            "scaleX": -0.3566,
+            "scaleY": 0.444,
+            "pivotX": 0.375,
+            "pivotY": 0.18
           },
           "femaleV1": {
             "x": 0,
             "y": 0,
-            "rotation": -16,
-            "scaleX": -0.45,
-            "scaleY": 0.45,
-            "pivotX": 0.28,
-            "pivotY": 0.14
+            "rotation": -8.6537,
+            "scaleX": -0.3566,
+            "scaleY": 0.444,
+            "pivotX": 0.375,
+            "pivotY": 0.18
           }
         }
       },

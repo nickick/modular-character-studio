@@ -52,8 +52,9 @@ The shared editor core is synced from Den Hunter (`nickick/goblin-hunter`),
 This includes track and animation filters, timeline key authoring, whole-animation
 bone offsets, equipment thumbnail matrices, elbow cages, and bow/spell carry and
 movement clips. The bundled scene includes the corresponding animation tracks
-and elbow meshes; its demo art, fitting data, project format, and portable paths
-remain local to this repository. Catalogue thumbnails reuse bundled cutouts via
+and elbow meshes. Shared vambrace and boot sets use the matching Den Hunter
+segment fittings for both body profiles, while demo names, art, project format,
+and portable paths remain local to this repository. Catalogue thumbnails reuse bundled cutouts via
 `inventoryAssetFile`, relative to `project/assets/`.
 
 Run `npm run check` for TypeScript, editor tests, and bundled-asset validation.
