@@ -94,29 +94,6 @@ a touch-origin horizontal joystick, sword attacks, weapon switching, blocking,
 dodging, and a training target. Playback uses asynchronous Canvas drawing and a
 display-synchronized clock with short melee-animation transitions.
 
-### Bow controls and reload
-
-Switch to **Bow** to use the combined radial **Draw / Fire** dial: hold to draw,
-drag around its center to aim, and release to shoot. Both arms follow the aim;
-the rear finger gap follows the arrow's nock and pulls the original textured
-bowstring back while the bow limbs flex. The bow-holding wrist stays within ±5°
-of neutral; the general wrist limit is ±30°.
-
-Each shot has a two-second recovery:
-
-- **0–0.1 s:** the bow and string straighten immediately; the rear hand stays
-  at the release position.
-- **0.1–1 s:** the rear hand reaches the string while the bow-holding arm bends
-  to help it reconnect.
-- **1–2 s:** the bow-holding arm extends again and the hands, arrow, and string
-  settle into the nocked resting pose. The bow keeps its size throughout.
-
-The next shot becomes available after recovery. In the web **Rig Studio**, open
-the animation picker and choose **Bow reload** (`bowReload`) to play or scrub
-the two-second sequence. Its picker thumbnail and the Equipment Studio preview
-use the same web solver. The iOS demo performs recovery procedurally through
-`BowRelease`, using the aim and draw amount captured when you fire.
-
 See [the iOS demo guide](examples/ios/README.md) for controls, embedding, and
 export options. [The baking walkthrough](examples/ios/BAKING.md) explains how saved
 rig data becomes bone samples, mesh geometry, and iOS resources. Generated files live under ignored `output/`; re-export after
