@@ -10,7 +10,7 @@
     "dev": "vite dev --host 127.0.0.1 --force",
     "build": "vite build && tsc --noEmit",
     "start": "node .output/server/index.mjs",
-    "test": "node --test test",
+    "test": "node --test test/*.test.mjs test/*.test.ts",
     "typecheck": "tsc --noEmit",
     "validate:project": "node scripts/validate-project.mjs",
     "check": "npm run typecheck && npm test && npm run validate:project",
