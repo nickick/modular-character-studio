@@ -36,6 +36,15 @@ test('plate export is self-contained and retains mesh, cutout, and equipment vis
   try {
     const output = resolve(temp, 'demo')
     const result = await exportIOSDemo({ project, output, fps: 15 })
+    const app = await readFile(resolve(output, 'PlateDemo.swift'), 'utf8')
+    assert.match(app, /import ModularCharacter/)
+    assert.doesNotMatch(app, /func triangleTransform|class DemoLibrary/)
+    const xcode = await readFile(resolve(output, 'PlateDemo.xcodeproj/project.pbxproj'), 'utf8')
+    assert.match(xcode, /XCLocalSwiftPackageReference; relativePath = ModularCharacter/)
+    assert.match(xcode, /packageProductDependencies/)
+    for (const path of ['Package.swift', 'Sources/ModularCharacter/CharacterLibrary.swift', 'Tests/ModularCharacterTests/CharacterRuntimeTests.swift', 'README.md', 'LICENSE']) {
+      assert.ok((await readFile(resolve(output, 'ModularCharacter', path))).length)
+    }
     const manifest = result.manifest
     assert.equal(manifest.format, 'modular-character-studio-ios-demo-v1')
     for (const [key, [, id]] of Object.entries(PLATE_LOADOUT)) assert.equal(manifest.loadout[key].id, id)

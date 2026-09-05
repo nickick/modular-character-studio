@@ -13,16 +13,17 @@ Complete the workflow and release checks before changing repository visibility.
 
 ## Current implementation status (2026-09-04)
 
-The checkout includes the roadmap commit `69402f8`. The included iOS
-slice is a narrower demonstration than the general Swift package planned below:
+The checkout includes the roadmap commit `69402f8`. The iOS demo now consumes
+the reusable `ModularCharacter` Swift package. The current scope is baked
+geometry playback for one exported loadout:
 
 | Area | Present | Still open |
 | --- | --- | --- |
 | Editor and fittings | Elbow editor, both joint segments, shared arm/leg fittings for both profiles; 48 resolved layers matched against the game | Visual seam/extreme-pose review across all equipment |
 | Baking/export | Standalone pose baker with stale-output checks; versioned fixed-loadout export including grips, expressions, textures, and solved geometry | Editor Export Runtime action; general equipment export; crop/resize optimization |
-| Swift demo | Single-file plate demo and generated Xcode project; movement, sword/bow switching, attacks, guard, dodge; simulator build | Extracted Swift package, reusable general character view, body/equipment/animation selectors and scrubbing |
+| Swift runtime and demo | Root Swift package with bundle loader, sampler, mesh renderer, reusable `ModularCharacterView`; generated demo consumes it for movement, sword/bow switching, attacks, guard, dodge | Live bone/grip solver, body/equipment/animation selectors and scrubbing |
 | Documentation | Edit/save/bake/export/build walkthrough and format notes in `examples/ios/BAKING.md`; existing license and prompt/gallery links | New-item import tutorial, recorded editor/iPhone workflow, physical-device profiling |
-| Verification | 127 tests, 104 assets/20 catalogue entries validated, web and simulator builds, pose-bake freshness check; simulator launch | Browser/iOS timestamp comparison, all-outfit visual pass, physical iPhone measurements, fresh-clone release rehearsal |
+| Verification | 127 JS/TS tests plus 7 Swift package tests, 104 assets/20 catalogue entries validated, web and simulator builds, pose-bake freshness check; simulator launch; CI covers the package and generated iOS build | Browser/iOS timestamp comparison, all-outfit visual pass, physical iPhone measurements, fresh-clone release rehearsal |
 
 The demo exports a fixed armor set with Sword/Bow mode switching. Body profile is
 selected at export time. Geometry is solved by the editor's rig core before it
@@ -59,15 +60,19 @@ sections or the release rehearsal. Nothing here changes repository visibility.
 
 ## 3. Swift package and iOS demo
 
-- [ ] Extract the existing Swift renderer and pose solver into an MIT Swift
-  package without dependencies on the main game's inventory or gameplay code.
-- [ ] Provide a reusable `ModularCharacterView` that loads the exported bundle.
+- [x] Extract the Swift bundle loader, baked-geometry sampler, and renderer into
+  an MIT Swift package without main-game inventory or gameplay dependencies.
+  The demo imports the root `ModularCharacter` package; exports include a local copy.
+- [ ] Extract the general native bone/grip pose solver for live equipment changes
+  and free-angle aiming. Baked-geometry playback does not require this solver.
+- [x] Provide a reusable `ModularCharacterView` that loads the exported bundle.
+  Load once with `CharacterLibrary`; pass it to the view or the custom-canvas API.
 - [ ] Include a small Xcode demo with body, equipment, and animation selectors,
   play/pause, and timeline scrubbing.
 - [x] Support the exported wrist, ankle, and elbow deformation plus equipment
   placement, grip behavior, expressions, and attachment visibility.
-  Implemented in the fixed-loadout geometry demo; the reusable native solver
-  is still a separate extraction task.
+  Implemented in the shared package and fixed-loadout demo; the live native
+  solver is still a separate extraction task.
 - [ ] Verify matching browser/iOS poses at matching timestamps, including helmet
   hair hiding and bow animations hiding incompatible weapons.
 - [ ] Run the demo on a physical iPhone and record frame timing and memory use
@@ -92,8 +97,10 @@ sections or the release rehearsal. Nothing here changes repository visibility.
   demo using only the published instructions and included resources.
 - [ ] Verify every bundled equipment option on both body profiles, including
   selection persistence, fitted placements, crop bounds, and joint seams.
-- [ ] Ensure CI covers project validation, web checks/build, export validation,
+- [x] Ensure CI covers project validation, web checks/build, export validation,
   and the extracted Swift package with meaningful runtime checks.
+  macOS runs Swift sampling/validation checks against real exported data and
+  builds the generated iOS app with its local package.
 - [ ] Review tracked files and Git history for unintended private content,
   credentials, unrelated game assets, and machine-specific paths.
 - [ ] Check license notices and provenance for all bundled code and art.

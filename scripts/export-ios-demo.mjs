@@ -1,6 +1,6 @@
 /** Export a standalone plate-loadout iOS demo using the editor's actual rig solver. */
 import { createHash } from 'node:crypto'
-import { mkdir, readFile, writeFile, copyFile, readdir } from 'node:fs/promises'
+import { mkdir, readFile, writeFile, copyFile, readdir, cp } from 'node:fs/promises'
 import { resolve, dirname, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { validateModularCharacterScene } from '../src/rig/schema.ts'
@@ -149,6 +149,11 @@ export async function exportIOSDemo({ project = resolve(repoRoot, 'project'), ou
   await writeFile(resolve(resources, 'runtime.json'), JSON.stringify(manifest, null, 2) + '\n')
   await writeFile(resolve(resources, 'rig.json'), JSON.stringify({ format: 'modular-character-studio-resolved-rig-v1', profile, loadout, bones: rig.bones, layers: runtimeLayers }, null, 2) + '\n')
   for (const name of ['PlateDemo.swift', 'README.md', 'BAKING.md']) await copyFile(resolve(repoRoot, 'examples/ios', name), resolve(output, name))
+  const swiftPackage = resolve(output, 'ModularCharacter')
+  await mkdir(swiftPackage, { recursive: true })
+  for (const name of ['Package.swift', 'LICENSE']) await copyFile(resolve(repoRoot, name), resolve(swiftPackage, name))
+  for (const name of ['Sources', 'Tests']) await cp(resolve(repoRoot, name), resolve(swiftPackage, name), { recursive: true })
+  await copyFile(resolve(repoRoot, 'docs/swift-runtime.md'), resolve(swiftPackage, 'README.md'))
   await copyFile(resolve(repoRoot, 'LICENSE'), resolve(output, 'LICENSE'))
   await copyFile(resolve(repoRoot, 'CC0-1.0.txt'), resolve(resources, 'CC0-1.0.txt'))
   await mkdir(resolve(output, 'PlateDemo.xcodeproj'), { recursive: true })

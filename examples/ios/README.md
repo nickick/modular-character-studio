@@ -2,14 +2,20 @@
 
 Open `PlateDemo.xcodeproj`, choose an iPhone simulator, and Run. For a device,
 select your own signing team in the target's Signing & Capabilities settings.
-Requires Xcode with the iOS 17 SDK or newer. No Swift packages or game checkout
-are needed by the generated app.
+Requires Xcode with the iOS 17 SDK or newer. The generated app links the local
+`ModularCharacter` Swift package included in the export; no game checkout or
+remote dependency download is needed.
 
-The single `PlateDemo.swift` contains the app entry point, SwiftUI action bar,
-training simulation, JSON loader, and CoreGraphics mesh renderer. To embed it in
-an existing SwiftUI app, remove its `@main` app declaration and present
-`PlateDemoView()`. Add `CharacterRuntime` as a **folder reference** to the app target;
-its nested paths must survive in the bundle.
+`PlateDemo.swift` contains the app entry point, SwiftUI action bar, and training
+simulation. It imports `ModularCharacter` for bundle loading, animation sampling,
+and CoreGraphics mesh rendering. The package also provides a reusable
+`ModularCharacterView` for embedding a character in another SwiftUI app.
+
+For your own app, add the repository as a Swift package (or the exported local
+`ModularCharacter` folder), select its library product, and add `CharacterRuntime`
+as a **folder reference** to the app target. Its nested paths must survive in
+the bundle. See the package's `README.md` in the generated export, or
+`docs/swift-runtime.md` in the source repository, for API examples and limits.
 
 ## Play
 

@@ -4,90 +4,11 @@
 import SwiftUI
 import UIKit
 import Combine
+import ModularCharacter
 
 @main
 struct PlateDemoApp: App {
     var body: some Scene { WindowGroup { PlateDemoView() } }
-}
-
-// MARK: - Portable exported data
-
-struct DemoAsset: Decodable { let path: String; let width, height: Double }
-struct DemoEquipment: Decodable { let id, label: String }
-struct DemoCanvas: Decodable { let width, height: Double }
-struct DemoPoint: Decodable { let x, y: Double }
-struct DemoNode: Decodable {
-    let x, y: Double
-    let `in`, out: DemoPoint?
-}
-struct DemoCutout: Decodable { let closed: Bool; let nodes: [DemoNode] }
-struct DemoStrip: Decodable { let sourceX, sourceWidth, x, width, y, height: Double }
-struct DemoAttachment: Decodable {
-    let id: String
-    let asset: Int
-    let source: [Double]?
-    let triangles: [Int]?
-    let clipPath: DemoCutout?
-    let strips: [DemoStrip]?
-}
-struct DemoLayerFrame: Decodable { let attachment: Int; let values: [Double] }
-struct DemoClip: Decodable {
-    let duration: Double
-    let loops, endKeyed: Bool
-    let frames: [[DemoLayerFrame]]
-}
-struct DemoManifest: Decodable {
-    let format, profile: String
-    let canvas: DemoCanvas
-    let baseline: Double
-    let loadout: [String: DemoEquipment]
-    let assets: [DemoAsset]
-    let attachments: [DemoAttachment]
-    let clips: [String: String]
-}
-
-final class DemoLibrary {
-    let manifest: DemoManifest
-    let clips: [String: DemoClip]
-    let images: [UIImage]
-
-    init(bundle: Bundle = .main) throws {
-        guard let root = bundle.resourceURL?.appendingPathComponent("CharacterRuntime") else {
-            throw NSError(domain: "PlateDemo", code: 1, userInfo: [NSLocalizedDescriptionKey: "Add the exported CharacterRuntime folder to the app target."])
-        }
-        let decoder = JSONDecoder()
-        let manifest = try decoder.decode(DemoManifest.self, from: Data(contentsOf: root.appendingPathComponent("runtime.json")))
-        guard manifest.format == "modular-character-studio-ios-demo-v1" else {
-            throw NSError(domain: "PlateDemo", code: 2, userInfo: [NSLocalizedDescriptionKey: "Unsupported runtime export. Run npm run export:ios again."])
-        }
-        self.manifest = manifest
-        clips = try manifest.clips.mapValues { path in
-            let clip = try decoder.decode(DemoClip.self, from: Data(contentsOf: root.appendingPathComponent(path)))
-            guard clip.duration > 0, clip.frames.count >= 2 else {
-                throw NSError(domain: "PlateDemo", code: 3, userInfo: [NSLocalizedDescriptionKey: "Invalid animation: \(path)"])
-            }
-            for frame in clip.frames {
-                for layer in frame {
-                    guard manifest.attachments.indices.contains(layer.attachment), layer.values.allSatisfy(\.isFinite) else {
-                        throw NSError(domain: "PlateDemo", code: 4, userInfo: [NSLocalizedDescriptionKey: "Invalid attachment geometry in \(path)"])
-                    }
-                    let attachment = manifest.attachments[layer.attachment]
-                    let expected = attachment.source?.count ?? 6
-                    guard layer.values.count == expected, manifest.assets.indices.contains(attachment.asset),
-                          (attachment.triangles ?? []).allSatisfy({ $0 >= 0 && $0 * 2 + 1 < expected }) else {
-                        throw NSError(domain: "PlateDemo", code: 5, userInfo: [NSLocalizedDescriptionKey: "Invalid mesh in \(path)"])
-                    }
-                }
-            }
-            return clip
-        }
-        images = try manifest.assets.map { asset in
-            guard let image = UIImage(contentsOfFile: root.appendingPathComponent(asset.path).path) else {
-                throw NSError(domain: "PlateDemo", code: 6, userInfo: [NSLocalizedDescriptionKey: "Missing texture: \(asset.path)"])
-            }
-            return image
-        }
-    }
 }
 
 // MARK: - Small deterministic training simulation (no game package dependency)
@@ -203,16 +124,16 @@ final class DemoModel: ObservableObject {
     @Published var state = DemoSimulation()
     @Published var error: String?
     @Published var inputGeneration = 0
-    let library: DemoLibrary?
+    let library: CharacterLibrary?
     private var lastTime: TimeInterval?
     private var clipBegan = 0.0
     private var previousClip = "idle"
     private var previousActionBegan = -1.0
     var phase = 0.0
-    var durations: [String: Double] { library?.clips.mapValues(\.duration) ?? [:] }
+    var durations: [String: Double] { library?.animations.mapValues(\.duration) ?? [:] }
 
     init() {
-        do { library = try DemoLibrary() }
+        do { library = try CharacterLibrary() }
         catch { library = nil; self.error = error.localizedDescription }
     }
     func tick(_ now: TimeInterval) {
@@ -225,7 +146,7 @@ final class DemoModel: ObservableObject {
         let duration = durations[next.clip] ?? 1
         let elapsed = next.time - (next.attackHeldAt ?? clipBegan)
         let raw = elapsed / duration
-        phase = library?.clips[next.clip]?.loops == true ? raw.truncatingRemainder(dividingBy: 1) : min(1, raw)
+        phase = library?.animations[next.clip]?.loops == true ? raw.truncatingRemainder(dividingBy: 1) : min(1, raw)
         state = next
     }
     func pause() { state.releaseInputs(); lastTime = nil; inputGeneration += 1 }
@@ -235,7 +156,7 @@ final class DemoModel: ObservableObject {
 // MARK: - Native drawing: sampled matrices and triangle deformation, not spritesheets
 
 struct DemoStage: UIViewRepresentable {
-    let library: DemoLibrary
+    let library: CharacterLibrary
     let state: DemoSimulation
     let phase: Double
     func makeUIView(context: Context) -> DemoStageView { DemoStageView() }
@@ -245,7 +166,7 @@ struct DemoStage: UIViewRepresentable {
 }
 
 final class DemoStageView: UIView {
-    var library: DemoLibrary?
+    var library: CharacterLibrary?
     var state = DemoSimulation()
     var phase = 0.0
     override init(frame: CGRect) { super.init(frame: frame); isOpaque = false; backgroundColor = .clear; isUserInteractionEnabled = false }
@@ -274,10 +195,8 @@ final class DemoStageView: UIView {
         context.translateBy(x: state.playerX * scale, y: ground)
         context.setFillColor(UIColor.black.withAlphaComponent(0.3).cgColor)
         context.fillEllipse(in: CGRect(x: -60 * scale, y: -8 * scale, width: 120 * scale, height: 16 * scale))
-        // Preserve the original 1254-point logical artboard and authored baseline.
-        context.scaleBy(x: -0.36 * scale * state.facing, y: 0.36 * scale)
-        context.translateBy(x: -library.manifest.canvas.width / 2, y: -library.manifest.baseline)
-        drawCharacter(context, library: library)
+        library.draw(in: context, animation: state.clip, phase: phase, at: .zero,
+                     scale: 0.36 * scale, facing: state.facing > 0 ? .right : .left)
         context.restoreGState()
         context.setStrokeColor(UIColor(red: 0.98, green: 0.82, blue: 0.47, alpha: 1).cgColor)
         context.setLineWidth(2)
@@ -300,66 +219,7 @@ final class DemoStageView: UIView {
         context.setLineWidth(9); context.strokeEllipse(in: CGRect(x: -24, y: -249, width: 48, height: 59))
     }
 
-    private func drawCharacter(_ context: CGContext, library: DemoLibrary) {
-        guard let clip = library.clips[state.clip] else { return }
-        let sample = max(0, min(1, phase)) * Double(clip.frames.count - 1)
-        let index = Int(sample), next = min(index + 1, clip.frames.count - 1)
-        let fraction = !clip.endKeyed && next == clip.frames.count - 1 ? 0 : sample - Double(index)
-        for (position, current) in clip.frames[index].enumerated() {
-            let attachment = library.manifest.attachments[current.attachment]
-            var values = current.values
-            if clip.frames[next].indices.contains(position) {
-                let following = clip.frames[next][position]
-                if following.attachment == current.attachment && following.values.count == values.count {
-                    values = zip(values, following.values).map { $0 + ($1 - $0) * fraction }
-                }
-            }
-            let asset = library.manifest.assets[attachment.asset], image = library.images[attachment.asset]
-            if let source = attachment.source, let triangles = attachment.triangles {
-                for i in stride(from: 0, to: triangles.count, by: 3) {
-                    let indices = Array(triangles[i..<(i + 3)])
-                    let from = indices.map { CGPoint(x: source[$0 * 2], y: source[$0 * 2 + 1]) }
-                    let to = indices.map { CGPoint(x: values[$0 * 2], y: values[$0 * 2 + 1]) }
-                    guard let transform = triangleTransform(from, to) else { continue }
-                    context.saveGState()
-                    context.setShouldAntialias(false)
-                    context.beginPath(); context.move(to: to[0]); context.addLine(to: to[1]); context.addLine(to: to[2]); context.closePath(); context.clip()
-                    context.concatenate(transform)
-                    image.draw(in: CGRect(x: 0, y: 0, width: asset.width, height: asset.height))
-                    context.restoreGState()
-                }
-            } else {
-                context.saveGState()
-                context.concatenate(CGAffineTransform(a: values[0], b: values[1], c: values[2], d: values[3], tx: values[4], ty: values[5]))
-                if let cutout = attachment.clipPath, cutout.closed, cutout.nodes.count >= 3 {
-                    let nodes = cutout.nodes
-                    context.beginPath(); context.move(to: CGPoint(x: nodes[0].x * asset.width, y: nodes[0].y * asset.height))
-                    for i in 1...nodes.count {
-                        let from = nodes[i - 1], to = nodes[i % nodes.count]
-                        context.addCurve(to: CGPoint(x: to.x * asset.width, y: to.y * asset.height), control1: CGPoint(x: (from.out?.x ?? from.x) * asset.width, y: (from.out?.y ?? from.y) * asset.height), control2: CGPoint(x: (to.in?.x ?? to.x) * asset.width, y: (to.in?.y ?? to.y) * asset.height))
-                    }
-                    context.closePath(); context.clip()
-                }
-                if let strips = attachment.strips {
-                    for strip in strips {
-                        context.saveGState()
-                        context.clip(to: CGRect(x: strip.x, y: strip.y, width: strip.width + 0.5, height: strip.height))
-                        context.translateBy(x: strip.x, y: strip.y)
-                        context.scaleBy(x: (strip.width + 0.5) / strip.sourceWidth, y: strip.height / asset.height)
-                        image.draw(in: CGRect(x: -strip.sourceX, y: 0, width: asset.width, height: asset.height))
-                        context.restoreGState()
-                    }
-                } else { image.draw(in: CGRect(x: 0, y: 0, width: asset.width, height: asset.height)) }
-                context.restoreGState()
-            }
-        }
-    }
-    private func triangleTransform(_ s: [CGPoint], _ d: [CGPoint]) -> CGAffineTransform? {
-        let source = CGAffineTransform(a: s[1].x - s[0].x, b: s[1].y - s[0].y, c: s[2].x - s[0].x, d: s[2].y - s[0].y, tx: s[0].x, ty: s[0].y)
-        guard abs(source.a * source.d - source.b * source.c) > 0.00000001 else { return nil }
-        let destination = CGAffineTransform(a: d[1].x - d[0].x, b: d[1].y - d[0].y, c: d[2].x - d[0].x, d: d[2].y - d[0].y, tx: d[0].x, ty: d[0].y)
-        return source.inverted().concatenating(destination)
-    }
+
 }
 
 struct DemoMovementSurface: UIViewRepresentable {

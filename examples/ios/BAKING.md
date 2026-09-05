@@ -83,8 +83,9 @@ The generated directory contains:
 
 | File | Purpose |
 | --- | --- |
-| `PlateDemo.swift` | App entry, action bar, simulation, JSON loader, triangle renderer |
-| `PlateDemo.xcodeproj` | Ready-to-build iOS application, no package dependencies |
+| `PlateDemo.swift` | App entry, action bar, simulation; imports ModularCharacter |
+| `PlateDemo.xcodeproj` | Ready-to-build iOS application linked to the local package |
+| `ModularCharacter/` | Reusable Swift package: manifest, renderer, loader, sampler, SwiftUI view, tests, API guide, MIT license |
 | `CharacterRuntime/runtime.json` | Version, source hash, profile, loadout, texture dimensions, attachment topology, clip paths |
 | `CharacterRuntime/rig.json` | Resolved bones and layers, with the selected equipment's actual bindings and meshes |
 | `CharacterRuntime/pose-library-v1.json` | General bone-pose tables for all authored animations, with wrist/grip and expression tracks |
@@ -110,11 +111,12 @@ through the same `deformWeightedMesh` used by the browser. It also evaluates
 expression selection. Draw order is preserved. Helmet hair hiding and bow-only
 held-equipment visibility are applied before sampling.
 
-The small Swift demo consumes the **solved geometry** files. It does not solve
-the general pose library at runtime. This is how the example stays in one Swift
-file while carrying the authored deformation faithfully. A reusable client with
-live equipment changes or free-angle aim would instead combine the baked bone
-poses with a native bone/grip/mesh solver. That extraction remains a roadmap task.
+The reusable `ModularCharacter` Swift package consumes the **solved geometry**
+files, and the demo imports that package. The package supplies bundle loading,
+validation, interpolation, mesh drawing, and `ModularCharacterView`; the demo
+supplies gameplay and controls. It does not solve the general bone pose library
+at runtime. Live equipment changes or free-angle aim still require a native
+bone/grip/mesh solver; that remains a separate roadmap task.
 
 ## 3. Build and run
 
@@ -130,25 +132,32 @@ xcodebuild \
   CODE_SIGNING_ALLOWED=NO build
 ```
 
-For an existing client, copy the single Swift file, remove its `@main` wrapper,
-and present `PlateDemoView()`. Add `CharacterRuntime` as a folder reference in
-Copy Bundle Resources. It must keep its nested directories. Avoid renaming it
-to `Resources`: that name can change how Apple interprets the app bundle layout.
+For an existing client, add this repository as a Swift package, or add the
+exported `ModularCharacter` directory as a local package, and link its library
+product. Load `CharacterLibrary` and present `ModularCharacterView` or call the
+library's `draw` API in your own canvas. The source API guide is
+`docs/swift-runtime.md`; exported packages include it as `ModularCharacter/README.md`.
+Add `CharacterRuntime` as a folder reference in Copy Bundle Resources. It must
+keep its nested directories. Avoid renaming it to `Resources`: that name can
+change how Apple interprets the app bundle layout.
 
 Run `npm run check` for editor, bake/export, and project validation. On macOS,
-the tests also compile and exercise the Swift training simulation. Export tests
+the tests also compile and exercise the Swift training simulation. Run
+`MCS_RUNTIME_DIRECTORY="$PWD/output/ios-plate-demo/CharacterRuntime" swift test`
+after export to check the shared package against generated data. Export tests
 make a temporary authored fitting/cage change and verify that it changes the
 resulting runtime data, without modifying client Swift code.
 
 After an editor save, run the export again and rebuild/relaunch the client.
 The exporter operates only on saved data. Generated files are ignored by Git;
-commit the authored project, exporter, Swift template, and documentation.
+commit the authored project, exporter, Swift package sources, demo, and documentation.
 
 ## Verification limits
 
 The slice is a horizontal training arena with a fixed armor set and sword/bow
-mode switching. Body selection happens at export time. It is not yet the
-roadmap's general Swift package, equipment browser, or animation scrubber.
+mode switching. Body selection happens at export time. The shared Swift package
+is reusable today; a live native pose solver, equipment browser, and animation
+scrubber remain on the roadmap.
 Simulator builds and deterministic data tests are useful evidence, but do not
 replace matching browser/iPhone screenshots at the same timestamps or a physical
 iPhone frame-time/memory measurement. Those release checks remain open.

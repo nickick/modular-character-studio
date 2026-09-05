@@ -18,6 +18,23 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm run validate:project
-      - run: npm test
+      - run: npm run check
       - run: npm run build
+
+  ios:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run export:ios
+      - name: Test Swift runtime against exported data
+        run: MCS_RUNTIME_DIRECTORY="$PWD/output/ios-plate-demo/CharacterRuntime" swift test
+      - name: Build generated iOS app and local Swift package
+        run: >-
+          xcodebuild -project output/ios-plate-demo/PlateDemo.xcodeproj
+          -scheme PlateDemo -sdk iphonesimulator -configuration Debug
+          -derivedDataPath "$RUNNER_TEMP/PlateDemo" CODE_SIGNING_ALLOWED=NO build
