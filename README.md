@@ -7,6 +7,8 @@ double-sided ankle deformation, and equipment previewing in one project format.
 The repository starts private while its demo asset pack and portable project
 format are validated.
 
+See [TODO.md](TODO.md) for the v0.1 release plan and iOS integration work.
+
 ## Run locally
 
 Requires Node.js 24 or newer.
