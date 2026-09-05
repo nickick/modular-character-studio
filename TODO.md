@@ -11,6 +11,25 @@ Unchecked items are planned work. Checked items identify implementation already
 present; they do not imply that the remaining release checks have passed.
 Complete the workflow and release checks before changing repository visibility.
 
+## Current implementation status (2026-09-04)
+
+The checkout includes the roadmap commit `69402f8`. The included iOS
+slice is a narrower demonstration than the general Swift package planned below:
+
+| Area | Present | Still open |
+| --- | --- | --- |
+| Editor and fittings | Elbow editor, both joint segments, shared arm/leg fittings for both profiles; 48 resolved layers matched against the game | Visual seam/extreme-pose review across all equipment |
+| Baking/export | Standalone pose baker with stale-output checks; versioned fixed-loadout export including grips, expressions, textures, and solved geometry | Editor Export Runtime action; general equipment export; crop/resize optimization |
+| Swift demo | Single-file plate demo and generated Xcode project; movement, sword/bow switching, attacks, guard, dodge; simulator build | Extracted Swift package, reusable general character view, body/equipment/animation selectors and scrubbing |
+| Documentation | Edit/save/bake/export/build walkthrough and format notes in `examples/ios/BAKING.md`; existing license and prompt/gallery links | New-item import tutorial, recorded editor/iPhone workflow, physical-device profiling |
+| Verification | 127 tests, 104 assets/20 catalogue entries validated, web and simulator builds, pose-bake freshness check; simulator launch | Browser/iOS timestamp comparison, all-outfit visual pass, physical iPhone measurements, fresh-clone release rehearsal |
+
+The demo exports a fixed armor set with Sword/Bow mode switching. Body profile is
+selected at export time. Geometry is solved by the editor's rig core before it
+reaches Swift; the native runtime does not yet contain the general game pose
+solver. This is useful progress toward sections 2–4, but does not complete those
+sections or the release rehearsal. Nothing here changes repository visibility.
+
 ## 1. Elbow deformation
 
 - [x] Extend the joint-mesh editor and scene validation to both elbows.
@@ -28,13 +47,14 @@ Complete the workflow and release checks before changing repository visibility.
   a standalone export command, with an Export Runtime action in the editor.
 - [ ] Define and document a versioned bundle containing the scene, baked
   animation tracks, equipment options, expressions, and referenced images.
-- [ ] Include authored bone, wrist/grip, and expression corrections so exported
+- [x] Include authored bone, wrist/grip, and expression corrections so exported
   playback matches the editor.
+  Verified by the baker/export tests; visual timestamp comparison remains below.
 - [ ] Preserve pivots, original image dimensions, crop offsets, and mesh
   coordinates when cropping or resizing runtime images.
 - [ ] Validate references and format compatibility; report actionable errors
   for missing assets or unsupported data.
-- [ ] Ensure exporting works from this repository alone, without a checkout of
+- [x] Ensure exporting works from this repository alone, without a checkout of
   the main game or machine-specific paths.
 
 ## 3. Swift package and iOS demo
@@ -44,8 +64,10 @@ Complete the workflow and release checks before changing repository visibility.
 - [ ] Provide a reusable `ModularCharacterView` that loads the exported bundle.
 - [ ] Include a small Xcode demo with body, equipment, and animation selectors,
   play/pause, and timeline scrubbing.
-- [ ] Support the exported wrist, ankle, and elbow deformation plus equipment
+- [x] Support the exported wrist, ankle, and elbow deformation plus equipment
   placement, grip behavior, expressions, and attachment visibility.
+  Implemented in the fixed-loadout geometry demo; the reusable native solver
+  is still a separate extraction task.
 - [ ] Verify matching browser/iOS poses at matching timestamps, including helmet
   hair hiding and bow animations hiding incompatible weapons.
 - [ ] Run the demo on a physical iPhone and record frame timing and memory use
@@ -53,7 +75,7 @@ Complete the workflow and release checks before changing repository visibility.
 
 ## 4. Documentation and first-run experience
 
-- [ ] Document the complete path: edit -> save -> export runtime bundle -> add
+- [x] Document the complete path: edit -> save -> export runtime bundle -> add
   bundle to the iOS demo -> run.
 - [ ] Add a tutorial for importing and fitting a new boot or weapon, including
   asset naming, crop bounds, pivots, profile-specific transforms, and meshes.
@@ -61,7 +83,7 @@ Complete the workflow and release checks before changing repository visibility.
   re-export, with no manual recreation of the fit on the client.
 - [ ] Document the project format, runtime API, supported features, and limits.
 - [ ] Record a short editor/iPhone demonstration and add it to the README.
-- [ ] Explain the MIT code / CC0 bundled-art split and link the included prompts
+- [x] Explain the MIT code / CC0 bundled-art split and link the included prompts
   and generated-image gallery.
 
 ## 5. Release rehearsal

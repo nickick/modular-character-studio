@@ -61,3 +61,15 @@ and portable paths remain local to this repository. Catalogue thumbnails reuse b
 
 Run `npm run check` for TypeScript, editor tests, and bundled-asset validation.
 Run `npm run build` to validate the production bundle.
+
+## Playable iOS slice
+
+Run `npm run export:ios`, then open
+`output/ios-plate-demo/PlateDemo.xcodeproj` in Xcode and run on an iPhone simulator.
+The export is self-contained: one Swift file, JSON animation/mesh data, and only
+the textures used by the plate loadout. It includes a touch-origin horizontal joystick, sword attacks,
+hold-to-draw bow shots, weapon switching, blocking, dodging, and a training target.
+See [the iOS demo guide](examples/ios/README.md) for controls, embedding, and
+export options. [The baking walkthrough](examples/ios/BAKING.md) explains how saved
+rig data becomes bone samples, mesh geometry, and iOS resources. Generated files live under ignored `output/`; re-export after
+saving equipment or animation edits.

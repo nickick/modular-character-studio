@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=24" },
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "vite dev --host 127.0.0.1 --force",
     "build": "vite build && tsc --noEmit",
@@ -11,7 +13,9 @@
     "test": "node --test test",
     "typecheck": "tsc --noEmit",
     "validate:project": "node scripts/validate-project.mjs",
-    "check": "npm run typecheck && npm test && npm run validate:project"
+    "check": "npm run typecheck && npm test && npm run validate:project",
+    "export:ios": "node scripts/export-ios-demo.mjs",
+    "bake:poses": "node scripts/bake-animation-library.mjs"
   },
   "dependencies": {
     "@tanstack/react-router": "1.170.32",
