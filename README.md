@@ -44,3 +44,17 @@ project/
 The Rig Studio and Equipment Studio are native React routes on TanStack Start.
 They share a typed, framework-independent rig core, Zustand editor state, the
 same revision-protected project API, and route-scoped canvas-editor styles.
+
+## Editor sync
+
+The shared editor core is synced from Den Hunter (`nickick/goblin-hunter`),
+`Tools/WeaponSocketEditor`, through commit `4f5e35d3f590891f414618c951d1b6647c61fbfe`.
+This includes track and animation filters, timeline key authoring, whole-animation
+bone offsets, equipment thumbnail matrices, elbow cages, and bow/spell carry and
+movement clips. The bundled scene includes the corresponding animation tracks
+and elbow meshes; its demo art, fitting data, project format, and portable paths
+remain local to this repository. Catalogue thumbnails reuse bundled cutouts via
+`inventoryAssetFile`, relative to `project/assets/`.
+
+Run `npm run check` for TypeScript, editor tests, and bundled-asset validation.
+Run `npm run build` to validate the production bundle.

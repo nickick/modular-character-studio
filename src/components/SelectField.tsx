@@ -23,6 +23,8 @@ export interface SelectFieldProps {
   disabled?: boolean
   /** Shown when nothing is selected, and offered as a way back to nothing. */
   placeholder?: string
+  /** Anchor menus in edge toolbars so long lists stay inside the window. */
+  menuSide?: "top" | "bottom"
 }
 
 /**
@@ -39,6 +41,7 @@ export function SelectField({
   onChange,
   disabled = false,
   placeholder,
+  menuSide,
 }: SelectFieldProps) {
   const generated = useId()
   const controlID = id ?? generated
@@ -53,7 +56,12 @@ export function SelectField({
         <SelectTrigger id={controlID} size="sm">
           <SelectValue placeholder={placeholder ?? label} />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent
+          position={menuSide ? "popper" : "item-aligned"}
+          side={menuSide}
+          align={menuSide ? "start" : "center"}
+          style={menuSide ? { maxHeight: "min(320px, var(--radix-select-content-available-height))" } : undefined}
+        >
           {placeholder ? <SelectItem value={NONE}>{placeholder}</SelectItem> : null}
           {options.map((option) => (
             <SelectItem key={option.id} value={option.id}>

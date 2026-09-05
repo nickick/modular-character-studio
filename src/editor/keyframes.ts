@@ -11,6 +11,7 @@
  * the playhead, creating it if needed.
  */
 import { RigTracks } from "../rig/tracks.ts"
+import { animationLoops, isAnimationName } from "../rig/clips.ts"
 import { bonePoseKeys } from "../rig/types.ts"
 import type {
   BoneKey,
@@ -20,6 +21,7 @@ import type {
   GripKind,
   MouthExpression,
   RigScene,
+  PoseDelta,
   Side,
   WristKey,
 } from "../rig/types.ts"
@@ -68,9 +70,9 @@ function boneKeyTrack(scene: RigScene, clip: string, boneID: string): BoneKey[] 
 /**
  * The key at the playhead, created if absent.
  *
- * A brand-new track gets neutral keys at phases 0 and 1 first, so correcting
- * one pose stays local to that moment instead of holding the correction across
- * the whole clip.
+ * A looping track needs no synthetic end key: its last key naturally eases
+ * back into its first. One-shot clips retain neutral boundaries so a local
+ * correction cannot accidentally hold through their ending pose.
  */
 export function ensureBoneKey(
   scene: RigScene,
@@ -81,7 +83,8 @@ export function ensureBoneKey(
 ): BoneKey {
   const sampled = tracks.bonePose(clip, phase)[boneID] ?? {}
   const keys = boneKeyTrack(scene, clip, boneID)
-  if (keys.length === 0) {
+  const loops = isAnimationName(clip) ? animationLoops[clip] : true
+  if (keys.length === 0 && !loops) {
     keys.push({ phase: 0, x: 0, y: 0, rotation: 0 }, { phase: 1, x: 0, y: 0, rotation: 0 })
   }
   const normalized = normalizePhase(phase)
@@ -152,6 +155,81 @@ export function setBoneKeyValue(
 ): void {
   const key = ensureBoneKey(scene, clip, boneID, phase, RigTracks.fromScene(scene))
   key[field] = round3(value)
+}
+
+// ---------------------------------------------------------------------------
+// Whole-animation bone offsets
+// ---------------------------------------------------------------------------
+
+/** One bone's constant additive correction across an entire clip. */
+export function animationBoneOffset(scene: RigScene, clip: string, boneID: string): PoseDelta {
+  return scene.clipPoseOffsets?.[clip]?.[boneID] ?? {}
+}
+
+/** Remove empty containers after an animation-wide correction returns to zero. */
+function pruneAnimationBoneOffset(scene: RigScene, clip: string, boneID: string): void {
+  const clips = scene.clipPoseOffsets
+  const bones = clips?.[clip]
+  const offset = bones?.[boneID]
+  if (!clips || !bones || !offset) return
+  for (const field of bonePoseKeys) {
+    if (Math.abs(offset[field] ?? 0) < 0.000_001) delete offset[field]
+  }
+  if (Object.keys(offset).length === 0) delete bones[boneID]
+  if (Object.keys(bones).length === 0) delete clips[clip]
+  if (Object.keys(clips).length === 0) delete scene.clipPoseOffsets
+}
+
+/** Set an absolute constant correction without creating timeline boundary keys. */
+export function setAnimationBoneOffsetValue(
+  scene: RigScene,
+  clip: string,
+  boneID: string,
+  field: "x" | "y" | "rotation",
+  value: number,
+): void {
+  if (!Number.isFinite(value)) return
+  if (Math.abs(value) < 0.000_001) {
+    const offset = scene.clipPoseOffsets?.[clip]?.[boneID]
+    if (offset) delete offset[field]
+    pruneAnimationBoneOffset(scene, clip, boneID)
+    return
+  }
+  const clips = (scene.clipPoseOffsets ??= {})
+  const bones = (clips[clip] ??= {})
+  const offset = (bones[boneID] ??= {})
+  offset[field] = round3(value)
+}
+
+/** Fold a canvas drag into the selected bone's constant clip-wide offset. */
+export function commitPoseToAnimationOffsets(
+  scene: RigScene,
+  clip: string,
+  manualPose: Record<string, { x?: number; y?: number; rotation?: number }>,
+): boolean {
+  let changed = false
+  for (const [boneID, delta] of Object.entries(manualPose)) {
+    for (const field of bonePoseKeys) {
+      const value = delta[field]
+      if (!Number.isFinite(value) || Math.abs(value ?? 0) < 0.000_001) continue
+      const current = animationBoneOffset(scene, clip, boneID)[field] ?? 0
+      setAnimationBoneOffsetValue(scene, clip, boneID, field, current + (value ?? 0))
+      changed = true
+    }
+  }
+  return changed
+}
+
+/** Clear one bone's whole-animation correction, preserving every keyframe. */
+export function clearAnimationBoneOffset(scene: RigScene, clip: string, boneID: string): boolean {
+  const bones = scene.clipPoseOffsets?.[clip]
+  if (!bones?.[boneID]) return false
+  delete bones[boneID]
+  if (Object.keys(bones).length === 0) delete scene.clipPoseOffsets?.[clip]
+  if (scene.clipPoseOffsets && Object.keys(scene.clipPoseOffsets).length === 0) {
+    delete scene.clipPoseOffsets
+  }
+  return true
 }
 
 // ---------------------------------------------------------------------------

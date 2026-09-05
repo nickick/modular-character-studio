@@ -1,37 +1,68 @@
 /**
  * The top toolbar: which body is on show, what it is wearing, and the document
- * actions. Equipment lives behind one menu because it is seven selectors that
- * are changed rarely, while profile and hand pose are changed constantly.
+ * actions. Equipment lives behind one menu because its slots are changed
+ * rarely, while profile and hand pose are changed constantly.
  */
 import { useEffect, useRef, useState } from "react"
 import { Redo2, Undo2 } from "lucide-react"
 import { useShallow } from "zustand/react/shallow"
-import { SelectField, type SelectOption } from "@/components/SelectField.tsx"
+import { SelectField } from "@/components/SelectField.tsx"
+import { ItemMatrixDialog } from "@/components/shared/ItemMatrixDialog.tsx"
+import { ItemThumbnail } from "@/components/shared/ItemThumbnail.tsx"
 import { Toggle } from "@/components/Toggle.tsx"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx"
-import { Label } from "@/components/ui/label.tsx"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select.tsx"
 import { handPoseNames } from "@/rig/clips.ts"
+import { loadEquipmentCatalog, type EquipmentCatalog } from "@/editor/equipment-catalog.ts"
+import { EQUIPMENT_SLOTS, type EquipmentSlot } from "@/editor/equipment-slots.ts"
 import { profileLabels } from "@/editor/labels.ts"
-import { profileIDs, type ProfileID, type RigScene, type SceneOption } from "@/rig/types.ts"
+import { profileIDs, type ProfileID, type RigScene } from "@/rig/types.ts"
 import {
   HEADGEAR_LAYER_ID,
-  HELD_SLOTS,
   canRedo,
   canUndo,
   useRigEditor,
+  type Presentation,
 } from "@/stores/rig-editor.ts"
 
-const toOptions = (options: readonly SceneOption[] | undefined): SelectOption[] =>
-  (options ?? []).map((option) => ({ id: option.id, label: option.label }))
+const EQUIP_MENU_SLOT_IDS = [
+  "tunicBody",
+  "arms",
+  "boots",
+  "headgear",
+  "necklace",
+  "weapon",
+  "staff",
+  "bow",
+  "shield",
+  "quiver",
+] as const
+
+const EQUIP_MENU_SLOTS: readonly EquipmentSlot[] = EQUIP_MENU_SLOT_IDS.flatMap((id) => {
+  const slot = EQUIPMENT_SLOTS.find((candidate) => candidate.id === id)
+  return slot ? [slot] : []
+})
+
+const CLEARABLE_SLOTS = new Set(["necklace", "bow", "shield", "quiver"])
+
+function selectedEquipment(slot: EquipmentSlot, presentation: Presentation): string | null {
+  switch (slot.id) {
+  case "tunicBody": return presentation.chest
+  case "arms": return presentation.armSet
+  case "boots": return presentation.bootSet
+  case "headgear": return presentation.headgear
+  case "necklace": return presentation.necklace
+  case "weapon": return presentation.held.weapon ?? null
+  case "staff": return presentation.held.staff ?? null
+  case "bow": return presentation.held.bow ?? null
+  case "shield": return presentation.held.shield ?? null
+  case "quiver": return presentation.held.quiver ?? null
+  default: return null
+  }
+}
+
+function selectedOption(scene: RigScene, slot: EquipmentSlot, id: string | null) {
+  return scene[slot.catalogue]?.find((option) => option.id === id) ?? null
+}
 
 export interface ToolbarProps {
   onExportPNG: () => void
@@ -39,17 +70,21 @@ export interface ToolbarProps {
 
 export function Toolbar({ onExportPNG }: ToolbarProps) {
   const [equipOpen, setEquipOpen] = useState(false)
+  const [catalog, setCatalog] = useState<EquipmentCatalog | null>(null)
+  const [matrixSlotID, setMatrixSlotID] = useState<string | null>(null)
   const equipRef = useRef<HTMLDivElement>(null)
-  const { scene, presentation, handPose, dirty } = useRigEditor(
+  const { scene, presentation, handPose, wholeAnimationEdits, dirty } = useRigEditor(
     useShallow((state) => ({
       scene: state.scene,
       presentation: state.presentation,
       handPose: state.handPose,
+      wholeAnimationEdits: state.wholeAnimationEdits,
       dirty: state.dirty,
     })),
   )
   const setPresentation = useRigEditor((state) => state.setPresentation)
   const setHandPose = useRigEditor((state) => state.setHandPose)
+  const setWholeAnimationEdits = useRigEditor((state) => state.setWholeAnimationEdits)
   const editScene = useRigEditor((state) => state.editScene)
   const undo = useRigEditor((state) => state.undo)
   const redo = useRigEditor((state) => state.redo)
@@ -77,9 +112,49 @@ export function Toolbar({ onExportPNG }: ToolbarProps) {
     }
   }, [equipOpen])
 
+  useEffect(() => {
+    loadEquipmentCatalog()
+      .then(setCatalog)
+      .catch(() => setCatalog(null))
+  }, [])
+
   if (!scene) return <section className="toolbar" />
 
   const helmetVisible = Boolean(scene.layers.find((layer) => layer.id === HEADGEAR_LAYER_ID)?.visible)
+  const matrixSlot = EQUIP_MENU_SLOTS.find((slot) => slot.id === matrixSlotID) ?? EQUIP_MENU_SLOTS[0]
+  const matrixSelection = selectedEquipment(matrixSlot, presentation)
+
+  const chooseEquipment = (slot: EquipmentSlot, id: string | null) => {
+    switch (slot.id) {
+    case "tunicBody":
+      if (id) setPresentation({ chest: id })
+      break
+    case "arms":
+      if (id) setPresentation({ armSet: id })
+      break
+    case "boots":
+      if (id) setPresentation({ bootSet: id })
+      break
+    case "headgear":
+      if (id) setPresentation({ headgear: id })
+      break
+    case "necklace":
+      setPresentation({ necklace: id })
+      break
+    case "weapon":
+    case "staff":
+      if (id) {
+        const mainHand = slot.id
+        setPresentation({ mainHand, held: { ...presentation.held, [mainHand]: id } })
+      }
+      break
+    case "bow":
+    case "shield":
+    case "quiver":
+      setPresentation({ held: { ...presentation.held, [slot.id]: id } })
+      break
+    }
+  }
 
   return (
     <section className="toolbar">
@@ -111,56 +186,36 @@ export function Toolbar({ onExportPNG }: ToolbarProps) {
           Equip
         </button>
         <div id="equipMenu" className="control-menu" hidden={!equipOpen}>
-          <SelectField
-            id="chestSelect"
-            label="Chest"
-            value={presentation.chest}
-            options={toOptions(scene.chestOptions)}
-            onChange={(chest) => setPresentation({ chest })}
-          />
-          <SelectField
-            id="armSetSelect"
-            label="Arm set"
-            value={presentation.armSet}
-            options={toOptions(scene.armOptions)}
-            onChange={(armSet) => setPresentation({ armSet })}
-          />
-          <SelectField
-            id="bootSetSelect"
-            label="Boot set"
-            value={presentation.bootSet}
-            options={toOptions(scene.bootOptions)}
-            onChange={(bootSet) => setPresentation({ bootSet })}
-          />
-          <SelectField
-            id="headgearSelect"
-            label="Helmet"
-            value={presentation.headgear}
-            options={toOptions(scene.headgearOptions)}
-            onChange={(headgear) => setPresentation({ headgear })}
-          />
-          <SelectField
-            id="necklaceSelect"
-            label="Necklace"
-            value={presentation.necklace ?? ""}
-            options={toOptions(scene.necklaceOptions)}
-            placeholder="None"
-            onChange={(necklace) => setPresentation({ necklace: necklace || null })}
-          />
-          <MainHandSelect scene={scene} />
-          {HELD_SLOTS.filter((slot) => slot.layer !== "weapon" && slot.layer !== "staff").map((slot) => (
-            <SelectField
-              key={slot.layer}
-              id={`${slot.layer}Select`}
-              label={slot.layer === "bow" ? "Bow" : slot.layer === "shield" ? "Shield" : "Quiver"}
-              value={presentation.held[slot.layer] ?? ""}
-              options={toOptions(scene[slot.catalogue])}
-              placeholder="None"
-              onChange={(id) =>
-                setPresentation({ held: { ...presentation.held, [slot.layer]: id || null } })
-              }
-            />
-          ))}
+          <div className="equipment-preview-list">
+            {EQUIP_MENU_SLOTS.map((slot) => {
+              const selected = selectedEquipment(slot, presentation)
+              const option = selectedOption(scene, slot, selected)
+              const item = option?.itemID ? catalog?.items.get(option.itemID) : null
+              const activeMainHand = slot.id === "weapon" || slot.id === "staff"
+                ? presentation.mainHand === slot.id
+                : undefined
+              return (
+                <button
+                  key={slot.id}
+                  id={`equipment-${slot.id}`}
+                  type="button"
+                  className="equipment-preview"
+                  aria-pressed={activeMainHand}
+                  onClick={() => {
+                    setEquipOpen(false)
+                    setMatrixSlotID(slot.id)
+                  }}
+                >
+                  <ItemThumbnail item={item} />
+                  <span className="equipment-preview-copy">
+                    <strong>{slot.label}</strong>
+                    <span>{item?.name ?? option?.label ?? "No item"}</span>
+                  </span>
+                  <span className="equipment-preview-open" aria-hidden="true">›</span>
+                </button>
+              )
+            })}
+          </div>
           <Toggle
             label="Show helmet"
             checked={helmetVisible}
@@ -174,23 +229,35 @@ export function Toolbar({ onExportPNG }: ToolbarProps) {
         </div>
       </div>
 
-      <SelectField
-        id="handPoseSelect"
-        label="Hands"
-        value={handPose}
-        options={handPoseNames.map((id) => ({ id, label: id }))}
-        onChange={setHandPose}
-      />
-
-      <button id="resetPose" type="button" onClick={() => setManualPose({})}>
-        Reset pose
-      </button>
+      <div className="hand-pose-control">
+        <SelectField
+          id="handPoseSelect"
+          label="Hands"
+          value={handPose}
+          options={handPoseNames.map((id) => ({ id, label: id }))}
+          onChange={setHandPose}
+        />
+      </div>
+      <div
+        className="animation-offset-control"
+        title="Apply bone position and rotation edits evenly across the selected animation"
+      >
+        <Toggle
+          id="wholeAnimationBoneEdits"
+          label="Whole animation"
+          checked={wholeAnimationEdits}
+          onChange={setWholeAnimationEdits}
+        />
+      </div>
 
       <div className="toolbar-spacer" />
 
-      {/* History is its own group: it acts on the document rather than on what
-          the character is wearing, and it is not a save. */}
-      <div className="toolbar-island" role="group" aria-label="Edit history">
+      {/* Pose/history actions belong together, apart from both equipment and
+          persistence controls. */}
+      <div className="toolbar-island" role="group" aria-label="Pose and edit history">
+        <button id="resetPose" type="button" onClick={() => setManualPose({})}>
+          Reset pose
+        </button>
         <button
           id="undoEdit"
           type="button"
@@ -226,53 +293,16 @@ export function Toolbar({ onExportPNG }: ToolbarProps) {
       <button id="exportPng" type="button" onClick={onExportPNG}>
         Export PNG
       </button>
+      <ItemMatrixDialog
+        catalog={catalog}
+        scene={scene}
+        slot={matrixSlot}
+        selected={matrixSelection}
+        open={matrixSlotID !== null}
+        allowClear={CLEARABLE_SLOTS.has(matrixSlot.id)}
+        onClose={() => setMatrixSlotID(null)}
+        onPick={(id) => chooseEquipment(matrixSlot, id)}
+      />
     </section>
-  )
-}
-
-/**
- * Weapons and staffs share one hand, so they share one selector: choosing an
- * item also chooses which of the two layers is drawn.
- */
-function MainHandSelect({ scene }: { scene: RigScene }) {
-  const presentation = useRigEditor((state) => state.presentation)
-  const setPresentation = useRigEditor((state) => state.setPresentation)
-  const value = `${presentation.mainHand}:${presentation.held[presentation.mainHand] ?? ""}`
-  return (
-    <div className="field">
-      <Label htmlFor="mainHandSelect">Main hand</Label>
-      <Select
-        value={value}
-        onValueChange={(next) => {
-          const [layer, id] = next.split(":")
-          const mainHand = layer === "staff" ? "staff" : "weapon"
-          setPresentation({ mainHand, held: { ...presentation.held, [mainHand]: id } })
-        }}
-      >
-        <SelectTrigger id="mainHandSelect" size="sm">
-          <SelectValue placeholder="Main hand" />
-        </SelectTrigger>
-        <SelectContent>
-          {/* Both catalogues share one hand, so they share one picker; the
-              groups are what keep a staff from looking like another sword. */}
-          <SelectGroup>
-            <SelectLabel>Weapons</SelectLabel>
-            {(scene.weaponOptions ?? []).map((option) => (
-              <SelectItem key={option.id} value={`weapon:${option.id}`}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-          <SelectGroup>
-            <SelectLabel>Staffs, spears, and wands</SelectLabel>
-            {(scene.staffOptions ?? []).map((option) => (
-              <SelectItem key={option.id} value={`staff:${option.id}`}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </div>
   )
 }

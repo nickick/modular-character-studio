@@ -22,7 +22,7 @@ import {
   type HistoryState,
 } from "@/editor/history.ts"
 import { loadScene, saveScene } from "@/editor/scene-client.ts"
-import { commitPoseToBoneKeys } from "@/editor/keyframes.ts"
+import { commitPoseToAnimationOffsets, commitPoseToBoneKeys } from "@/editor/keyframes.ts"
 import type {
   HeldSelection,
   Pose,
@@ -59,6 +59,9 @@ export const HELD_SLOTS: readonly HeldSlot[] = [
 ]
 
 export type EditorMode = "layer" | "bone"
+
+/** The authored channel whose keys the transport is currently displaying. */
+export type TimelineTrackID = `bone:${string}` | `hand:${Side}` | "expression"
 
 /** Per-finger placement in the held item's shaft space. */
 export type FingerOffsets = Record<string, { along: number; across: number }>
@@ -106,6 +109,7 @@ export interface RigSnapshot {
   scene: RigScene
   manualPose: Pose
   clipScopedEdits: boolean
+  wholeAnimationEdits: boolean
   wrist: WristPreview
 }
 
@@ -124,12 +128,15 @@ export interface RigEditorState {
   mode: EditorMode
   selectedBone: string | null
   selectedLayer: string | null
+  timelineTrack: TimelineTrackID
   /**
    * Bone moves land on the clip being looked at rather than on the skeleton
    * every clip shares. On by default: a correction is nearly always a
    * correction to one animation.
    */
   clipScopedEdits: boolean
+  /** Bone edits become one constant additive correction across the clip. */
+  wholeAnimationEdits: boolean
   manualPose: Pose
   wrist: WristPreview
   selectedGripFinger: "all" | string
@@ -152,7 +159,9 @@ export interface RigEditorState {
   setMode: (mode: EditorMode) => void
   selectBone: (id: string | null) => void
   selectLayer: (id: string | null) => void
+  setTimelineTrack: (track: TimelineTrackID) => void
   setClipScopedEdits: (value: boolean) => void
+  setWholeAnimationEdits: (value: boolean) => void
   setManualPose: (pose: Pose) => void
   setAnimation: (name: AnimationName) => void
   setHandPose: (pose: string) => void
@@ -169,8 +178,8 @@ export interface RigEditorState {
    * one transaction per drag rather than one per animation frame.
    */
   editSceneSilently: (mutate: (scene: RigScene) => void) => void
-  /** Fold a drag's manual pose into the clip's bone keys, if clip-scoped. */
-  commitManualPoseToBoneKeys: () => void
+  /** Fold a drag into either the playhead key or the whole-animation offset. */
+  commitManualPose: () => void
   snapshot: () => RigSnapshot
   commit: (before: RigSnapshot | null) => void
   undo: () => void
@@ -247,7 +256,9 @@ export const useRigEditor = create<RigEditorState>()((set, get) => ({
   mode: "bone",
   selectedBone: "chest",
   selectedLayer: null,
+  timelineTrack: "bone:chest",
   clipScopedEdits: true,
+  wholeAnimationEdits: false,
   manualPose: {},
   wrist: defaultWrist(),
   selectedGripFinger: "all",
@@ -265,11 +276,20 @@ export const useRigEditor = create<RigEditorState>()((set, get) => ({
       set({ status: "Loading project scene…" })
       const { scene, revision } = await loadScene()
       set((current) => ({
+        selectedBone: scene.bones.some((bone) => bone.id === current.selectedBone)
+          ? current.selectedBone
+          : (scene.bones[0]?.id ?? null),
+        timelineTrack: scene.bones.some((bone) => bone.id === current.selectedBone)
+          ? `bone:${current.selectedBone}`
+          : scene.bones[0]
+            ? `bone:${scene.bones[0].id}`
+            : "expression",
         scene,
         savedScene: clone(scene),
         revision,
         dirty: false,
         manualPose: {},
+        wholeAnimationEdits: false,
         wrist: defaultWrist(),
         history: emptyHistory<RigSnapshot>(),
         presentation: presentationFromScene(scene, current.presentation),
@@ -305,9 +325,35 @@ export const useRigEditor = create<RigEditorState>()((set, get) => ({
   setPresentation: (patch) =>
     set((current) => ({ presentation: { ...current.presentation, ...patch } })),
   setMode: (mode) => set({ mode }),
-  selectBone: (selectedBone) => set({ selectedBone, mode: "bone" }),
+  selectBone: (selectedBone) =>
+    set({
+      selectedBone,
+      mode: "bone",
+      ...(selectedBone ? { timelineTrack: `bone:${selectedBone}` as TimelineTrackID } : {}),
+    }),
   selectLayer: (selectedLayer) => set({ selectedLayer, mode: "layer" }),
-  setClipScopedEdits: (clipScopedEdits) => set({ clipScopedEdits }),
+  setTimelineTrack: (timelineTrack) => {
+    if (timelineTrack === "expression") {
+      set({ timelineTrack })
+      return
+    }
+    if (timelineTrack === "hand:L" || timelineTrack === "hand:R") {
+      const side: Side = timelineTrack === "hand:L" ? "L" : "R"
+      set((current) => ({
+        timelineTrack,
+        wrist: { ...current.wrist, side, active: false },
+      }))
+      return
+    }
+    set({ timelineTrack, selectedBone: timelineTrack.slice("bone:".length), mode: "bone" })
+  },
+  setClipScopedEdits: (clipScopedEdits) =>
+    set((current) => ({
+      clipScopedEdits,
+      wholeAnimationEdits: clipScopedEdits ? current.wholeAnimationEdits : false,
+    })),
+  setWholeAnimationEdits: (wholeAnimationEdits) =>
+    set({ wholeAnimationEdits, ...(wholeAnimationEdits ? { clipScopedEdits: true } : {}) }),
   setManualPose: (manualPose) => set({ manualPose }),
   setAnimation: (animation) =>
     set({ animation, handPose: animationHandPose[animation], phase: 0 }),
@@ -315,7 +361,11 @@ export const useRigEditor = create<RigEditorState>()((set, get) => ({
   setPhase: (phase) => set({ phase: Math.max(0, Math.min(1, phase)) }),
   setPlaying: (playing) => set({ playing }),
   setSpeed: (speed) => set({ speed }),
-  setWrist: (patch) => set((current) => ({ wrist: { ...current.wrist, ...patch } })),
+  setWrist: (patch) =>
+    set((current) => ({
+      wrist: { ...current.wrist, ...patch },
+      ...(patch.side ? { timelineTrack: `hand:${patch.side}` as TimelineTrackID } : {}),
+    })),
   setSelectedGripFinger: (selectedGripFinger) => set({ selectedGripFinger }),
 
   editScene(mutate) {
@@ -332,21 +382,25 @@ export const useRigEditor = create<RigEditorState>()((set, get) => ({
     set({ scene: next, dirty: !sameScene(next, get().savedScene) })
   },
 
-  commitManualPoseToBoneKeys() {
-    const { scene, clipScopedEdits, manualPose, animation, phase } = get()
+  commitManualPose() {
+    const { scene, clipScopedEdits, wholeAnimationEdits, manualPose, animation, phase } = get()
     if (!scene || !clipScopedEdits || Object.keys(manualPose).length === 0) return
     const next = clone(scene)
-    if (!commitPoseToBoneKeys(next, animation, phase, manualPose)) return
+    const changed = wholeAnimationEdits
+      ? commitPoseToAnimationOffsets(next, animation, manualPose)
+      : commitPoseToBoneKeys(next, animation, phase, manualPose)
+    if (!changed) return
     set({ scene: next, manualPose: {}, dirty: !sameScene(next, get().savedScene) })
   },
 
   snapshot() {
-    const { scene, manualPose, clipScopedEdits, wrist } = get()
+    const { scene, manualPose, clipScopedEdits, wholeAnimationEdits, wrist } = get()
     if (!scene) throw new Error("Cannot snapshot before the scene has loaded")
     return {
       scene: clone(scene),
       manualPose: clone(manualPose),
       clipScopedEdits,
+      wholeAnimationEdits,
       wrist: clone(wrist),
     }
   },
@@ -358,6 +412,7 @@ export const useRigEditor = create<RigEditorState>()((set, get) => ({
         scene: current.scene ?? before.scene,
         manualPose: current.manualPose,
         clipScopedEdits: current.clipScopedEdits,
+        wholeAnimationEdits: current.wholeAnimationEdits,
         wrist: current.wrist,
       }),
     }))

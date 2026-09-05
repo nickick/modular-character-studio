@@ -32,6 +32,7 @@ import {
 } from "@/stores/equipment-editor.ts"
 import { StudioNav } from "@/components/StudioNav.tsx"
 import { AnimationPickerDialog } from "@/components/shared/AnimationPickerDialog.tsx"
+import { ItemThumbnail } from "@/components/shared/ItemThumbnail.tsx"
 import { Toggle } from "@/components/Toggle.tsx"
 import { Slider } from "@/components/ui/slider.tsx"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx"
@@ -197,6 +198,7 @@ export function EquipmentStudio() {
 
   const options = catalogueFor(scene, slot)
   const option = selectedOption(scene, slot, item)
+  const catalogItem = option?.itemID ? catalog?.items.get(option.itemID) : null
   const seconds = (animationDurations[animation as keyof typeof animationDurations] ?? 1) * phase
 
   return (
@@ -284,9 +286,12 @@ export function EquipmentStudio() {
             <output id="itemCount">{options.length}</output>
           </div>
           <button id="itemPicker" type="button" className="item-picker" onClick={() => setItemPickerOpen(true)}>
-            <span id="itemPickerName">{option?.label ?? "No item"}</span>
-            <span id="itemPickerMeta" className="item-picker-meta">
-              {option?.itemID ?? "not in the item catalogue"}
+            <ItemThumbnail item={catalogItem} />
+            <span className="item-picker-copy">
+              <span id="itemPickerName">{catalogItem?.name ?? option?.label ?? "No item"}</span>
+              <span id="itemPickerMeta" className="item-picker-meta">
+                {option?.itemID ?? "not in the item catalogue"}
+              </span>
             </span>
           </button>
         </aside>

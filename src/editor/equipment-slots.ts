@@ -107,6 +107,10 @@ export function heldElsewhere(layer: { id: string; bone: string }, placedBone: s
 
 /** The moment in each clip worth judging a placement at. */
 export const REVIEW_PHASE: Record<string, number> = {
+  bowIdle: 0, bowWalkForward: 0.25, bowRunForward: 0.25,
+  spellIdle: 0, spellRunForward: 0.25,
+  staffSpellIdle: 0, staffSpellRunForward: 0.25,
+
   idle: 0,
   run: 0.25,
   shieldUp: 0.3,
@@ -158,4 +162,23 @@ export function clipLabel(name: string, slotID: string): string {
 /** The layer being placed: a held slot is its own layer, a set is one piece. */
 export function activeLayerID(slot: EquipmentSlot, piece: string | null): string {
   return slot.pieces?.length ? (piece ?? slot.pieces[0].id) : slot.id
+}
+
+/** The three held items that share the closed left hand. */
+export const MAIN_HAND_LAYER_IDS: ReadonlySet<string> = new Set(["weapon", "staff", "bow"])
+
+/**
+ * Which main-hand item to draw.
+ *
+ * Only one can be held at a time, but a clip's loadout names `weapon` and
+ * `staff` together, because they are alternative render layers for whatever is
+ * equipped. Reviewing a necklace would otherwise put a sword and a staff in the
+ * same fist. The piece being placed always wins; otherwise the clip family
+ * decides, the way the rig studio's main-hand selector does.
+ */
+export function mainHandLayerFor(placedLayerID: string, animation: string): string {
+  if (MAIN_HAND_LAYER_IDS.has(placedLayerID)) return placedLayerID
+  if (animation.startsWith("bow")) return "bow"
+  if (animation.startsWith("staff")) return "staff"
+  return "weapon"
 }

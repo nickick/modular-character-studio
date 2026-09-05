@@ -41,6 +41,30 @@ button.accent, button[aria-pressed="true"] { border-color: #7e582a; background: 
 .control-menu { position: absolute; z-index: 30; display: grid; gap: 10px; padding: 11px; border: 1px solid #3a4656; border-radius: 9px; background: #171e28; box-shadow: 0 18px 45px rgba(0,0,0,.5); }
 .control-menu[hidden] { display: none; }
 .equip-menu { top: calc(100% + 8px); left: 0; width: 250px; }
+.toolbar #equipMenu {
+  top: calc(100% + 8px);
+  left: 0;
+  width: 330px;
+  max-height: min(720px, calc(100vh - 140px));
+  overflow-y: auto;
+}
+.equipment-preview-list { display: grid; gap: 6px; }
+.equipment-preview {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 7px;
+  text-align: left;
+}
+.equipment-preview-copy { min-width: 0; }
+.equipment-preview-copy strong,
+.equipment-preview-copy span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.equipment-preview-copy strong { color: #8e9aaa; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+.equipment-preview-copy span { margin-top: 2px; color: #f2f4f7; font-size: 11px; }
+.equipment-preview-open { color: #738092; font-size: 22px; line-height: 1; }
+.equipment-preview[aria-pressed="true"] .equipment-preview-open { color: #ffd68e; }
 .toolbar .equip-menu label { display: grid; gap: 5px; color: #8e9aaa; font-size: 9px; }
 .toolbar .equip-menu label.check { display: flex; color: #c4ccd7; font-size: 11px; }
 .toolbar .equip-menu select { width: 100%; min-width: 0; }
@@ -64,7 +88,7 @@ button.accent, button[aria-pressed="true"] { border-color: #7e582a; background: 
 .layer-row .visibility { width: 25px; height: 25px; padding: 0; display: grid; place-items: center; color: var(--gold); }
 .layer-row small { color: #657385; font-size: 9px; }
 
-.stage-shell { min-width: 0; min-height: 0; display: grid; grid-template-rows: 46px minmax(0, 1fr) 58px; background: #0e131a; }
+.stage-shell { min-width: 0; min-height: 0; display: grid; grid-template-rows: 46px minmax(0, 1fr) auto; background: #0e131a; }
 .stage-toolbar { display: flex; align-items: center; gap: 12px; padding: 7px 10px; border-bottom: 1px solid var(--line); background: #151b24; }
 .segmented { display: flex; }
 .segmented button { border-radius: 0; }
@@ -80,40 +104,50 @@ button.accent, button[aria-pressed="true"] { border-color: #7e582a; background: 
 .canvas-wrap { width: calc(1574px * var(--canvas-scale, .45)); height: calc(1574px * var(--canvas-scale, .45)); margin: 22px auto 56px; box-shadow: 0 22px 75px rgba(0,0,0,.48); }
 #rigCanvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: crosshair; }
 
-/* A row, not a fixed grid: the template was cut for six controls and there are
-   seven, so the last one wrapped and "Review poses" was squeezed into the
-   column meant for the time readout. Laid out as a flex row, the slider takes
-   whatever is left and the rest keep their natural width. */
-.timeline { display: flex; align-items: center; gap: 8px; padding: 7px 11px; border-top: 1px solid var(--line); background: #141a22; }
-.timeline > * { flex: 0 0 auto; white-space: nowrap; }
-/* The slider thumb overhangs its 6px track by 5px either side, so the marker
-   rows below it need more clearance than the old range input asked for. */
-.timeline .timeline-track { position: relative; flex: 1 1 120px; min-width: 80px; padding-bottom: 36px; }
-/* The playhead is a Radix slider: it lays itself out as a flex row, so forcing
-   `display: block` here -- as the old range input needed -- collapsed its track
-   to nothing. Only the minimum width is still ours to state. */
-.timeline #timeline { min-width: 80px; }
-.timeline #playPause { width: 36px; height: 32px; padding: 0; }
+/* Keep the entire stage width available for precise scrubbing. */
+.timeline { display: grid; gap: 12px; min-width: 0; padding: 10px 16px 8px; border-top: 1px solid var(--line); background: #141a22; }
+.timeline-authoring-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.timeline-authoring-primary,
+.timeline-authoring-secondary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.timeline .animation-picker-control { width: 156px; min-width: 0; }
+.timeline .animation-picker-button { width: 100%; }
+.timeline #playPause { width: 32px; height: 32px; padding: 0; }
+.timeline #timeReadout { min-width: 102px; white-space: nowrap; }
+.timeline .timeline-track-selector { width: 200px; max-width: 100%; }
+.timeline .timeline-track-selector .field { min-width: 0; }
+.timeline .timeline-track-selector [data-slot="select-trigger"] { flex: 1; min-width: 0; }
+.timeline [data-slot="select-trigger"] { height: 32px; }
+.timeline .check { margin-right: 8px; white-space: nowrap; }
 .keyframe-nav { display: flex; gap: 4px; }
-.keyframe-nav button { min-width: 48px; padding: 6px 7px; font-size: 9px; }
-.keyframe-nav button:disabled { cursor: default; opacity: .4; }
-/* Transport buttons carry a glyph, not a word: square, centred, currentColor
-   so the icon follows whatever state the button is in. */
+.keyframe-nav button:disabled, .timeline .eraser-button:disabled { cursor: default; opacity: .4; }
 .icon-button { display: inline-grid; place-items: center; }
 .icon-button svg { width: 11px; height: 11px; fill: currentColor; display: block; }
-.timeline span { color: #aeb8c5; font-size: 10px; font-variant-numeric: tabular-nums; }
-/* The range fills its column; the clip-scope checkbox keeps its own size, or it
-   stretches into the big empty square this rule used to draw. */
-.timeline input[type="range"] { width: 100%; }
-.timeline input { accent-color: var(--gold); }
-.bone-key-markers { position: absolute; right: 7px; bottom: 11px; left: 7px; height: 8px; pointer-events: none; }
-.bone-key-marker { position: absolute; width: 7px; height: 7px; padding: 0; transform: translateX(-50%) rotate(45deg); border: 0; border-radius: 1px; background: #55d9e8; pointer-events: auto; }
-.bone-key-marker.current { background: #fff; box-shadow: 0 0 0 1px #55d9e8; }
-.expression-key-markers { position: absolute; right: 7px; bottom: 21px; left: 7px; height: 8px; pointer-events: none; }
-.expression-key-marker { position: absolute; width: 8px; height: 8px; padding: 0; transform: translateX(-50%); border: 1px solid #190f25; border-radius: 50%; background: #d68cff; pointer-events: auto; }
-.expression-key-marker.current { background: #fff; box-shadow: 0 0 0 2px #d68cff; }
-.timeline label { color: #929dab; font-size: 10px; }
-.timeline select { padding: 5px; }
+.timeline .eraser-button { width: 32px; height: 32px; padding: 0; }
+.timeline .eraser-button svg { width: 14px; height: 14px; fill: none; stroke: currentColor; }
+.timeline span { color: #aeb8c5; font-size: 11px; font-variant-numeric: tabular-nums; }
+.timeline label { color: #929dab; font-size: 11px; }
+.timeline .timeline-track { position: relative; min-width: 0; padding-top: 20px; padding-bottom: 24px; }
+.timeline #timeline { height: 28px; cursor: ew-resize; }
+.timeline-ruler { position: absolute; top: 0; left: 8px; right: 8px; height: 22px; pointer-events: none; }
+.timeline-ruler span { position: absolute; transform: translateX(-50%); font-size: 10px; color: #8792a2; white-space: nowrap; }
+.timeline-ruler span:first-child { transform: none; }
+.timeline-ruler span:last-child { transform: translateX(-100%); }
+.timeline-ruler span::after { content: ""; position: absolute; top: 16px; left: 50%; height: 6px; border-left: 1px solid #46505e; }
+.timeline-ruler span:first-child::after { left: 0; }
+.timeline-ruler span:last-child::after { left: 100%; }
+.timeline-hover-guide { position: absolute; top: 16px; bottom: 0; border-left: 1px solid #aeb8c580; pointer-events: none; z-index: 1; }
+.timeline-hover-guide span { position: absolute; top: -21px; padding: 2px 5px; border-radius: 4px; background: #354153; color: #fff; white-space: nowrap; }
+.timeline-key-markers { position: absolute; right: 8px; bottom: 0; left: 8px; height: 24px; pointer-events: none; }
+.timeline-key-markers button { position: absolute; width: 24px; height: 24px; padding: 0; transform: translateX(-50%); border: 0; border-radius: 4px; background: transparent; pointer-events: auto; }
+.timeline-key-markers button::after { content: ""; position: absolute; top: 8px; left: 8px; width: 8px; height: 8px; border-radius: 1px; transform: rotate(45deg); background: var(--key-color); }
+.timeline-key-markers .bone-key-marker { --key-color: var(--cyan); }
+.timeline-key-markers .wrist-key-marker { --key-color: var(--gold); }
+.timeline-key-markers .expression-key-marker { --key-color: #d68cff; }
+.timeline-key-markers .expression-key-marker::after { border-radius: 50%; }
+.timeline-key-markers button:hover { background: #ffffff12; }
+.timeline-key-markers button.current { background: transparent; box-shadow: none; outline: none; }
+.timeline-key-markers button.current::after { background: #fff; box-shadow: 0 0 0 2px var(--key-color); }
+.timeline-key-markers button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 0; }
 .animation-picker-button { position: relative; width: 155px; height: 32px; overflow: hidden; padding: 0 29px 0 10px; color: #d4dbe4; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 .animation-picker-button::after { content: "▦"; position: absolute; top: 50%; right: 10px; color: #788598; transform: translateY(-50%); }
 
@@ -183,7 +217,6 @@ code { color: #eec276; }
 .copy-hand-channel { grid-template-columns: minmax(0, 1fr) auto; }
 .copy-hand-channel select { grid-column: auto; }
 .copy-hand-channel button { width: auto; white-space: nowrap; }
-.wrist-key-markers { position: absolute; right: 7px; bottom: 0; left: 7px; height: 12px; pointer-events: none; }
 .wrist-key-marker { position: absolute; width: 9px; height: 9px; padding: 0; border: 1px solid #201506; border-radius: 2px; background: var(--gold); transform: translateX(-50%) rotate(45deg); pointer-events: auto; }
 .wrist-key-marker.current { outline: 2px solid var(--cyan); outline-offset: 2px; }
 .expression-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -308,6 +341,11 @@ code { color: #eec276; }
 .field { display: flex; align-items: center; gap: 7px; color: #aeb7c4; font-size: 11px; }
 .field label { margin: 0; white-space: nowrap; }
 .toolbar .field [data-slot="select-trigger"] { min-width: 135px; }
+.toolbar .hand-pose-control > .field {
+  display: grid;
+  grid-template-columns: auto minmax(135px, max-content);
+  align-items: center;
+}
 .equip-menu .field,
 .panel-section .field,
 .expression-fields .field { display: grid; gap: 5px; }
@@ -375,15 +413,13 @@ code { color: #eec276; }
 /* Those rows clip rather than bleed, and scroll if they genuinely do not fit. */
 .stage-toolbar { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
 .stage-toolbar::-webkit-scrollbar { height: 0; }
-.timeline { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
-.timeline::-webkit-scrollbar { height: 0; }
 
 /* Step buttons are a glyph apiece: no padding, no minimum width. */
 .keyframe-nav button {
   display: grid;
-  width: 26px;
+  width: 32px;
   min-width: 0;
-  height: 26px;
+  height: 32px;
   padding: 0;
   place-items: center;
   font-size: 13px;
@@ -401,20 +437,8 @@ code { color: #eec276; }
 [data-slot="select-item"]:focus { background: #26313f; color: #f2f4f7; }
 
 /*
- * `.timeline > *` pins every control at its natural width, which leaves the
- * scrubber as the only thing that can give -- and once it hits its floor the
- * bar overflows. The clip name and the toggle's label can both afford to
- * shorten, so they yield before anything is pushed out of reach.
- */
-.timeline .animation-picker-control { flex: 0 1 auto; min-width: 92px; }
-.timeline .animation-picker-button { width: 100%; min-width: 0; }
-.timeline .check { flex: 0 1 auto; min-width: 0; overflow: hidden; }
-.timeline .check label { overflow: hidden; text-overflow: ellipsis; }
-
-/*
- * The history island. Undo and redo act on the document rather than on what
- * the character is wearing, and they are not a save either, so they sit apart
- * from both groups instead of trailing one of them.
+ * Pose/history actions sit together, apart from the equipment and persistence
+ * controls they do not belong to.
  */
 .toolbar-island {
   display: flex;
@@ -425,6 +449,7 @@ code { color: #eec276; }
   border-radius: 10px;
   background: #10161e;
 }
+.toolbar-island #resetPose { height: 28px; padding: 0 9px; }
 .toolbar-island .icon-button { width: 30px; height: 28px; padding: 0; }
 .toolbar-island .icon-button svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.1; }
 .toolbar-island .icon-button:disabled { cursor: default; opacity: .38; }

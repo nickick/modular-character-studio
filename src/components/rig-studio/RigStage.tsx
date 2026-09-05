@@ -279,7 +279,7 @@ export function RigStage({ images, reference, view, canvasRef }: RigStageProps) 
       if (!drag) return
       event.currentTarget.releasePointerCapture(event.pointerId)
       const store = useRigEditor.getState()
-      if (drag.kind !== "layer") store.commitManualPoseToBoneKeys()
+      if (drag.kind !== "layer") store.commitManualPose()
       store.commit(drag.before)
       dragRef.current = null
     },

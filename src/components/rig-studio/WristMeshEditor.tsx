@@ -4,7 +4,7 @@
  * A hand sprite with its two rails drawn over it, and the two handles that set
  * where the bend begins and ends. The hidden cuff side of the cyan handle stays
  * parent-weighted; the gold side stays 100% child-weighted. The same contract
- * edits the ankle bridge on whichever boot set is currently equipped.
+ * edits the elbow and ankle bridges on the currently equipped arms and boots.
  */
 import { useCallback, useEffect, useRef } from "react"
 import { useShallow } from "zustand/react/shallow"
@@ -34,6 +34,8 @@ const CHILD_COLOR = "#f0b24b"
 
 const jointLabel = (id: string): string => {
   const side = id.endsWith("L") ? "Left" : "Right"
+  if (id.startsWith("upperArmArmor")) return `${side} elbow · upper arm end`
+  if (id.startsWith("forearmVambrace")) return `${side} elbow · forearm top`
   if (id.startsWith("lowerLeg")) return `${side} ankle · shaft`
   if (id.startsWith("foot")) return `${side} ankle · foot overlap`
   return `${side} wrist · active hand`
@@ -79,6 +81,11 @@ export function JointMeshEditor({ images, showStageMesh, onShowStageMeshChange }
   const isShaft = layer?.id.startsWith("lowerLeg") ?? false
   const isFootOverlap = layer?.id.startsWith("foot") ?? false
   const isAnkle = isShaft || isFootOverlap
+  const isUpperArm = layer?.id.startsWith("upperArmArmor") ?? false
+  const isElbow = isUpperArm || (layer?.id.startsWith("forearmVambrace") ?? false)
+  const triangleCount = mesh && image
+    ? weightedStripMesh(mesh, image.width, image.height)?.triangles.length
+    : undefined
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -230,7 +237,7 @@ export function JointMeshEditor({ images, showStageMesh, onShowStageMeshChange }
         ref={canvasRef}
         width={WIDTH}
         height={HEIGHT}
-        aria-label={isAnkle ? "Ankle mesh bend-region editor" : "Wrist mesh bend-region editor"}
+        aria-label={isElbow ? "Elbow mesh bend-region editor" : isAnkle ? "Ankle mesh bend-region editor" : "Wrist mesh bend-region editor"}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -283,6 +290,9 @@ export function JointMeshEditor({ images, showStageMesh, onShowStageMeshChange }
           })
         }
       />
+      {triangleCount !== undefined && (
+        <p className="hint" id="meshTriangleCount">{triangleCount} triangles on this piece</p>
+      )}
       <div className="wrist-key-actions">
         <button
           id="resetJointMesh"
@@ -302,7 +312,11 @@ export function JointMeshEditor({ images, showStageMesh, onShowStageMeshChange }
       </div>
       <p className="hint">
         Drag cyan to where the parent bone stops and gold to where the child becomes rigid.{" "}
-        {isAnkle
+        {isElbow
+          ? isUpperArm
+            ? "Only the bottom elbow band blends into the forearm; the shoulder and upper arm stay rigid."
+            : "Only the top elbow band blends from the upper arm; the rest of the forearm stays rigid."
+          : isAnkle
           ? isShaft
             ? "This is the primary flex: the shaft stays on the lower leg while its bottom ankle band blends into the foot."
             : "This narrow companion blend keeps the raised foot overlap seated; the sole and toe stay rigid on the foot."

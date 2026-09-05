@@ -25,6 +25,9 @@ export interface CatalogItem {
   line?: string
   /** Whether an inventory icon has been drawn for it. */
   inventoryArt?: boolean
+  /** Optional inventory identifier and project-relative thumbnail path. */
+  inventoryAssetName?: string
+  inventoryAssetFile?: string
 }
 
 export interface EquipmentCatalog {
@@ -48,6 +51,8 @@ function readItem(value: JsonObject): CatalogItem {
   if (typeof value.level === "number") item.level = value.level
   if (typeof value.line === "string") item.line = value.line
   if (value.inventoryArt != null) item.inventoryArt = Boolean(value.inventoryArt)
+  if (typeof value.inventoryAssetName === "string") item.inventoryAssetName = value.inventoryAssetName
+  if (typeof value.inventoryAssetFile === "string") item.inventoryAssetFile = value.inventoryAssetFile
   return item
 }
 
@@ -64,7 +69,9 @@ export async function loadEquipmentCatalog(): Promise<EquipmentCatalog> {
     fetch(MATRIX_PATH).then((response) => response.json() as Promise<JsonValue>),
   ])
   const items = new Map<string, CatalogItem>()
-  for (const item of [...readItems(catalogue), ...readItems(matrix)]) items.set(item.id, item)
+  for (const item of [...readItems(catalogue), ...readItems(matrix)]) {
+    items.set(item.id, { ...items.get(item.id), ...item })
+  }
   const applicability = new Map<string, ReadonlySet<string>>()
   const source = object(matrix, "matrix").applicability
   if (isJsonObject(source)) {
@@ -74,6 +81,13 @@ export async function loadEquipmentCatalog(): Promise<EquipmentCatalog> {
     }
   }
   return { items, applicability }
+}
+
+/** A thumbnail stored relative to the active project's assets directory. */
+export function inventoryIconURL(item: CatalogItem | null | undefined): string | null {
+  const path = item?.inventoryAssetFile
+  if (!item?.inventoryArt || !path || path.startsWith("/") || path.includes("\\") || path.split("/").some((part) => part === ".." || part === ".")) return null
+  return `/assets/${path.split("/").map(encodeURIComponent).join("/")}`
 }
 
 /** Whether a slot can ever carry gear from a build line. */

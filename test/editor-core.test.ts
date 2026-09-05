@@ -17,7 +17,10 @@ import {
   activeGripKind,
   adjacentKey,
   adjacentPhase,
+  animationBoneOffset,
   boneKeys,
+  clearAnimationBoneOffset,
+  commitPoseToAnimationOffsets,
   commitPoseToBoneKeys,
   deleteBoneKey,
   deleteExpressionKey,
@@ -29,6 +32,7 @@ import {
   gripUsesAnimationOverride,
   handKeyPhases,
   normalizePhase,
+  setAnimationBoneOffsetValue,
   setExpressionChannel,
   wristKeys,
   writeHandChannel,
@@ -36,16 +40,18 @@ import {
 } from "../src/editor/keyframes.ts"
 import { writeBoneBind, writeLayerBind } from "../src/editor/binds.ts"
 import { handleShortcut } from "../src/editor/shortcuts.ts"
-import { optionsByCell, unmadeByCell, cellKey } from "../src/editor/equipment-catalog.ts"
+import { optionsByCell, unmadeByCell, cellKey, inventoryIconURL } from "../src/editor/equipment-catalog.ts"
 import { UNALIGNED, lineFor } from "../src/rig/equipment-lines.ts"
 import {
   EQUIPMENT_SLOTS,
-  activeLayerID,
   layerMatchesMainHandPreview,
+  MAIN_HAND_LAYER_IDS,
   REVIEW_PHASE,
+  activeLayerID,
+  mainHandLayerFor,
 } from "../src/editor/equipment-slots.ts"
 import { RigTracks } from "../src/rig/tracks.ts"
-import { reviewAnimations, animationEquipment } from "../src/rig/clips.ts"
+import { animationEquipment, animationNames, reviewAnimations } from "../src/rig/clips.ts"
 import { layerBindOwner } from "../src/rig/skeleton.ts"
 import { validateThreeQuarterRigScene } from "../src/rig/schema.ts"
 import type { RigScene } from "../src/rig/types.ts"
@@ -119,18 +125,52 @@ test("history forgets its oldest steps rather than growing without bound", () =>
 // Bone keys
 // ---------------------------------------------------------------------------
 
-test("a new bone track gets neutral boundary keys so one correction stays local", () => {
+test("a new looping bone track relies on cyclic interpolation instead of synthetic end keys", () => {
   const scene = freshScene()
   const tracks = RigTracks.fromScene(scene)
   ensureBoneKey(scene, "run", "chest", 0.5, tracks)
   const keys = boneKeys(scene, "run", "chest")
-  const phases = keys.map((key) => key.phase)
-  assert.deepEqual(phases, [0, 0.5, 1], "keys are sorted, and the clip ends where it started")
-  assert.deepEqual(
-    keys.filter((key) => key.phase === 0 || key.phase === 1).map((key) => key.rotation),
-    [0, 0],
-    "the boundaries are neutral, so the correction does not hold across the clip",
-  )
+  assert.deepEqual(keys.map((key) => key.phase), [0.5])
+})
+
+test("a new one-shot bone track keeps neutral boundary keys so one correction stays local", () => {
+  const scene = freshScene()
+  const tracks = RigTracks.fromScene(scene)
+  ensureBoneKey(scene, "blocked", "chest", 0.5, tracks)
+  assert.deepEqual(boneKeys(scene, "blocked", "chest").map((key) => key.phase), [0, 0.5, 1])
+})
+
+test("looping bone and hand tracks ease from their middle key back to their beginning", () => {
+  const tracks = new RigTracks({
+    bone: { idle: { chest: [
+      { phase: 0, rotation: 0 },
+      { phase: 0.5, rotation: 40 },
+    ] } },
+    wrist: { idle: { L: [
+      { phase: 0, angle: 0 },
+      { phase: 0.5, angle: 20 },
+    ] } },
+  })
+  assert.equal(tracks.bonePose("idle", 0.5).chest?.rotation, 40)
+  assert.equal(tracks.bonePose("idle", 0.75).chest?.rotation, 20)
+  assert.ok((tracks.bonePose("idle", 0.999).chest?.rotation ?? 0) < 0.001)
+  assert.equal(tracks.wristAngle("idle", "L", 0.75), 10)
+  assert.ok(tracks.wristAngle("idle", "L", 0.999) < 0.001)
+})
+
+test("one-shot tracks still hold their last key unless an end pose is authored", () => {
+  const tracks = new RigTracks({
+    bone: { blocked: { chest: [
+      { phase: 0, rotation: 0 },
+      { phase: 0.5, rotation: 40 },
+    ] } },
+    wrist: { blocked: { L: [
+      { phase: 0, angle: 0 },
+      { phase: 0.5, angle: 20 },
+    ] } },
+  })
+  assert.equal(tracks.bonePose("blocked", 0.75).chest?.rotation, 40)
+  assert.equal(tracks.wristAngle("blocked", "L", 0.75), 20)
 })
 
 test("a bone key at the playhead is reused rather than duplicated", () => {
@@ -142,7 +182,7 @@ test("a bone key at the playhead is reused rather than duplicated", () => {
   // Within the epsilon the playhead cannot resolve, it is the same key.
   const near = ensureBoneKey(scene, "run", "chest", 0.5009, tracks)
   assert.equal(near, first)
-  assert.equal(boneKeys(scene, "run", "chest").length, 3)
+  assert.equal(boneKeys(scene, "run", "chest").length, 1)
 })
 
 test("a drag's manual pose is added to the correction already keyed there", () => {
@@ -171,6 +211,38 @@ test("phases are normalized to what the timeline can actually address", () => {
   assert.equal(normalizePhase(0.123456789), 0.1235)
   assert.equal(normalizePhase(-1), 0, "the playhead cannot go before the clip")
   assert.equal(normalizePhase(4), 1, "or past its end")
+})
+
+test("whole-animation bone offsets stay constant without creating endpoint keys", () => {
+  const scene = freshScene()
+  delete scene.clipPoseOffsets
+  setAnimationBoneOffsetValue(scene, "run", "chest", "x", 18)
+  setAnimationBoneOffsetValue(scene, "run", "chest", "y", -7)
+
+  assert.deepEqual(animationBoneOffset(scene, "run", "chest"), { x: 18, y: -7 })
+  assert.equal(scene.boneKeyframes.run?.chest, undefined,
+    "a constant translation does not invent start and end keys")
+  const tracks = RigTracks.fromScene(scene)
+  for (const phase of [0, 0.2, 0.5, 0.8, 1]) {
+    const without = new RigTracks().pose("run", phase).chest ?? {}
+    const withOffset = tracks.pose("run", phase).chest ?? {}
+    assert.equal((withOffset.x ?? 0) - (without.x ?? 0), 18)
+    assert.equal((withOffset.y ?? 0) - (without.y ?? 0), -7)
+  }
+})
+
+test("whole-animation drags accumulate and zero or reset prunes their scene data", () => {
+  const scene = freshScene()
+  delete scene.clipPoseOffsets
+  assert.equal(commitPoseToAnimationOffsets(scene, "run", { chest: { x: 4, rotation: 3 } }), true)
+  assert.equal(commitPoseToAnimationOffsets(scene, "run", { chest: { x: 6, rotation: -1 } }), true)
+  assert.deepEqual(animationBoneOffset(scene, "run", "chest"), { x: 10, rotation: 2 })
+
+  setAnimationBoneOffsetValue(scene, "run", "chest", "rotation", 0)
+  assert.deepEqual(animationBoneOffset(scene, "run", "chest"), { x: 10 })
+  assert.equal(clearAnimationBoneOffset(scene, "run", "chest"), true)
+  assert.equal(scene.clipPoseOffsets, undefined)
+  assert.equal(clearAnimationBoneOffset(scene, "run", "chest"), false)
 })
 
 // ---------------------------------------------------------------------------
@@ -442,6 +514,20 @@ test("the picker reads an item's line straight from the catalogue", async () => 
   assert.equal(scene.format, "modular-character-studio-scene-v1")
 })
 
+test("inventory thumbnails resolve the exact asset-catalogue image", () => {
+  assert.equal(
+    inventoryIconURL({
+      id: "plate",
+      name: "Plate",
+      inventoryArt: true,
+      inventoryAssetName: "HunterPlateArmorItem",
+      inventoryAssetFile: "hunter-plate-armor-item.png",
+    }),
+    "/assets/hunter-plate-armor-item.png",
+  )
+  assert.equal(inventoryIconURL({ id: "bare", name: "Bare" }), null)
+})
+
 test("gear with no inventory item files as a look rather than as missing data", () => {
   // The bare arms and the default tunic are what the hunter starts in.
   const options = [{ id: "clothBoundV1", label: "Cloth Bound" }]
@@ -613,4 +699,37 @@ test("a studio only answers for the shortcuts it offers", () => {
   assert.deepEqual(fired, [])
   handleShortcut(press("z", { meta: true }).event, handlers)
   assert.deepEqual(fired, ["undo"])
+})
+
+// ---------------------------------------------------------------------------
+// One thing in the main hand
+// ---------------------------------------------------------------------------
+
+test("only one main-hand item is drawn, whatever the clip's loadout lists", () => {
+  // `weapon` and `staff` are alternative render layers for the equipped item,
+  // so an ordinary clip names both. Drawing both put a sword and a staff in the
+  // same fist while a necklace was being placed.
+  assert.deepEqual([...animationEquipment.idle], ["weapon", "staff", "shield"])
+  assert.equal(mainHandLayerFor("necklace", "idle"), "weapon")
+  assert.equal(mainHandLayerFor("tunicBody", "idle"), "weapon")
+  assert.equal(mainHandLayerFor("shield", "idle"), "weapon")
+})
+
+test("the piece being placed is the one in the hand, whatever clip is playing", () => {
+  // A staff is reviewed mid sword-swing, because a grip that reads while
+  // carried can still be wrong once the body lunges.
+  assert.equal(mainHandLayerFor("staff", "swordSwing"), "staff")
+  assert.equal(mainHandLayerFor("weapon", "staffIdle"), "weapon")
+  assert.equal(mainHandLayerFor("bow", "idle"), "bow")
+})
+
+test("with nothing held selected, the clip family decides what is in the hand", () => {
+  assert.equal(mainHandLayerFor("necklace", "staffIdle"), "staff")
+  assert.equal(mainHandLayerFor("necklace", "staffShieldUp"), "staff")
+  assert.equal(mainHandLayerFor("necklace", "bowDraw"), "bow")
+  assert.equal(mainHandLayerFor("necklace", "run"), "weapon")
+  // Every id it can return is one the hand actually carries.
+  for (const clip of animationNames) {
+    assert.ok(MAIN_HAND_LAYER_IDS.has(mainHandLayerFor("necklace", clip)), clip)
+  }
 })

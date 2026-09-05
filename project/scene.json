@@ -2087,6 +2087,78 @@
           "rotation": 0
         }
       ]
+    },
+    "idle": {
+      "upperArmR": [
+        {
+          "phase": 0,
+          "x": 0,
+          "y": 0,
+          "rotation": -1.474
+        },
+        {
+          "phase": 0.685,
+          "x": 0,
+          "y": 0,
+          "rotation": -0.584
+        }
+      ],
+      "lowerArmR": [
+        {
+          "phase": 0,
+          "x": 0,
+          "y": 0,
+          "rotation": 23.788
+        },
+        {
+          "phase": 0.685,
+          "x": 0,
+          "y": 0,
+          "rotation": 23.14
+        }
+      ]
+    },
+    "staffIdle": {
+      "upperArmR": [
+        {
+          "phase": 0,
+          "x": 0,
+          "y": 0,
+          "rotation": -0.792
+        },
+        {
+          "phase": 0.546,
+          "x": 0,
+          "y": 0,
+          "rotation": -1.285
+        },
+        {
+          "phase": 1,
+          "x": 0,
+          "y": 0,
+          "rotation": -9.019
+        }
+      ],
+      "lowerArmR": [
+        {
+          "phase": 0,
+          "x": 0,
+          "y": 0,
+          "rotation": 21.835
+        },
+        {
+          "phase": 0.546,
+          "x": 0,
+          "y": 0,
+          "rotation": 22.063
+        },
+        {
+          "phase": 1,
+          "x": 0,
+          "y": 0,
+          "rotation": 25.544
+        }
+      ]
     }
   },
   "expressionKeyframes": {
@@ -2525,6 +2597,449 @@
       },
       {
         "phase": 0.7,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "bowIdle": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "bowWalkForward": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "bowWalkBackward": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "bowRunForward": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "bowRunBackward": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "spellIdle": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "spellWalkForward": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "spellWalkBackward": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "spellRunForward": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "spellRunBackward": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "staffSpellIdle": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "staffSpellWalkForward": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "staffSpellWalkBackward": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "staffSpellRunForward": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "staffSpellRunBackward": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "blink",
+        "mouth": "neutral"
+      },
+      {
+        "phase": 0.77,
+        "eyes": "focused",
+        "mouth": "neutral"
+      }
+    ],
+    "staffSpellCast": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "talk"
+      },
+      {
+        "phase": 0.38,
+        "eyes": "wide",
+        "mouth": "shout"
+      },
+      {
+        "phase": 0.7,
+        "eyes": "wide",
+        "mouth": "smile"
+      },
+      {
+        "phase": 0.9,
+        "eyes": "neutral",
+        "mouth": "neutral"
+      }
+    ],
+    "staffSpellMoveForward": [
+      {
+        "phase": 0.0,
+        "eyes": "focused",
+        "mouth": "talk"
+      },
+      {
+        "phase": 0.46,
+        "eyes": "wide",
+        "mouth": "shout"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "staffSpellMoveBackward": [
+      {
+        "phase": 0.0,
+        "eyes": "wide",
+        "mouth": "talk"
+      },
+      {
+        "phase": 0.42,
+        "eyes": "wince",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.7,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "bowDodgeForward": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "surprised"
+      },
+      {
+        "phase": 0.2,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "wince",
+        "mouth": "pain"
+      },
+      {
+        "phase": 0.88,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "bowDodgeBackward": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "surprised"
+      },
+      {
+        "phase": 0.24,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.7,
+        "eyes": "wince",
+        "mouth": "pain"
+      },
+      {
+        "phase": 0.88,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "spellDodgeForward": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "surprised"
+      },
+      {
+        "phase": 0.2,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "wince",
+        "mouth": "pain"
+      },
+      {
+        "phase": 0.88,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "spellDodgeBackward": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "surprised"
+      },
+      {
+        "phase": 0.24,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.7,
+        "eyes": "wince",
+        "mouth": "pain"
+      },
+      {
+        "phase": 0.88,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "staffSpellDodgeForward": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "surprised"
+      },
+      {
+        "phase": 0.2,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.72,
+        "eyes": "wince",
+        "mouth": "pain"
+      },
+      {
+        "phase": 0.88,
+        "eyes": "focused",
+        "mouth": "frown"
+      }
+    ],
+    "staffSpellDodgeBackward": [
+      {
+        "phase": 0,
+        "eyes": "wide",
+        "mouth": "surprised"
+      },
+      {
+        "phase": 0.24,
+        "eyes": "focused",
+        "mouth": "grit"
+      },
+      {
+        "phase": 0.7,
+        "eyes": "wince",
+        "mouth": "pain"
+      },
+      {
+        "phase": 0.88,
         "eyes": "focused",
         "mouth": "frown"
       }
@@ -3978,7 +4493,26 @@
         }
       },
       "drawOrder": 18,
-      "visible": true
+      "visible": true,
+      "mesh": {
+        "type": "weightedStripV2",
+        "parentBone": "upperArmL",
+        "childBone": "lowerArmL",
+        "bendStops": [
+          0,
+          0.3333,
+          0.6667,
+          1
+        ],
+        "bendStart": {
+          "x": 0.5,
+          "y": 0.64
+        },
+        "bendEnd": {
+          "x": 0.5,
+          "y": 1
+        }
+      }
     },
     {
       "id": "forearmVambraceL",
@@ -4009,7 +4543,26 @@
         }
       },
       "drawOrder": 19,
-      "visible": true
+      "visible": true,
+      "mesh": {
+        "type": "weightedStripV2",
+        "parentBone": "upperArmL",
+        "childBone": "lowerArmL",
+        "bendStops": [
+          0,
+          0.3333,
+          0.6667,
+          1
+        ],
+        "bendStart": {
+          "x": 0.5,
+          "y": 0
+        },
+        "bendEnd": {
+          "x": 0.5,
+          "y": 0.36
+        }
+      }
     },
     {
       "id": "tunicBody",
@@ -4592,7 +5145,26 @@
         }
       },
       "drawOrder": 76,
-      "visible": true
+      "visible": true,
+      "mesh": {
+        "type": "weightedStripV2",
+        "parentBone": "upperArmR",
+        "childBone": "lowerArmR",
+        "bendStops": [
+          0,
+          0.3333,
+          0.6667,
+          1
+        ],
+        "bendStart": {
+          "x": 0.5,
+          "y": 0.64
+        },
+        "bendEnd": {
+          "x": 0.5,
+          "y": 1
+        }
+      }
     },
     {
       "id": "forearmVambraceR",
@@ -4623,7 +5195,26 @@
         }
       },
       "drawOrder": 77,
-      "visible": true
+      "visible": true,
+      "mesh": {
+        "type": "weightedStripV2",
+        "parentBone": "upperArmR",
+        "childBone": "lowerArmR",
+        "bendStops": [
+          0,
+          0.3333,
+          0.6667,
+          1
+        ],
+        "bendStart": {
+          "x": 0.5,
+          "y": 0
+        },
+        "bendEnd": {
+          "x": 0.5,
+          "y": 0.36
+        }
+      }
     },
     {
       "id": "headgear",

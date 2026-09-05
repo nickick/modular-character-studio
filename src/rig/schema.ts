@@ -67,6 +67,7 @@ const mouthExpressions = new Set<string>([
 const armLayerIDs = ["upperArmArmorL", "forearmVambraceL", "upperArmArmorR", "forearmVambraceR"]
 const bootLayerIDs = ["lowerLegL", "footL", "lowerLegR", "footR"]
 const deformableJointLayerIDs = new Set<string>([
+  ...armLayerIDs,
   "handOpenL", "handClosedL", "handOpenR", "handClosedR",
   "lowerLegL", "lowerLegR", "footL", "footR",
 ])
@@ -346,7 +347,7 @@ function weightedMesh(
     throw new Error(`${label}.type must be weightedStripV2`)
   }
   if (!deformableJointLayerIDs.has(layer.id)) {
-    throw new Error(`${label} is supported only on universal hand and boot ankle layers`)
+    throw new Error(`${label} is supported only on arm elbow, universal hand, and boot ankle layers`)
   }
   const parentBone = string(value.parentBone, `${label}.parentBone`)
   const childBone = string(value.childBone, `${label}.childBone`)

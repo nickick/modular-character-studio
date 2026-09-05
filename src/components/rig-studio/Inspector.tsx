@@ -10,9 +10,12 @@ import { writeBoneBind, writeDrawOrder, writeLayerBind } from "@/editor/binds.ts
 import {
   KEY_EPSILON,
   adjacentPhase,
+  animationBoneOffset,
   boneKeys,
+  clearAnimationBoneOffset,
   deleteBoneKey,
   ensureBoneKey,
+  setAnimationBoneOffsetValue,
   setBoneKeyValue,
 } from "@/editor/keyframes.ts"
 import { weightedStripMesh } from "@/rig/mesh.ts"
@@ -150,12 +153,13 @@ function BoneInspector({
   const editSceneSilently = useRigEditor((state) => state.editSceneSilently)
   const editScene = useRigEditor((state) => state.editScene)
   const setPhase = useRigEditor((state) => state.setPhase)
-  const { scene, animation, phase, clipScopedEdits, profile, manualPose } = useRigEditor(
+  const { scene, animation, phase, clipScopedEdits, wholeAnimationEdits, profile, manualPose } = useRigEditor(
     useShallow((state) => ({
       scene: state.scene,
       animation: state.animation,
       phase: state.phase,
       clipScopedEdits: state.clipScopedEdits,
+      wholeAnimationEdits: state.wholeAnimationEdits,
       profile: state.presentation.profile,
       manualPose: state.manualPose,
     })),
@@ -163,17 +167,25 @@ function BoneInspector({
   if (!bone) return null
 
   const correction = tracks.bonePose(animation, phase)[boneID] ?? {}
+  const wholeAnimationOffset = scene ? animationBoneOffset(scene, animation, boneID) : {}
   const bonePhases = scene ? boneKeys(scene, animation, boneID).map((key) => key.phase) : []
   const stepBoneKey = (direction: number) => {
     const next = adjacentPhase(bonePhases, phase, direction)
     if (next !== null) setPhase(next)
   }
-  const value = (key: "x" | "y" | "rotation") =>
-    clipScopedEdits ? (correction[key] ?? 0) : (bone[key] ?? 0)
+  const value = (key: "x" | "y" | "rotation") => {
+    if (!clipScopedEdits) return bone[key] ?? 0
+    return wholeAnimationEdits ? (wholeAnimationOffset[key] ?? 0) : (correction[key] ?? 0)
+  }
+
+  const poseLabel = (field: "X" | "Y" | "rotation") =>
+    wholeAnimationEdits ? `Animation ${field}` : `Pose ${field}`
 
   const write = (key: "x" | "y" | "rotation", next: number) =>
     editSceneSilently((draft) => {
-      if (clipScopedEdits) setBoneKeyValue(draft, animation, boneID, phase, key, next)
+      if (clipScopedEdits && wholeAnimationEdits) {
+        setAnimationBoneOffsetValue(draft, animation, boneID, key, next)
+      } else if (clipScopedEdits) setBoneKeyValue(draft, animation, boneID, phase, key, next)
       else writeBoneBind(draft, boneID, profile, key, next, manualPose)
     })
 
@@ -184,9 +196,14 @@ function BoneInspector({
       <p>
         parent <strong id="boneParent">{parent ?? "—"}</strong>
       </p>
+      {wholeAnimationEdits ? (
+        <p className="hint" id="wholeAnimationBoneEditHint">
+          Adds the same offset on every frame. Timeline keys stay unchanged.
+        </p>
+      ) : null}
       <div className="inspector-fields">
         <NumericField
-          label={clipScopedEdits ? "Pose X" : "Bind X"}
+          label={clipScopedEdits ? poseLabel("X") : "Bind X"}
           value={value("x")}
           min={-600}
           max={600}
@@ -196,7 +213,7 @@ function BoneInspector({
           onChange={(next) => write("x", next)}
         />
         <NumericField
-          label={clipScopedEdits ? "Pose Y" : "Bind Y"}
+          label={clipScopedEdits ? poseLabel("Y") : "Bind Y"}
           value={value("y")}
           min={-600}
           max={600}
@@ -206,7 +223,7 @@ function BoneInspector({
           onChange={(next) => write("y", next)}
         />
         <NumericField
-          label={clipScopedEdits ? "Pose rotation" : "Bind rotation"}
+          label={clipScopedEdits ? poseLabel("rotation") : "Bind rotation"}
           value={value("rotation")}
           min={-180}
           max={180}
@@ -235,7 +252,7 @@ function BoneInspector({
           }
         />
       </div>
-      {clipScopedEdits ? (
+      {clipScopedEdits && !wholeAnimationEdits ? (
         <div className="wrist-key-actions">
           <button
             id="setBoneKey"
@@ -270,6 +287,15 @@ function BoneInspector({
             Bone key ▶
           </button>
         </div>
+      ) : clipScopedEdits ? (
+        <button
+          id="resetAnimationBoneOffset"
+          type="button"
+          disabled={Object.keys(wholeAnimationOffset).length === 0}
+          onClick={() => editScene((draft) => void clearAnimationBoneOffset(draft, animation, boneID))}
+        >
+          Reset animation offset
+        </button>
       ) : (
         <button
           type="button"

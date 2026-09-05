@@ -11,7 +11,8 @@
       "rarity": "common",
       "line": "leather",
       "category": null,
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/GeneratedMatrix/Body/Shortbow/trail-scout-leathers/maleV1/chestBodyShortSkirtV1.png"
     },
     {
       "id": "arcane_robes",
@@ -22,7 +23,8 @@
       "rarity": "common",
       "line": "mage",
       "category": null,
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/Chest/ArcaneRobes/maleV1/chestBodyShortSkirtV1.png"
     },
     {
       "id": "vanguard_plate_armor",
@@ -33,7 +35,8 @@
       "rarity": "common",
       "line": "metal",
       "category": null,
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/Chest/VanguardPlate/maleV1/chestBodyShortSkirtV1.png"
     },
     {
       "id": "leather_bracers",
@@ -44,7 +47,8 @@
       "rarity": "common",
       "line": "leather",
       "category": null,
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/GeneratedMatrix/Arms/Shortbow/trail-bracers/upperArmInside.png"
     },
     {
       "id": "arcane_focus_vambraces",
@@ -55,7 +59,8 @@
       "rarity": "common",
       "line": "mage",
       "category": null,
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/ArmUnits/arcaneFocusV1/upperArmInside.png"
     },
     {
       "id": "heavy_plate_vambraces",
@@ -66,7 +71,8 @@
       "rarity": "common",
       "line": "metal",
       "category": null,
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/ArmUnits/heavyPlateV1/upperArmInside.png"
     },
     {
       "id": "leather_boots",
@@ -77,7 +83,8 @@
       "rarity": "common",
       "line": "leather",
       "category": null,
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/GeneratedMatrix/Boots/Shortbow/trail-trail-boots/bootShaftL.png"
     },
     {
       "id": "frostweave_boots",
@@ -88,7 +95,8 @@
       "rarity": "common",
       "line": "mage",
       "category": null,
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/BootUnits/frostweaveV1/bootShaftL.png"
     },
     {
       "id": "iron_guard_boots",
@@ -99,7 +107,8 @@
       "rarity": "common",
       "line": "metal",
       "category": null,
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/BootUnits/ironGuardV1/bootShaftL.png"
     },
     {
       "id": "cutthroat_hood",
@@ -111,7 +120,8 @@
       "rarity": "common",
       "line": "leather",
       "category": null,
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/Headgear/cutthroat-hood.png"
     },
     {
       "id": "arcane_circlet",
@@ -123,7 +133,8 @@
       "rarity": "common",
       "line": "mage",
       "category": null,
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/GeneratedMatrix/Headgear/Loud/hedge-crown.png"
     },
     {
       "id": "iron_guard_helm",
@@ -135,7 +146,8 @@
       "rarity": "common",
       "line": "metal",
       "category": null,
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/Headgear/vanguard-helm.png"
     },
     {
       "id": "arming_sword",
@@ -146,7 +158,8 @@
       "rarity": "common",
       "line": "utility",
       "category": "blade",
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/Equipment/ironLongsword.png"
     },
     {
       "id": "raider_bearded_axe",
@@ -157,7 +170,8 @@
       "rarity": "common",
       "line": "utility",
       "category": "axe",
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/Equipment/raiderBeardedAxe.png"
     },
     {
       "id": "oak_sun_staff",
@@ -168,7 +182,8 @@
       "rarity": "common",
       "line": "utility",
       "category": "staff",
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/Equipment/oakSunStaff.png"
     },
     {
       "id": "simple_wooden_bow",
@@ -179,7 +194,8 @@
       "rarity": "common",
       "line": "utility",
       "category": "bow",
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/Equipment/simpleWoodenBow.png"
     },
     {
       "id": "round_shield",
@@ -190,7 +206,8 @@
       "rarity": "common",
       "line": "utility",
       "category": "shield",
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/Equipment/roundShield.png"
     },
     {
       "id": "simple_pendant",
@@ -201,7 +218,8 @@
       "rarity": "common",
       "line": "utility",
       "category": "accessory",
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/Accessories/Necklaces/simple-pendant.png"
     },
     {
       "id": "normal_quiver",
@@ -212,7 +230,8 @@
       "rarity": "common",
       "line": "utility",
       "category": "quiver",
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/Equipment/Quivers/normalQuiver.png"
     },
     {
       "id": "veilstep_ring",
@@ -223,7 +242,8 @@
       "rarity": "common",
       "line": "utility",
       "category": "accessory",
-      "inventoryArt": false
+      "inventoryArt": true,
+      "inventoryAssetFile": "Layers/Accessories/Rings/veilstepRing.png"
     }
   ]
 }

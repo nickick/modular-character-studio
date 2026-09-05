@@ -7,6 +7,7 @@ import {
   animationNames,
   layerMatchesAnimationEquipment,
 } from '../src/rig/clips.ts'
+import { RigTracks } from '../src/rig/tracks.ts'
 import { resolveProfile } from '../src/rig/skeleton.ts'
 import { analyzeAlpha, decodePngAlpha } from '../scripts/png-alpha.mjs'
 
@@ -40,8 +41,8 @@ test('bundled boots deform both sides of both ankles through coordinated cages',
   assert.deepEqual(
     scene.layers.filter((layer) => layer.mesh).map((layer) => layer.id),
     [
-      'lowerLegL', 'footL', 'handOpenL', 'handClosedL',
-      'lowerLegR', 'footR', 'handOpenR', 'handClosedR',
+      'lowerLegL', 'footL', 'handOpenL', 'handClosedL', 'upperArmArmorL', 'forearmVambraceL',
+      'lowerLegR', 'footR', 'handOpenR', 'handClosedR', 'upperArmArmorR', 'forearmVambraceR',
     ],
   )
 
@@ -181,7 +182,10 @@ test('prompt records map to visible bundled outputs', async () => {
 test('bow animations never preview staff, weapon, or shield layers', () => {
   const equipment = ['weapon', 'staff', 'shield', 'bow']
   const bowAnimations = animationNames.filter((name) => name.startsWith('bow'))
-  assert.deepEqual(bowAnimations, ['bowDraw', 'bowMoveForward', 'bowMoveBackward'])
+  assert.deepEqual(bowAnimations, [
+    'bowIdle', 'bowWalkForward', 'bowWalkBackward', 'bowRunForward', 'bowRunBackward',
+    'bowDraw', 'bowMoveForward', 'bowMoveBackward', 'bowDodgeForward', 'bowDodgeBackward',
+  ])
 
   for (const animation of bowAnimations) {
     const visible = equipment.filter((id) => layerMatchesAnimationEquipment({ id }, animation))
@@ -205,3 +209,33 @@ test('corrected bundled PNGs retain complete and clean alpha bounds', async () =
   const blank = decodePngAlpha(await readFile(resolve(root, 'project/assets/reference/blank.png')))
   assert.deepEqual([blank.width, blank.height, ...blank.alpha], [1, 1, 0])
 })
+
+test("ranged carry cycles retain family grips and reverse their grounded gait", async () => {
+  const carryTracks = RigTracks.fromScene(scene);
+  const fingerIDs = scene.layers.filter(layer => layer.gripFinger).map(layer => layer.id);
+  for (const family of ["bow", "spell", "staffSpell"]) {
+    const reference = family === "bow" ? "bowDraw" : family === "staffSpell" ? "staffIdle" : "spellCast";
+    for (const motion of ["Idle", "WalkForward", "WalkBackward", "RunForward", "RunBackward"]) {
+      const name = family + motion;
+      for (const side of family === "spell" ? [] : ["L", "R"]) for (const phase of [0, .25, .5, .75]) {
+        assert.deepEqual(carryTracks.gripControlsAt(name, side, phase, fingerIDs),
+          carryTracks.gripControlsAt(reference, side, phase, fingerIDs), `${name} retains ${side} ${reference} grip`);
+      }
+      // The grip is kept near the torso; it must not inherit a runner's large arm swing.
+      const angles = [0, .25, .5, .75].map(t => carryTracks.pose(name, t).upperArmL.rotation);
+      assert.ok(Math.max(...angles) - Math.min(...angles) < 5, `${name} carries steadily`);
+    }
+    for (const gait of ["Walk", "Run"]) {
+      const forward = family + gait + "Forward", backward = family + gait + "Backward";
+      for (const phase of [.13, .37, .61, .89]) {
+        const a = carryTracks.pose(forward, phase), b = carryTracks.pose(backward, 1 - phase);
+        for (const bone of ["root", "upperLegL", "lowerLegL", "upperLegR", "lowerLegR", "footL", "footR"]) {
+          for (const field of ["x", "y", "rotation"]) {
+            assert.ok(Math.abs((a[bone]?.[field] ?? 0) - (b[bone]?.[field] ?? 0)) < .001,
+              `${family} ${gait} backward retraces ${bone}.${field}`);
+          }
+        }
+      }
+    }
+  }
+});

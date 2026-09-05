@@ -1,5 +1,5 @@
 /**
- * The wrist cage and finger cutout editors, checked by behaviour.
+ * The joint cage and finger cutout editors, checked by behaviour.
  *
  * Both were canvas sub-editors whose logic lived inside pointer handlers, so
  * the old suite could only grep `editor.js` for the fact that they existed.
@@ -116,13 +116,14 @@ test("the studio edits the cage on the hand of the chosen side", () => {
   }
 })
 
-test("the joint editor offers both active-hand wrists and both sides of each ankle", () => {
+test("the joint editor offers paired elbows, active-hand wrists, and active-boot ankles", () => {
   const layers = editableJointLayers(rig.layers, (candidate) =>
     layerMatchesHandPose(candidate, "closed"),
   )
   assert.deepEqual(
     layers.map((layer) => layer.id),
-    ["lowerLegL", "footL", "handClosedL", "lowerLegR", "footR", "handClosedR"],
+    ["lowerLegL", "footL", "handClosedL", "upperArmArmorL", "forearmVambraceL",
+      "lowerLegR", "footR", "handClosedR", "upperArmArmorR", "forearmVambraceR"],
   )
   for (const side of ["L", "R"] as const) {
     const shaft = layers.find((layer) => layer.id === `lowerLeg${side}`)
@@ -208,7 +209,7 @@ test("the section count is clamped to what the cage supports", () => {
 test("every resampled cage still passes the scene schema", () => {
   for (let count = MIN_BEND_SECTIONS; count <= MAX_BEND_SECTIONS; count += 1) {
     const draft = structuredClone(source)
-    for (const id of ["handClosedL", "lowerLegL", "footL"]) {
+    for (const id of ["handClosedL", "lowerLegL", "footL", "upperArmArmorL", "forearmVambraceL"]) {
       const layer = draft.layers.find((candidate: { id: string }) => candidate.id === id)
       setBendSections(layer.mesh, count)
     }

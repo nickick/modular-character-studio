@@ -5,11 +5,11 @@
  * function of phase alone. Anything that answers to runtime input -- bow and
  * spell aim, the IK that follows them, cross-fades between clips -- stays out
  * of here, because it is a function of what the player is doing rather than of
- * the timeline. A runtime can sample these into whatever fixed representation
- * its renderer needs.
+ * the timeline. `Scripts/bake_three_quarter_pose_library.mjs` samples this into
+ * the fixed table that iOS plays.
  */
 import { clamp01 } from "./angles.ts"
-import { animationDurations, animationLoops, isAnimationName, type AnimationName } from "./clips.ts"
+import { animationDurations, type AnimationName } from "./clips.ts"
 import { solveTwoBoneIK } from "./ik.ts"
 import type { Point, Pose, PoseDelta, Side } from "./types.ts"
 
@@ -57,44 +57,69 @@ const ramp = (phase: number, from: number, to: number): number => {
 const GROUNDED_KNEE_MARGIN = 4;
 
 /**
- * The ankle targets preserve the authored stride in screen space. The leg solver
- * bends each knee toward those targets and lowers the pelvis only when the stance
- * is wider than the fixed-length legs can otherwise reach.
+ * The jog from the waist down: gait, stride, and the two brief flight beats per
+ * cycle. Everything that covers ground shares this, so a hunter carrying a bow,
+ * staff or shield runs at the same cadence as one carrying a sword and only the
+ * arms differ.
+ *
+ * `hips` is supplied rather than computed, and is never written back. A held
+ * clip therefore keeps the pelvis exactly where its aim put it -- a drawn bow
+ * that swayed with the pelvis would lose its line -- while a free run passes in
+ * its own sway.
  */
-function stridePose(
-  phase: number,
-  {
-    armArc,
-    elbowArc,
-    halfStride = 150,
-    stepHeight = 20,
-  }: { armArc: number; elbowArc: number; halfStride?: number; stepHeight?: number },
-): Pose {
-  const swing = cycle(phase);
-  const hips = { rotation: 3 * swing };
+function jogStepPose(phase: number, direction: number, hips: PoseDelta = {}): Pose {
+  // Reversing the phase reverses which knee recovers behind the other leg, so
+  // backing away is the gait played backward rather than the same cycle with a
+  // different label.
+  const gaitPhase = direction > 0 ? phase : 1 - phase;
+  const swing = cycle(gaitPhase);
   const targets = {
-    L: groundedWalkFootTarget(phase, 0, 1, halfStride, stepHeight),
-    R: groundedWalkFootTarget(phase, 0.5, 1, halfStride, stepHeight),
+    L: jogFootTarget(gaitPhase, 0),
+    R: jogFootTarget(gaitPhase, 0.5),
   };
-  const root = groundedRootForTargets(
+  const supportRoot = groundedRootForTargets(
     { x: 0, y: 0 }, hips, targets, balancedGroundedLegRig, GROUNDED_KNEE_MARGIN,
   );
-  const legs = groundedLegPose(root, hips, targets, balancedGroundedLegRig);
+  const legs = groundedLegPose(supportRoot, hips, targets, balancedGroundedLegRig);
+  const halfStep = ((gaitPhase % 0.5) + 0.5) % 0.5;
+  const flightPhase = clamp01((halfStep - 0.40) / 0.10);
+  const flightLift = 7 * Math.sin(Math.PI * flightPhase) ** 2;
+  // Solve the contact pose first, then lift the assembled figure during the
+  // no-support window. Re-solving after this shift would pin a foot again and
+  // turn the jog back into a walk.
+  const root = { ...supportRoot, y: supportRoot.y - flightLift };
   return {
     root,
-    hips,
-    spine: { rotation: -1.5 * swing },
-    chest: { rotation: -3.5 * swing },
-    head: { rotation: 1.8 * swing },
-    // Arms swing opposite their own leg. Matching signs read as walking backwards.
-    upperArmL: { rotation: -armArc * swing },
-    lowerArmL: { rotation: elbowArc + elbowArc * 0.3 * swing },
-    upperArmR: { rotation: armArc * swing },
-    lowerArmR: { rotation: elbowArc + elbowArc * 0.3 * swing },
     ...legs,
-    skirtL: { rotation: 7 * swing },
-    skirtR: { rotation: 7 * swing },
-    skirtFront: { rotation: -4 * swing, y: -3 * (1 - Math.abs(swing)) },
+    skirtL: { rotation: 9 * swing },
+    skirtR: { rotation: 9 * swing },
+    skirtFront: { rotation: -5 * swing, y: -4 * (1 - Math.abs(swing)) },
+  };
+}
+
+function jogPose(phase: number): Pose {
+  const swing = cycle(phase);
+  const landingCompression = 0.5 + 0.5 * Math.cos((phase - 0.06) * TAU * 2);
+  const hips = {
+    x: 2.5 * swing,
+    y: 4 * landingCompression,
+    rotation: 2.2 * swing,
+  };
+  return {
+    ...jogStepPose(phase, 1, hips),
+    hips,
+    spine: { rotation: 3 - 1.1 * swing },
+    chest: { rotation: 3.5 - 3.2 * swing },
+    neck: { rotation: -2 + swing },
+    head: { rotation: -3.5 + 1.3 * swing },
+    // Arms swing opposite their own leg. The elbows stay runner-tight rather
+    // than straightening into the pendulum silhouette of a walk.
+    shoulderL: { rotation: -2 * swing },
+    upperArmL: { rotation: -25 * swing },
+    lowerArmL: { rotation: 68 + 10 * swing },
+    shoulderR: { rotation: 2 * swing },
+    upperArmR: { rotation: 25 * swing },
+    lowerArmR: { rotation: 68 - 10 * swing },
   };
 }
 
@@ -108,9 +133,9 @@ function onlyBones(pose: Pose, included: ReadonlySet<string>): Pose {
 }
 
 /**
- * A close-to-camera crossing step. Reversing the phase reverses which knee
- * recovers behind the other leg, so backward movement is the gait played
- * backward rather than the same cycle with a different label.
+ * A held weapon carried at a run: the action's own upper body frozen at its
+ * hold, over the jog's legs. The bow, staff or rod keeps its aim while the
+ * hunter covers ground at the same cadence as an empty-handed run.
  */
 function crossingStepPose(phase: number, direction: number, hips: PoseDelta = {}): Pose {
   const gaitPhase = direction > 0 ? phase : 1 - phase;
@@ -132,10 +157,39 @@ function crossingStepPose(phase: number, direction: number, hips: PoseDelta = {}
   };
 }
 
+function groundedWalkFootTarget(
+  phase: number,
+  offset: number,
+  direction: number,
+  halfStride: number,
+  stepHeight: number,
+): Point {
+  const local = ((phase + offset) % 1 + 1) % 1;
+  const stanceEnd = 0.62;
+  // The shared pose library sits between the two profiles' boot registrations.
+  // A tiny downward bias keeps the longer male soles from hovering without
+  // visibly pushing the female boots through the guide.
+  const floorSettle = 2;
+  if (local <= stanceEnd) {
+    const travel = ramp(local, 0, stanceEnd);
+    return {
+      x: direction * (-halfStride + 2 * halfStride * travel),
+      y: floorSettle,
+    };
+  }
+  const swing = ramp(local, stanceEnd, 1);
+  const arc = Math.sin(Math.PI * swing);
+  return {
+    x: direction * (halfStride - 2 * halfStride * swing),
+    y: floorSettle - stepHeight * arc * arc,
+  };
+}
+
+
 function heldActionStepPose(action: AnimationName, phase: number, direction: number): Pose {
-  const holdPhase = action === "spellCast" ? 0.55 : 0.8;
+  const holdPhase = (action === "spellCast" || action === "staffSpellCast") ? 0.55 : 0.8;
   const upperBody = onlyBones(authoredPose(action, holdPhase), heldUpperBodyBones);
-  return { ...upperBody, ...crossingStepPose(phase, direction, upperBody.hips) };
+  return { ...upperBody, ...jogStepPose(phase, direction, upperBody.hips) };
 }
 
 // The animation curves are shared by both body profiles, so foot locking uses
@@ -364,6 +418,7 @@ function groundAuthoredFootTravel(
 
 const groundedStationaryClips = new Set([
   "idle", "staffIdle", "shieldUp", "staffShieldUp",
+  "bowIdle", "spellIdle", "staffSpellIdle", "staffSpellCast",
   "blocked", "spellCast", "bowDraw",
 ]);
 
@@ -397,66 +452,36 @@ function motionLift(phase: number, from: number, to: number, height: number): nu
   return -height * arc * arc;
 }
 
-/**
- * One foot remains in its weight-bearing pass while the other clears the
- * floor and returns to the next contact. The horizontal stance travel is the
- * inverse of the character's movement, so the planted sole reads as fixed in
- * world space when the actor advances. Both ends meet at y = 0 with a flat
- * slope, preventing a pop when the loop wraps or the support foot changes.
- */
-function groundedWalkFootTarget(
-  phase: number,
-  offset: number,
-  direction: number,
-  halfStride: number,
-  stepHeight: number,
-): Point {
+/** A jog spends less than half of each step on the ground and lifts the
+ * recovering ankle high enough for the knee to lead through the swing. */
+function jogFootTarget(phase: number, offset: number): Point {
   const local = ((phase + offset) % 1 + 1) % 1;
-  const stanceEnd = 0.62;
-  // The shared pose library sits between the two profiles' boot registrations.
-  // A tiny downward bias keeps the longer male soles from hovering without
-  // visibly pushing the female boots through the guide.
+  const stanceEnd = 0.40;
+  const halfStride = 150;
   const floorSettle = 2;
   if (local <= stanceEnd) {
     const travel = ramp(local, 0, stanceEnd);
     return {
-      x: direction * (-halfStride + 2 * halfStride * travel),
+      x: -halfStride + 2 * halfStride * travel,
       y: floorSettle,
     };
   }
-  const swing = ramp(local, stanceEnd, 1);
-  const arc = Math.sin(Math.PI * swing);
+  const recovery = ramp(local, stanceEnd, 1);
+  const arc = Math.sin(Math.PI * recovery);
   return {
-    x: direction * (halfStride - 2 * halfStride * swing),
-    y: floorSettle - stepHeight * arc * arc,
+    x: halfStride - 2 * halfStride * recovery,
+    y: floorSettle - 44 * arc * arc,
   };
 }
 
+/**
+ * A guard stance carried at a run. The shield keeps working through the cycle
+ * rather than freezing, so the upper body is sampled at the live phase, but
+ * the legs are the same jog every other locomotion clip uses.
+ */
 function guardWalkPose(guardClip: AnimationName, phase: number, direction: number): Pose {
   const upperBody = onlyBones(authoredPose(guardClip, phase), heldUpperBodyBones);
-  const gaitPhase = direction > 0 ? phase : 1 - phase;
-  const root = {
-    x: 0,
-    y: 0,
-  };
-  const targets = {
-    L: groundedWalkFootTarget(gaitPhase, 0, 1, 150, 20),
-    R: groundedWalkFootTarget(gaitPhase, 0.5, 1, 150, 20),
-  };
-  const hips = upperBody.hips ?? {};
-  const reachableRoot = groundedRootForTargets(
-    root, hips, targets, balancedGroundedLegRig, GROUNDED_KNEE_MARGIN,
-  );
-  const legs = groundedLegPose(reachableRoot, hips, targets, balancedGroundedLegRig);
-  const strideWave = cycle(gaitPhase);
-  return {
-    ...upperBody,
-    root: reachableRoot,
-    ...legs,
-    skirtL: { rotation: 3 * strideWave },
-    skirtR: { rotation: 3 * strideWave },
-    skirtFront: { rotation: -2 * strideWave, y: -1.5 * Math.abs(strideWave) },
-  };
+  return { ...upperBody, ...jogStepPose(phase, direction, upperBody.hips) };
 }
 
 function dodgeLungePose(phase: number, direction: number): Pose {
@@ -567,13 +592,57 @@ export function weldHeadToNeck(pose: Pose): Pose {
 }
 
 export function authoredPose(name: string, phase: number): Pose {
-  // Looping gaits wrap; one-shot actions must retain their authored endpoint.
-  // Wrapping phase 1 to phase 0 made the final baked sample snap every leg
-  // back to its opening solve before the runtime could transition away.
-  const t = isAnimationName(name) && animationLoops[name] === false
-    ? clamp01(phase)
-    : ((phase % 1) + 1) % 1;
+  // RigTracks owns the loop boundary because only it can see whether phase 1
+  // has an explicit editor key. The procedural clip itself therefore samples
+  // the phase it is given instead of guessing whether its endpoint should wrap.
+  const t = clamp01(phase);
   const wave = cycle(t);
+
+  // Carrying a ranged weapon is separate from committing its aimed attack.
+  // Keep the lead wrist neutral so all clips use the family grip registration.
+  if (name === "bowIdle" || name === "spellIdle" || name === "staffSpellIdle") {
+    const pose = authoredPose("staffIdle", t);
+    const staff = name === "staffSpellIdle";
+    const bow = name === "bowIdle";
+    return {
+      ...pose,
+      shoulderL: { rotation: -2 + 0.6 * wave },
+      upperArmL: { rotation: (staff ? 12 : bow ? 24 : 28) + 1.2 * wave },
+      lowerArmL: { rotation: (staff ? 66 : bow ? 38 : 55) + 1.3 * wave },
+      // A quiet off-hand guard supports an equipped shield without implying
+      // active blocking. An empty hand occupies the same relaxed position.
+      shoulderR: { rotation: -3 + 0.5 * wave },
+      upperArmR: { rotation: -8 + 0.8 * wave },
+      lowerArmR: { rotation: (bow ? 24 : 62) + 1.4 * wave },
+    };
+  }
+  const dodge = /^(bow|spell|staffSpell)Dodge(Forward|Backward)$/.exec(name);
+  if (dodge) {
+    const lower = dodgeLungePose(t, dodge[2] === "Forward" ? 1 : -1);
+    const upper = onlyBones(authoredPose(`${dodge[1]}Idle`, 0), heldUpperBodyBones);
+    return { ...lower, ...upper, hips: lower.hips ?? {}, root: lower.root ?? {} };
+  }
+  const carry = /^(bow|spell|staffSpell)(Walk|Run)(Forward|Backward)$/.exec(name);
+  if (carry) {
+    const [, family, gait, direction] = carry;
+    const gaitPhase = direction === "Forward" ? t : 1 - t;
+    const upper = onlyBones(authoredPose(`${family}Idle`, t), heldUpperBodyBones);
+    // Let the existing grounded gait own the pelvis and legs. The arms keep
+    // their grip instead of inheriting the large opposing swings of a run.
+    const lower = gait === "Run" ? jogPose(gaitPhase) : crossingStepPose(gaitPhase, 1);
+    return { ...lower, ...upper, hips: lower.hips ?? {}, root: lower.root ?? {} };
+  }
+  if (name === "staffSpellCast") {
+    const pose = authoredPose("spellCast", t);
+    const carry = authoredPose("staffSpellIdle", t);
+    // Casting extends the staff from its normal closed grip; the shield arm
+    // stays tucked in rather than disappearing with the main-hand weapon.
+    return { ...pose,
+      shoulderR: carry.shoulderR, upperArmR: carry.upperArmR, lowerArmR: carry.lowerArmR,
+    };
+  }
+  if (name === "staffSpellMoveForward") return heldActionStepPose("staffSpellCast", t, 1);
+  if (name === "staffSpellMoveBackward") return heldActionStepPose("staffSpellCast", t, -1);
 
   if (name === "staffIdle") {
     const breath = 0.5 + 0.5 * cycle(t, -0.25);
@@ -604,7 +673,7 @@ export function authoredPose(name: string, phase: number): Pose {
   }
 
   if (name === "run") {
-    return stridePose(t, { armArc: 19, elbowArc: 34, halfStride: 150, stepHeight: 20 });
+    return jogPose(t);
   }
 
   if (name === "shieldUp") {
@@ -649,7 +718,7 @@ export function authoredPose(name: string, phase: number): Pose {
       neck: { rotation: -1 + 0.3 * brace },
       head: { rotation: -2 + 0.5 * brace },
       // The staff-side arm reuses the proven vertical carry geometry. It keeps
-      // the long shaft upright beside the character instead of spearing through
+      // the long shaft upright beside the hunter instead of spearing through
       // the shield or sweeping across the face.
       shoulderL: { rotation: -2 + 0.8 * breath },
       upperArmL: { rotation: 12 + 1.4 * brace },
@@ -683,7 +752,7 @@ export function authoredPose(name: string, phase: number): Pose {
   if (name === "dodgeBackward") return dodgeLungePose(t, -1);
 
   if (name === "blocked") {
-    // A shield counter catches the character at full commitment and deflects the
+    // A shield counter catches the hunter at full commitment and deflects the
     // blow upward: the weapon arm is thrown straight overhead through the
     // front while the shield arm stays in guard. The fast opening beat makes
     // the impact read and the long hold leaves an exposed silhouette before
@@ -694,7 +763,7 @@ export function authoredPose(name: string, phase: number): Pose {
     const exposed = impact * (1 - recover);
     const beat = (value: number): number => value * exposed;
     return {
-      // Unmirrored characters face screen-left, so positive X is backward. The
+      // Unmirrored hunters face screen-left, so positive X is backward. The
       // map position remains fixed: this is recoil inside the actor frame.
       root: { x: beat(22), y: beat(10) },
       hips: { rotation: beat(-4) },
@@ -825,7 +894,7 @@ export function authoredPose(name: string, phase: number): Pose {
   }
 
   if (name === "sneakAttack") {
-    // A low, coiled version of the swing: the character drops into a deep crouch
+    // A low, coiled version of the swing: the hunter drops into a deep crouch
     // on both knees, tucks the blade in against the ribs, then drives out of
     // that crouch into a lunge and throws the weapon arm out and forward. Both
     // weights fall back to zero by the last frame, so the clip ends standing

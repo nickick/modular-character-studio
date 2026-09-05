@@ -86,17 +86,21 @@ const load = async (path: string): Promise<Record<string, unknown>> =>
   (await vite.ssrLoadModule(path)) as Record<string, unknown>
 
 const rigModule = await load("/src/components/rig-studio/RigStudio.tsx")
+const timelineModule = await load("/src/components/rig-studio/Timeline.tsx")
 const equipmentModule = await load("/src/components/equipment-studio/EquipmentStudio.tsx")
 const numericModule = await load("/src/components/NumericField.tsx")
 const navModule = await load("/src/components/StudioNav.tsx")
+const itemMatrixModule = await load("/src/components/shared/ItemMatrixDialog.tsx")
 const rigStoreModule = await load("/src/stores/rig-editor.ts")
 const equipmentStoreModule = await load("/src/stores/equipment-editor.ts")
 const schemaModule = await load("/src/rig/schema.ts")
 const clipsModule = await load("/src/rig/clips.ts")
 
 const RigStudio = rigModule.RigStudio as ComponentType
+const Timeline = timelineModule.Timeline as ComponentType<Record<string, unknown>>
 const EquipmentStudio = equipmentModule.EquipmentStudio as ComponentType
 const NumericField = numericModule.NumericField as ComponentType<Record<string, unknown>>
+const ItemMatrixDialog = itemMatrixModule.ItemMatrixDialog as ComponentType<Record<string, unknown>>
 const pickerModule = await load("/src/components/rig-studio/AnimationPicker.tsx")
 const AnimationPicker = pickerModule.AnimationPicker as ComponentType<Record<string, unknown>>
 /** The picker only needs a resolver that answers; nothing here inspects pixels. */
@@ -158,6 +162,7 @@ interface RigSceneLike {
   activeNecklace?: string
   activeWeapon?: string
   activeShield?: string
+  weaponOptions?: Array<{ id: string; label: string; itemID?: string }>
 }
 
 const scenePath = fileURLToPath(
@@ -215,14 +220,14 @@ test("the rig studio renders its rig, transport, and authoring controls", () => 
     "zoom",
     "equipMenuButton",
     "equipMenu",
-    "mainHandSelect",
+    "equipment-weapon",
+    "equipment-staff",
     "animationPickerButton",
     "playPause",
+    "timelineTrackSelect",
     "timeline",
     "timeReadout",
-    "wristKeyMarkers",
-    "boneKeyMarkers",
-    "expressionKeyMarkers",
+    "selectedTrackKeyMarkers",
     "expressionEyes",
     "expressionMouth",
     "setExpressionKey",
@@ -231,9 +236,10 @@ test("the rig studio renders its rig, transport, and authoring controls", () => 
     "nextExpressionKey",
     "setWristKey",
     "deleteWristKey",
-    // Hand keys are stepped from the transport, beside the playhead.
-    "previousWristKey",
-    "nextWristKey",
+    // The active track is stepped from the transport, beside the playhead.
+    "previousTrackKey",
+    "nextTrackKey",
+    "deleteTrackKey",
     // Bone keys are stepped from the bone inspector, which owns them.
     "setBoneKey",
     "deleteBoneKey",
@@ -268,7 +274,53 @@ test("the rig studio renders its rig, transport, and authoring controls", () => 
   }
 })
 
-test("joint deformation is the first inspector editor and exposes its stage overlay", () => {
+test("reset pose shares the pose and edit-history island", () => {
+  const start = rigMarkup.indexOf('aria-label="Pose and edit history"')
+  const end = rigMarkup.indexOf("</div>", start)
+  assert.ok(start >= 0)
+  assert.ok(end > start)
+
+  const island = rigMarkup.slice(start, end)
+  const reset = island.indexOf('id="resetPose"')
+  const undo = island.indexOf('id="undoEdit"')
+  const redo = island.indexOf('id="redoEdit"')
+  assert.ok(reset >= 0)
+  assert.ok(reset < undo)
+  assert.ok(undo < redo)
+})
+
+test("the Hands label sits immediately left of its dropdown", () => {
+  const start = rigMarkup.indexOf('class="hand-pose-control"')
+  const end = rigMarkup.indexOf("</div>", start)
+  assert.ok(start >= 0)
+  assert.ok(end > start)
+
+  const control = rigMarkup.slice(start, end)
+  const label = control.indexOf('for="handPoseSelect"')
+  const dropdown = control.indexOf('id="handPoseSelect"')
+  assert.ok(label >= 0)
+  assert.ok(label < dropdown)
+})
+
+test("whole-animation bone editing is a toggle beside Hands in the top bar", () => {
+  const hands = rigMarkup.indexOf('class="hand-pose-control"')
+  const toggle = rigMarkup.indexOf('id="wholeAnimationBoneEdits"')
+  const spacer = rigMarkup.indexOf('class="toolbar-spacer"', hands)
+  assert.ok(hands >= 0)
+  assert.ok(toggle > hands)
+  assert.ok(toggle < spacer, "the toggle stays with Hands rather than drifting into document actions")
+  assert.ok(rigMarkup.includes("Whole animation"))
+})
+
+test("whole-animation mode explains that it preserves timeline keys", () => {
+  seed(useRigEditor, { wholeAnimationEdits: true, clipScopedEdits: true })
+  const markup = render(createElement(RigStudio))
+  assert.ok(markup.includes('id="wholeAnimationBoneEditHint"'))
+  assert.ok(markup.includes("Adds the same offset on every frame. Timeline keys stay unchanged."))
+  seed(useRigEditor, { wholeAnimationEdits: false })
+})
+
+test("joint deformation is the first editor in the inspector and exposes its stage overlay", () => {
   const deformation = rigMarkup.indexOf('id="jointMeshLab"')
   const expressions = rigMarkup.indexOf('id="expressionEyes"')
   const wrists = rigMarkup.indexOf('id="setWristKey"')
@@ -296,7 +348,7 @@ test("the cutout pen opens on the pen tool, with editing actions off until they 
 })
 
 test("the rig studio's transport reads left to right", () => {
-  const order = ["animationPickerButton", "playPause", "timeReadout", "timeline"]
+  const order = ["animationPickerButton", "playPause", "timelineTrackSelect", "timeReadout", "timeline"]
   for (let index = 1; index < order.length; index += 1) {
     assert.ok(
       rigMarkup.indexOf(`id="${order[index - 1]}"`) < rigMarkup.indexOf(`id="${order[index]}"`),
@@ -305,28 +357,188 @@ test("the rig studio's transport reads left to right", () => {
   }
 })
 
-test("every equipment selector lives inside the Equip menu, beside the profile", () => {
+test("timeline groups editing actions separately from animation and track controls", () => {
+  const layout = inspect(
+    createElement(Timeline, { onOpenAnimationPicker: () => undefined }),
+    (container) => {
+      const primary = container.querySelector(".timeline-authoring-primary")
+      const secondary = container.querySelector(".timeline-authoring-secondary")
+      assert.ok(primary)
+      assert.ok(secondary)
+      return {
+        primaryIDs: [...primary.querySelectorAll("[id]")].map((element) => element.id),
+        secondaryIDs: [...secondary.querySelectorAll("[id]")].map((element) => element.id),
+        deleteText: secondary.querySelector("#deleteTrackKey")?.textContent?.trim(),
+        deleteIcon: secondary.querySelector("#deleteTrackKey svg"),
+      }
+    },
+  )
+
+  assert.ok(layout.primaryIDs.includes("timelineTrackSelect"))
+  assert.deepEqual(
+    layout.secondaryIDs.filter((id) => ["previousTrackKey", "nextTrackKey", "deleteTrackKey", "speedSelect"].includes(id)),
+    ["previousTrackKey", "nextTrackKey", "deleteTrackKey", "speedSelect"],
+  )
+  assert.equal(layout.deleteText, "")
+  assert.ok(layout.deleteIcon)
+})
+
+test("the timeline selector switches bones, hands, and facial-expression tracks", () => {
+  const store = useRigEditor as unknown as {
+    getState: () => {
+      timelineTrack: string
+      selectedBone: string | null
+      wrist: { side: string }
+      setTimelineTrack: (track: string) => void
+    }
+  }
+
+  store.getState().setTimelineTrack("hand:R")
+  assert.equal(store.getState().wrist.side, "R")
+  let markup = render(createElement(Timeline, { onOpenAnimationPicker: () => undefined }))
+  assert.match(markup, /Hands · Screen-right/)
+  assert.match(markup, /data-track-kind="wrist"/)
+
+  store.getState().setTimelineTrack("expression")
+  markup = render(createElement(Timeline, { onOpenAnimationPicker: () => undefined }))
+  assert.match(markup, /Face · Expressions/)
+  assert.match(markup, /data-track-kind="expression"/)
+
+  const bone = scene.bones?.find((candidate: { id: string }) => candidate.id !== "chest")
+  assert.ok(bone)
+  store.getState().setTimelineTrack(`bone:${bone.id}`)
+  assert.equal(store.getState().selectedBone, bone.id)
+  markup = render(createElement(Timeline, { onOpenAnimationPicker: () => undefined }))
+  assert.match(markup, /data-track-kind="bone"/)
+
+  store.getState().setTimelineTrack("bone:chest")
+})
+
+test("the timeline track menu offers both hands, expressions, and every bone", () => {
+  const labels = inspect(
+    createElement(Timeline, { onOpenAnimationPicker: () => undefined }),
+    (container) => {
+      const trigger = container.querySelector("#timelineTrackSelect") as HTMLButtonElement | null
+      assert.ok(trigger)
+      act(() => trigger.click())
+      return [...window.document.querySelectorAll('[data-slot="select-item"]')]
+        .map((item) => item.textContent?.trim())
+    },
+  )
+  assert.ok(labels.includes("Hands · Screen-left"))
+  assert.ok(labels.includes("Hands · Screen-right"))
+  assert.ok(labels.includes("Face · Expressions"))
+  for (const bone of scene.bones ?? []) assert.ok(labels.includes(`Bone · ${bone.label}`))
+})
+
+test("the timeline delete control removes the playhead key from the selected track", () => {
+  const store = useRigEditor as unknown as {
+    getState: () => { scene: typeof source; wrist: { side: string } }
+  }
+  const clickDelete = () => inspect(
+    createElement(Timeline, { onOpenAnimationPicker: () => undefined }),
+    (container) => {
+      const button = container.querySelector("#deleteTrackKey") as HTMLButtonElement | null
+      assert.ok(button)
+      assert.equal(button.disabled, false)
+      act(() => button.click())
+    },
+  )
+  const at = 0.321
+  const editable = structuredClone(source)
+
+  editable.boneKeyframes.idle = { ...(editable.boneKeyframes.idle ?? {}), chest: [{ phase: at, x: 4 }] }
+  seed(useRigEditor, { scene: editable, animation: "idle", phase: at, timelineTrack: "bone:chest" })
+  clickDelete()
+  assert.equal(store.getState().scene.boneKeyframes.idle?.chest, undefined)
+
+  editable.expressionKeyframes.idle = [{ phase: at, eyes: "wide", mouth: "smile" }]
+  seed(useRigEditor, { scene: editable, phase: at, timelineTrack: "expression" })
+  clickDelete()
+  assert.equal(store.getState().scene.expressionKeyframes.idle, undefined)
+
+  editable.wristKeyframes.idle = { L: [{ phase: at, angle: 8 }] }
+  editable.wristKeyframes.__grip_weapon = { L: [{ phase: at, gripRotation: 5 }] }
+  seed(useRigEditor, {
+    scene: editable,
+    phase: at,
+    timelineTrack: "hand:L",
+    wrist: { ...store.getState().wrist, side: "L" },
+  })
+  clickDelete()
+  assert.equal(store.getState().scene.wristKeyframes.idle, undefined)
+  assert.equal(store.getState().scene.wristKeyframes.__grip_weapon, undefined)
+
+  seed(useRigEditor, {
+    scene,
+    savedScene: scene,
+    animation: "idle",
+    phase: 0,
+    timelineTrack: "bone:chest",
+  })
+})
+
+test("every equipment slot is a thumbnail entry inside the Equip menu", () => {
   const menu = inspect(createElement(RigStudio), (container) =>
     container.querySelector("#equipMenu"),
   )
   assert.ok(menu, "the Equip menu is rendered")
   assert.ok(rigMarkup.indexOf('id="equipMenuButton"') < rigMarkup.indexOf('id="equipMenu"'))
-  for (const id of ["chestSelect", "armSetSelect", "bootSetSelect", "headgearSelect", "mainHandSelect"]) {
-    assert.ok(menu.querySelector(`#${id}`), `${id} lives inside the Equip menu`)
+  for (const id of ["tunicBody", "arms", "boots", "headgear", "necklace", "weapon", "staff", "bow", "shield", "quiver"]) {
+    const entry = menu.querySelector(`#equipment-${id}`)
+    assert.ok(entry, `${id} lives inside the Equip menu`)
+    assert.ok(entry.querySelector(".inventory-thumbnail"), `${id} carries a thumbnail preview`)
   }
 })
 
-test("weapons and staffs share one main-hand picker rather than two", () => {
-  assert.ok(hasID(rigMarkup, "mainHandSelect"))
-  // Two separate selectors would let both be worn, and both would draw.
-  assert.equal(hasID(rigMarkup, "weaponSelect"), false)
-  assert.equal(hasID(rigMarkup, "staffSelect"), false)
-  // The one picker carries both catalogues, which is what makes it one choice.
-  const trigger = inspect(createElement(RigStudio), (container) =>
-    container.querySelector("#mainHandSelect")?.textContent ?? "",
-  )
+test("weapon and staff thumbnail entries preserve one active main hand", () => {
+  const picks = inspect(createElement(RigStudio), (container) => ({
+    weapon: container.querySelector("#equipment-weapon"),
+    staff: container.querySelector("#equipment-staff"),
+  }))
+  assert.equal(picks.weapon?.getAttribute("aria-pressed"), "true")
+  assert.equal(picks.staff?.getAttribute("aria-pressed"), "false")
   const worn = scene.weaponOptions?.find((option) => option.id === scene.activeWeapon)
-  assert.ok(worn && trigger.includes(worn.label), "it shows the weapon actually equipped")
+  assert.ok(worn && picks.weapon?.textContent?.includes(worn.label), "it shows the weapon actually equipped")
+})
+
+test("an equipment thumbnail entry opens its item matrix", () => {
+  const markup = inspect(createElement(RigStudio), (container) => {
+    const button = container.querySelector("#equipment-bow") as HTMLButtonElement | null
+    assert.ok(button)
+    act(() => button.click())
+    return window.document.body.innerHTML
+  })
+  assert.match(markup, /id="itemModal"/)
+  assert.match(markup, /id="itemGrid"/)
+  assert.match(markup, /Choose bow/)
+})
+
+test("the item matrix renders inventory art for its choices", () => {
+  const option = scene.weaponOptions?.find((candidate) => candidate.itemID)
+  assert.ok(option?.itemID, "the checked-in scene has a catalogued weapon option")
+  const item = {
+    id: option.itemID,
+    name: "Inventory Preview Weapon",
+    slot: "mainHand",
+    category: "blade",
+    rarity: "common",
+    inventoryArt: true,
+    inventoryAssetName: "InventoryPreviewWeaponItem",
+    inventoryAssetFile: "inventory-preview.png",
+  }
+  const markup = renderPortalled(createElement(ItemMatrixDialog, {
+    catalog: { items: new Map([[item.id, item]]), applicability: new Map() },
+    scene,
+    slot: { id: "weapon", label: "Weapon", catalogue: "weaponOptions", active: "activeWeapon", worn: false },
+    selected: option.id,
+    open: true,
+    onClose: () => undefined,
+    onPick: () => undefined,
+  }))
+
+  assert.match(markup, /<img[^>]+src="\/assets\/inventory-preview\.png"/)
+  assert.match(markup, /Inventory Preview Weapon/)
 })
 
 test("the motion picker is a labelled modal offering every authored clip", () => {

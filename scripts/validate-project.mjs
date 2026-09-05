@@ -16,6 +16,7 @@ const collect = (value) => {
   else if (value && typeof value === 'object') for (const child of Object.values(value)) collect(child)
 }
 collect(scene.layers)
+collect(catalog.items)
 for (const key of [
   'weaponOptions', 'staffOptions', 'bowOptions', 'shieldOptions', 'necklaceOptions',
   'quiverOptions', 'chestOptions', 'headgearOptions', 'ringOptions', 'armOptions', 'bootOptions',

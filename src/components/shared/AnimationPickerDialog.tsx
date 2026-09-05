@@ -11,7 +11,8 @@
  * shows. One animation frame loop drives all of them — each cell runs at its
  * own clip's speed, but they share a single `requestAnimationFrame`.
  */
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import "@/styles/picker-filters.css"
 import {
   Dialog,
   DialogContent,
@@ -65,6 +66,10 @@ export function AnimationPickerDialog({
   labelFor = animationLabel,
 }: AnimationPickerProps) {
   const canvases = useRef(new Map<AnimationName, HTMLCanvasElement>())
+  const [query, setQuery] = useState("")
+  const words = query.trim().toLowerCase().split(/\s+/)
+  const filteredClips = clips.filter((name) => words.every((word) => labelFor(name).toLowerCase().includes(word)))
+  useEffect(() => { if (!open) setQuery("") }, [open])
 
   /** Which layers each clip shows, and what it is holding. */
   const loadouts = useMemo(() => {
@@ -154,6 +159,22 @@ export function AnimationPickerDialog({
               </DialogDescription>
             </div>
           </DialogHeader>
+          <div className="picker-filter">
+            <input
+              type="search"
+              aria-label="Filter animations"
+              aria-controls="animationGrid"
+              placeholder="Filter animations…"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowDown") {
+                  event.preventDefault()
+                  document.querySelector<HTMLElement>("#animationGrid [data-animation]")?.focus()
+                }
+              }}
+            />
+          </div>
           <div
             id="animationGrid"
             className="animation-grid"
@@ -161,7 +182,8 @@ export function AnimationPickerDialog({
             aria-label="Animation clips"
             onKeyDown={onGridKeyDown}
           >
-            {clips.map((name) => (
+            {filteredClips.length === 0 && <p className="picker-no-results" role="status">No matching animations.</p>}
+            {filteredClips.map((name) => (
               <button
                 key={name}
                 type="button"

@@ -9,6 +9,7 @@
  * an explicit value now: build one `RigTracks` per scene and pass it around.
  */
 import { smoothstep01 } from "./angles.ts"
+import { animationLoops, isAnimationName } from "./clips.ts"
 import type { GripControls } from "./grip.ts"
 import { authoredPose, groundStationaryPose, mergePoses, weldHeadToNeck } from "./clip-poses.ts"
 import { constrainKneeRotation } from "./ik.ts"
@@ -106,24 +107,50 @@ function interpolate<K extends { phase: number }>(
   keys: readonly K[],
   phase: number,
   value: (key: K) => number,
+  loop = false,
 ): number {
   if (keys.length === 0) return 0
   if (keys.length === 1) return value(keys[0])
   const t = Math.max(0, Math.min(1, phase))
   let left = keys[0]
   let right = keys[keys.length - 1]
-  if (t <= left.phase) return value(left)
-  if (t >= right.phase) return value(right)
-  for (let index = 1; index < keys.length; index += 1) {
-    if (t <= keys[index].phase) {
-      left = keys[index - 1]
-      right = keys[index]
-      break
+  let leftPhase = left.phase
+  let rightPhase = right.phase
+  // An explicitly authored start and end are allowed to differ. Otherwise a
+  // looping numeric track treats the first key as the next key after its last
+  // one, so the unkeyed tail eases back into the opening pose before wrap.
+  const explicitEndpoints = left.phase <= 0.000001 && right.phase >= 0.999999
+  if (loop && !explicitEndpoints && t < left.phase) {
+    left = keys[keys.length - 1]
+    right = keys[0]
+    leftPhase = left.phase - 1
+    rightPhase = right.phase
+  } else if (loop && !explicitEndpoints && t > right.phase) {
+    left = keys[keys.length - 1]
+    right = keys[0]
+    leftPhase = left.phase
+    rightPhase = right.phase + 1
+  } else {
+    if (t <= left.phase) return value(left)
+    if (t >= right.phase) return value(right)
+    for (let index = 1; index < keys.length; index += 1) {
+      if (t <= keys[index].phase) {
+        left = keys[index - 1]
+        right = keys[index]
+        leftPhase = left.phase
+        rightPhase = right.phase
+        break
+      }
     }
   }
-  const span = right.phase - left.phase
-  const local = span <= 1e-8 ? 0 : (t - left.phase) / span
+  const span = rightPhase - leftPhase
+  const local = span <= 1e-8 ? 0 : (t - leftPhase) / span
   return value(left) + (value(right) - value(left)) * smoothstep01(local)
+}
+
+/** Unknown names are editor/test tracks and retain the editor's looping default. */
+function isLoopingTrack(name: string): boolean {
+  return !isAnimationName(name) || animationLoops[name]
 }
 
 /** Everything a scene contributes to sampled motion. */
@@ -162,6 +189,27 @@ export class RigTracks {
     })
   }
 
+  /** Whether this clip deliberately authors the timeline's final frame. */
+  hasEndKey(name: string): boolean {
+    const atEnd = (key: { phase: number }): boolean => Math.abs(key.phase - 1) <= 0.000001
+    return Object.values(this.bone[name] ?? {}).some((keys) => keys.some(atEnd))
+      || Object.values(this.wrist[name] ?? {}).some((keys) => keys.some(atEnd))
+      || (this.expression[name] ?? []).some(atEnd)
+  }
+
+  /**
+   * Every preview cycles through its opening frame at the loop boundary. An
+   * explicit key at phase 1 opts the whole final frame out, so an artist can
+   * deliberately author a distinct endpoint rather than having it inferred by
+   * whichever track happened to end latest.
+   */
+  playbackPhase(name: string, phase: number): number {
+    const raw = Number.isFinite(phase) ? phase : 0
+    const wrapped = ((raw % 1) + 1) % 1
+    const boundary = raw > 0 && Math.abs(raw - Math.round(raw)) <= 0.00000001
+    return boundary && this.hasEndKey(name) ? 1 : wrapped
+  }
+
   // -------------------------------------------------------------------------
   // Face
   // -------------------------------------------------------------------------
@@ -173,7 +221,7 @@ export class RigTracks {
   expressionAt(name: string, phase: number): { eyes: EyeExpression; mouth: MouthExpression } {
     const keys = [...(this.expression[name] ?? [])].sort((left, right) => left.phase - right.phase)
     if (!keys.length) return { eyes: NEUTRAL_FACE.eyes, mouth: NEUTRAL_FACE.mouth }
-    const normalized = Math.max(0, Math.min(1, Number(phase) || 0))
+    const normalized = this.playbackPhase(name, phase)
     let sampled = keys[0]
     for (const key of keys) {
       if (key.phase > normalized + 0.000001) break
@@ -194,6 +242,7 @@ export class RigTracks {
     read: ChannelReader,
     gripKind: GripKind | null,
   ): number {
+    phase = this.playbackPhase(name, phase)
     const sharedKeys = gripKind == null ? [] : (this.wrist[gripTrackName(gripKind)]?.[side] ?? [])
     const animationKeys = this.wrist[name]?.[side] ?? []
     const animationValue = (key: WristKey): number | undefined => {
@@ -220,7 +269,8 @@ export class RigTracks {
     const useBaseline = !useLocal && gripKind != null && baselineKeys.length > 0
     const keys = useLocal ? localKeys : useBaseline ? baselineKeys : localKeys
     const value = useBaseline ? read : animationValue
-    return interpolate(keys, phase, (key) => value(key) ?? 0)
+    const cycles = isLoopingTrack(name) && !(phase >= 0.999999 && this.hasEndKey(name))
+    return interpolate(keys, phase, (key) => value(key) ?? 0, cycles)
   }
 
   /** One side's additive wrist rotation at a clip phase. */
@@ -305,11 +355,18 @@ export class RigTracks {
 
   private boneChannel(name: string, bone: string, phase: number, field: BonePoseKey): number {
     const keys: readonly BoneKey[] = this.bone[name]?.[bone] ?? []
-    return interpolate(keys, phase, (key) => (Number.isFinite(key[field]) ? (key[field] ?? 0) : 0))
+    const cycles = isLoopingTrack(name) && !(phase >= 0.999999 && this.hasEndKey(name))
+    return interpolate(
+      keys,
+      phase,
+      (key) => (Number.isFinite(key[field]) ? (key[field] ?? 0) : 0),
+      cycles,
+    )
   }
 
   /** Sample additive editor-authored corrections for every keyed bone. */
   bonePose(name: string, phase: number): Pose {
+    phase = this.playbackPhase(name, phase)
     const pose: Pose = {}
     for (const bone of Object.keys(this.bone[name] ?? {})) {
       const delta: PoseDelta = {}
@@ -368,6 +425,7 @@ export class RigTracks {
    * grounded, welded at the neck, then corrected by everything the scene keys.
    */
   pose(name: string, phase: number): Pose {
+    phase = this.playbackPhase(name, phase)
     const grounded = groundStationaryPose(name, authoredPose(name, phase))
     const corrected = this.applyWristKeys(
       name,

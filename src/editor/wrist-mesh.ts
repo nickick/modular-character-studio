@@ -55,7 +55,7 @@ export function movedMeshHandle(
 }
 
 /** Bend sections the studio offers between the two handles. */
-export const MIN_BEND_SECTIONS = 3
+export const MIN_BEND_SECTIONS = 2
 export const MAX_BEND_SECTIONS = 12
 
 /**

@@ -63,15 +63,17 @@ canvas#stage { touch-action: none; cursor: grab; }
 /* The slot's current pick, and the grid behind it. */
 .item-picker {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  padding: 8px;
   cursor: pointer;
   text-align: left;
 }
 .item-picker:hover { border-color: var(--studio-accent); }
+.item-picker-copy { min-width: 0; }
+.item-picker-copy > span { display: block; overflow: hidden; text-overflow: ellipsis; }
 .item-picker-meta { font-size: 11px; color: var(--studio-muted); }
 
 .item-modal {

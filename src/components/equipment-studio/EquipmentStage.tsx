@@ -16,9 +16,10 @@ import { STAGE_SIZE } from "@/editor/stage.ts"
 import {
   GRIPPABLE_SLOTS,
   GRIP_HAND_LAYER_IDS,
+  MAIN_HAND_LAYER_IDS,
   activeLayerID,
   heldElsewhere,
-  layerMatchesMainHandPreview,
+  mainHandLayerFor,
 } from "@/editor/equipment-slots.ts"
 import { visibleImageBounds } from "@/editor/visible-bounds.ts"
 import { writeLayerBind } from "@/editor/binds.ts"
@@ -175,13 +176,15 @@ function ProfileStage(props: ProfileStageProps) {
   const layers = useMemo(() => {
     const handPose = animationHandPose[animation as keyof typeof animationHandPose] ?? "closed"
     const placedBone = rig.layers.find((layer) => layer.id === layerID)?.bone
+    const mainHandID = mainHandLayerFor(layerID, animation)
     return rig.layers.filter((layer) => {
       // The palm, thumb, and four rigid fingers are part of fitting a held item
       // rather than "the rest of the rig", so they stay visible throughout.
       const gripHand = GRIPPABLE_SLOTS.has(slotID) && GRIP_HAND_LAYER_IDS.has(layer.id)
       if (!layer.visible || !layerMatchesHandPose(layer, handPose)) return false
       if (gripHand || layer.id === layerID) return true
-      if (!layerMatchesMainHandPreview(layer.id, slotID)) return false
+      // Only one thing is in the main hand, whatever the clip's loadout lists.
+      if (MAIN_HAND_LAYER_IDS.has(layer.id) && layer.id !== mainHandID) return false
       // Nothing else the clip carries in that same hand draws: reviewing a
       // staff in the lunge would otherwise put the sword through it, since that
       // clip is authored to hold a blade.
