@@ -9,6 +9,7 @@ public enum CharacterFacing { case left, right }
 public final class CharacterLibrary {
     let data: CharacterData
     let images: [UIImage]
+    let bows: [Int: BowSpriteDeformation]
     public var animations: [String: CharacterAnimation] { data.animations }
     public var canvasSize: CGSize { CGSize(width: data.manifest.canvas.width, height: data.manifest.canvas.height) }
     public var baseline: Double { data.manifest.baseline }
@@ -28,6 +29,14 @@ public final class CharacterLibrary {
             guard let image = UIImage(contentsOfFile: url.path) else { throw CharacterData.invalid("Missing or unreadable texture: \(asset.path)") }
             return image
         }
+        var bows: [Int: BowSpriteDeformation] = [:]
+        for attachment in data.manifest.attachments where attachment.id == "bow" {
+            let asset = data.manifest.assets[attachment.asset]
+            if let image = images[attachment.asset].cgImage {
+                bows[attachment.asset] = BowSpriteDeformation(image: image, renderRect: CGRect(x: 0, y: 0, width: asset.width, height: asset.height))
+            }
+        }
+        self.bows = bows
     }
 
     /// Draw into a UIKit-style, Y-down context at the character's feet.
@@ -90,7 +99,7 @@ public final class CharacterLibrary {
             }
         }
     }
-    private func triangleTransform(_ s: [CGPoint], _ d: [CGPoint]) -> CGAffineTransform? {
+    func triangleTransform(_ s: [CGPoint], _ d: [CGPoint]) -> CGAffineTransform? {
         let source = CGAffineTransform(a: s[1].x - s[0].x, b: s[1].y - s[0].y, c: s[2].x - s[0].x, d: s[2].y - s[0].y, tx: s[0].x, ty: s[0].y)
         guard abs(source.a * source.d - source.b * source.c) > 0.00000001 else { return nil }
         let destination = CGAffineTransform(a: d[1].x - d[0].x, b: d[1].y - d[0].y, c: d[2].x - d[0].x, d: d[2].y - d[0].y, tx: d[0].x, ty: d[0].y)

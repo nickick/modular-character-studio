@@ -18,6 +18,9 @@ struct RuntimeAttachment: Decodable {
     let triangles: [Int]?
     let clipPath: RuntimeCutout?
     let strips: [RuntimeStrip]?
+    let bone: String?
+    let aimMesh: RuntimeAimMesh?
+    let bowPivot: RuntimePoint?
 }
 struct RuntimeLayerFrame: Decodable { let attachment: Int; let values: [Double] }
 public struct CharacterAnimation: Decodable {
@@ -25,6 +28,7 @@ public struct CharacterAnimation: Decodable {
     public let loops: Bool
     let endKeyed: Bool
     let frames: [[RuntimeLayerFrame]]
+    let boneFrames: [[String: [Double]]]?
 
     // Attachment/image changes step at the sample boundary; only matching layers interpolate.
     func sample(phase: Double) -> [RuntimeLayerFrame] {
@@ -49,6 +53,7 @@ struct RuntimeManifest: Decodable {
     let assets: [RuntimeAsset]
     let attachments: [RuntimeAttachment]
     let clips: [String: String]
+    let aimRig: RuntimeAimRig?
 }
 
 struct CharacterData {
@@ -67,6 +72,17 @@ struct CharacterData {
               manifest.canvas.height.isFinite, manifest.canvas.height > 0, manifest.baseline.isFinite else {
             throw CharacterData.invalid("Invalid canvas dimensions or baseline.")
         }
+        if let rig = manifest.aimRig {
+            guard rig.bindWorld.values.allSatisfy(Self.validMatrix) else { throw Self.invalid("Invalid aim bind matrix.") }
+            for id in rig.parents.keys {
+                var visited = Set<String>(), cursor = id
+                while !cursor.isEmpty {
+                    guard visited.insert(cursor).inserted, rig.bindWorld[cursor] != nil,
+                          let parent = rig.parents[cursor] else { throw Self.invalid("Invalid aim bone hierarchy.") }
+                    cursor = parent
+                }
+            }
+        }
         for asset in manifest.assets {
             _ = try Self.resource(asset.path, in: root)
             guard asset.width.isFinite, asset.width > 0, asset.height.isFinite, asset.height > 0 else {
@@ -82,6 +98,14 @@ struct CharacterData {
                     throw Self.invalid("Invalid mesh topology: \(attachment.id)")
                 }
             } else if attachment.triangles != nil { throw Self.invalid("Mesh has no source vertices: \(attachment.id)") }
+            if let mesh = attachment.aimMesh {
+                guard let source = attachment.source, mesh.bindPoints.count == source.count,
+                      mesh.weights.count * 2 == source.count, mesh.bindPoints.allSatisfy(\.isFinite),
+                      mesh.weights.allSatisfy({ $0.isFinite && $0 >= 0 && $0 <= 1 }),
+                      manifest.aimRig?.bindWorld[mesh.parent] != nil, manifest.aimRig?.bindWorld[mesh.child] != nil else {
+                    throw Self.invalid("Invalid aim mesh: \(attachment.id)")
+                }
+            }
             for strip in attachment.strips ?? [] {
                 guard [strip.sourceX, strip.sourceWidth, strip.x, strip.width, strip.y, strip.height].allSatisfy(\.isFinite),
                       strip.sourceWidth > 0, strip.width > 0, strip.height > 0 else { throw Self.invalid("Invalid image strip: \(attachment.id)") }
@@ -95,6 +119,12 @@ struct CharacterData {
         animations = try manifest.clips.mapValues { path in
             let clip = try decoder.decode(CharacterAnimation.self, from: Data(contentsOf: Self.resource(path, in: root)))
             guard clip.duration.isFinite, clip.duration > 0, clip.frames.count >= 2 else { throw Self.invalid("Invalid animation: \(path)") }
+            if let frames = clip.boneFrames {
+                guard let rig = manifest.aimRig, frames.count == clip.frames.count,
+                      frames.allSatisfy({ frame in Set(frame.keys) == Set(rig.parents.keys) && frame.values.allSatisfy(Self.validMatrix) }) else {
+                    throw Self.invalid("Invalid aim bone samples: \(path)")
+                }
+            }
             for frame in clip.frames {
                 for layer in frame {
                     guard manifest.attachments.indices.contains(layer.attachment), layer.values.allSatisfy(\.isFinite) else {
@@ -109,11 +139,18 @@ struct CharacterData {
     }
 
     static func resource(_ path: String, in root: URL) throws -> URL {
+        // Bundle URLs can use a symlinked prefix on iOS (e.g. /var vs /private/var).
+        // Compare canonical paths on both sides without weakening containment checks.
+        let root = root.standardizedFileURL.resolvingSymlinksInPath()
         let url = root.appendingPathComponent(path).standardizedFileURL.resolvingSymlinksInPath()
         guard !path.isEmpty, !path.hasPrefix("/"), url.path.hasPrefix(root.path + "/") else {
             throw invalid("Resource path escapes the exported directory: \(path)")
         }
         return url
+    }
+
+    private static func validMatrix(_ values: [Double]) -> Bool {
+        values.count == 6 && values.allSatisfy(\.isFinite) && abs(values[0]*values[3]-values[1]*values[2]) > 1e-8
     }
 
     static func invalid(_ message: String) -> NSError {

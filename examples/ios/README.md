@@ -24,7 +24,15 @@ the bundle. See the package's `README.md` in the generated export, or
 - In Sword mode, tap Attack within reach of the training target.
 - Hold the shield button to preview guarding, including while moving.
 - Switch to Bow; hold the same attack pad to draw, then release to shoot.
-- Drag across the attack pad to face left/right; drag up off it to cancel.
+  The rear finger gap pulls the arrow and original textured string back together;
+  the limbs flex while the grip stays stable. The string draws above the helmet;
+  the hands cover the string and arrow. A resting pull keeps the string at the finger gap.
+  Wrists are limited to ±30° from neutral, or ±5° for the bow-holding wrist.
+- In Bow mode, turn the radial aim dial to aim in any direction. Both arms follow
+  the aim, and arrows leave above the bow hand along the displayed guide.
+  You can aim first, or turn the dial with a second finger while holding Draw.
+- In Sword mode, drag across the attack pad to face left/right. Drag up off the
+  attack pad in either mode to cancel.
 - Tap Dodge to preview the dodge animation. Reset restores the starting pose
   and position. There are no health bars, scores, or game-over states.
 
@@ -53,12 +61,15 @@ texture and attachment catalogue to `CharacterRuntime/runtime.json`, and sampled
 geometry to `CharacterRuntime/clips/*.json`. Textures retain their original dimensions,
 so pivots, finger masks, wrist/elbow/ankle cages, and equipment registration stay
 in the authored coordinate system. Swift interpolates the solved geometry
-between samples and applies world movement/facing at runtime.
+between samples and applies world movement/facing at runtime. Bow clips also
+export sampled bone matrices and cage bind data for on-device two-arm aim IK.
 
-This follows Den Hunter's data-baking and CoreGraphics triangle rendering
+This follows Den Hunter's data-baking and asynchronous Canvas triangle rendering
 approach, with the shared attack-pad/mode/block/dodge layout as its UI template.
 It is a deliberately small horizontal training arena: it has no game campaign,
-free-angle bow IK, inventory system, or spell combat. Projectile impacts provide
+inventory system or spell combat. It includes free-angle bow IK and a radial aim
+dial. Display-synchronized playback targets 60 Hz, with short melee clip blends;
+use an optimized Release build when comparing performance. Projectile impacts provide
 simple target feedback; movement and action transitions are local demo rules.
 To change equipment or authored animation, edit the project and re-export;
 editing the generated output is temporary and the next export overwrites it.

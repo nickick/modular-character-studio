@@ -17,7 +17,7 @@ flowchart LR
   D --> H
   F --> H
   H --> I[PlateDemo.xcodeproj]
-  I --> J[iOS CoreGraphics renderer + local combat]
+  I --> J[iOS asynchronous Canvas + live bow IK + local combat]
 ```
 
 ## 1. Edit, save, and bake
@@ -86,11 +86,11 @@ The generated directory contains:
 | `PlateDemo.swift` | App entry, action bar, simulation; imports ModularCharacter |
 | `PlateDemo.xcodeproj` | Ready-to-build iOS application linked to the local package |
 | `ModularCharacter/` | Reusable Swift package: manifest, renderer, loader, sampler, SwiftUI view, tests, API guide, MIT license |
-| `CharacterRuntime/runtime.json` | Version, source hash, profile, loadout, texture dimensions, attachment topology, clip paths |
+| `CharacterRuntime/runtime.json` | Version, source hash, profile, loadout, texture dimensions, attachment topology, clip paths, aim bone hierarchy/bind matrices and cage bind points |
 | `CharacterRuntime/rig.json` | Resolved bones and layers, with the selected equipment's actual bindings and meshes |
 | `CharacterRuntime/pose-library-v1.json` | General bone-pose tables for all authored animations, with wrist/grip and expression tracks |
 | `CharacterRuntime/expressions.json` | The exported body's expression-to-image catalogue |
-| `CharacterRuntime/clips/*.json` | Sampled matrices and deformed mesh vertices for the playable clips |
+| `CharacterRuntime/clips/*.json` | Sampled matrices and deformed mesh vertices; bow clips also contain per-sample bone world matrices |
 | `CharacterRuntime/assets/` | PNGs referenced by the resolved character, expression catalogue, and sampled clips |
 
 There are three version markers: `modular-character-studio-ios-demo-v1` for the
@@ -115,8 +115,14 @@ The reusable `ModularCharacter` Swift package consumes the **solved geometry**
 files, and the demo imports that package. The package supplies bundle loading,
 validation, interpolation, mesh drawing, and `ModularCharacterView`; the demo
 supplies gameplay and controls. It does not solve the general bone pose library
-at runtime. Live equipment changes or free-angle aim still require a native
-bone/grip/mesh solver; that remains a separate roadmap task.
+at runtime. All clips carry bone world matrices for ±30° wrist limits (±5° on
+the bow-holding wrist) and bow clips use a native two-arm aim solver; it updates
+rigid layers and recomputes thickness-preserving
+cages for the requested pitch. The arrow socket has clearance above the bow
+hand, and the demo shares it between its guide and projectile origin. Live
+equipment rebinding and a general raw-track solver remain separate roadmap tasks.
+The drawing hand's index/ring gap, arrow nock, original masked string, and limb
+flex share the draw progress. The string draws above headgear; source art is unchanged.
 
 ## 3. Build and run
 

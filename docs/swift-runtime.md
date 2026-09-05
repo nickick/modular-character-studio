@@ -1,7 +1,8 @@
 # ModularCharacter Swift package
 
 The MIT `ModularCharacter` library loads exported character data and renders its
-baked animation geometry using CoreGraphics. The root `Package.swift` supports
+baked animation geometry using asynchronous SwiftUI Canvas, with a CoreGraphics
+fallback for UIKit hosts. It also solves bow aim on-device. The root `Package.swift` supports
 adding this repository through Xcode's **Add Package Dependencies** or as a local
 Swift package. Select the `ModularCharacter` product. Rendering requires iOS 17+;
 the Foundation data and sampling tests also run on macOS 13+.
@@ -49,7 +50,47 @@ changes step at their sample boundary, while matching geometry interpolates.
 An unkeyed terminal frame holds the preceding sample until the exact endpoint,
 matching the baker's reset rule.
 
-For a custom arena or existing UIKit renderer, use the same renderer directly:
+For a custom arena, sample immutable geometry and draw it in an asynchronous Canvas:
+
+```swift
+let frame = library.sample(animation: "bowDraw", phase: phase,
+                           bowAimPitchDegrees: -30) // negative = up, positive = down
+Canvas(rendersAsynchronously: true) { context, size in
+    library.draw(in: context, frame: frame,
+                 at: CGPoint(x: size.width / 2, y: size.height),
+                 scale: 0.36, facing: .right)
+}
+```
+
+`bowAimPitchDegrees` clamps to −90...90 and preserves facing separately. Clips
+carry sampled bone transforms; bow clips apply the main client's two-arm IK,
+then rigid attachments and thickness-preserving wrist/elbow cages follow the
+solved bones. Wrist rotation is limited to ±30° from the authored neutral bind,
+tightened to ±5° on the bow-holding wrist. The arm solver places the gap between
+the rear index and ring fingers at the arrow base without exceeding those limits.
+`bowDraw` phase 0...1 moves that contact from rest to full draw; draw length
+shortens at the edge of the arm's reach. `frame.bowNock` is the
+authored-space arrow socket with clearance above the bow fist; use it for both
+the guide and projectile origin. Older exports
+without aim metadata retain their baked pose. Re-export to enable live aiming.
+`ModularCharacterView` also accepts `bowAimPitchDegrees`.
+
+Bow limbs flex around a stable grip. The original texture's string is masked
+out of the body and drawn as two deforming textured sections meeting at the
+nock, in a foreground pass above the helmet and below the hands. Each half is
+straight from its limb attachment to the nock, including a slight resting pull.
+No replacement string art is used. Custom arrows can use the Canvas draw call's
+`bowOverlay` closure, which runs after the string and before the hands.
+Straight strings are detected once when textures load; unsupported silhouettes
+retain their undeformed sprite. Re-export older bundles to include wrist metadata
+for every clip. These live deformations use the Canvas renderer.
+
+`frame.blended(from:progress:)` blends matching attachment geometry for short
+clip transitions. The demo uses a display link (60 Hz preferred), 120 ms melee
+transitions, and cached clip durations. The 30 Hz export rate is a sampling rate,
+not a playback cap. For performance comparisons, use Xcode's Release configuration.
+
+For an existing UIKit renderer, the original CoreGraphics entry point remains:
 
 ```swift
 library.draw(in: context, animation: "run", phase: phase,
@@ -57,12 +98,13 @@ library.draw(in: context, animation: "run", phase: phase,
 ```
 
 The context uses UIKit's Y-down coordinates. `at` is the feet/baseline position;
-scale is relative to the authored pixel coordinates. This is the API used by
-`PlateDemo.swift` to share a canvas with the training target and arrows.
+scale is relative to the authored pixel coordinates. `PlateDemo.swift` uses the
+Canvas overload to share a surface with the training target and arrows.
 `CharacterLibrary` also exposes `canvasSize`, `baseline`, `profile`, and
 `equipmentIDs`. `init(directory:)` supports a runtime directory outside an app
-bundle. Load and draw on the main thread; reuse the library rather than decoding
-the JSON on each frame. A library can be shared by several character views.
+bundle. Load and sample on the main thread, and pass immutable frames to Canvas;
+the CoreGraphics overload remains main-thread-only. Reuse the library rather
+than decoding JSON on each frame. A library can be shared by several character views.
 
 ## Scope and validation
 
@@ -73,10 +115,11 @@ The demo owns those rules and imports the package for all character rendering.
 
 The current exporter selects one plate-related loadout and eleven clips.
 Sword/bow switching uses baked attachment visibility. Arbitrary equipment
-changes require a new export/library; the package does not yet solve raw bones,
-aim IK, or rebind new equipment on the device. `rig.json` and the bone pose
-library are included for future/native solver integrations, but this renderer
-consumes `runtime.json`, clip geometry, and textures. These limits do not prevent
+changes require a new export/library; the package does not yet solve arbitrary
+raw pose tracks or rebind new equipment on the device. Bow aiming is a live
+two-arm solver over sampled bones, not a full general-purpose rig runtime.
+`rig.json` and the bone pose library remain included for future integrations;
+this renderer consumes `runtime.json`, clip geometry/bone samples, and textures. These limits do not prevent
 reusing the package in another iOS app.
 
 Run `swift test` for format, geometry validation, and interpolation checks. To

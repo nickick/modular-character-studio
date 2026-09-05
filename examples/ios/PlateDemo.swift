@@ -13,7 +13,7 @@ struct PlateDemoApp: App {
 
 // MARK: - Small deterministic training simulation (no game package dependency)
 
-struct DemoArrow { var x: Double; let direction: Double }
+struct DemoArrow { var x, y: Double; let dx, dy: Double }
 struct DemoSimulation {
     enum Mode: String { case melee, bow }
     var mode: Mode = .melee
@@ -21,6 +21,13 @@ struct DemoSimulation {
     var playerX = 230.0
     var targetX = 525.0
     var facing = 1.0
+    var aimAngle = 0.0
+    var aimPitch: Double { asin(sin(aimAngle)) * 180 / .pi }
+    mutating func aim(at point: CGPoint) {
+        guard hypot(point.x, point.y) > 8 else { return }
+        aimAngle = atan2(point.y, point.x)
+        if abs(cos(aimAngle)) > 0.02 { facing = cos(aimAngle) < 0 ? -1 : 1 }
+    }
     var movement = 0.0
     var guarding = false
     var attackHeldAt: Double?
@@ -35,7 +42,8 @@ struct DemoSimulation {
     var dodgeReadyAt = 0.0
 
     var isDodging: Bool { action?.contains("Dodge") == true || action?.hasPrefix("dodge") == true }
-    var charge: Double { attackHeldAt.map { min(1, max(0, (time - $0) / 1.2)) } ?? 0 }
+    var drawDuration = 1.55
+    var charge: Double { attackHeldAt.map { min(1, max(0, (time - $0) / drawDuration)) } ?? 0 }
     var canAct: Bool { action == nil }
     var clip: String {
         if let action { return action }
@@ -50,6 +58,7 @@ struct DemoSimulation {
     mutating func setMode(_ next: Mode) {
         guard action == nil else { return }
         mode = next; releaseInputs()
+        aimAngle = facing > 0 ? 0 : .pi
         message = next == .bow ? "Hold the attack pad to draw. Release to fire." : "Tap the attack pad to swing. Hold the shield to guard."
     }
     mutating func releaseInputs() { attackHeldAt = nil; cancelled = false; guarding = false; movement = 0 }
@@ -57,14 +66,15 @@ struct DemoSimulation {
         guard canAct, attackHeldAt == nil else { return }
         guarding = false; cancelled = false; attackHeldAt = time
     }
-    mutating func releaseAttack() {
+    mutating func releaseAttack(origin: CGPoint? = nil) {
         guard attackHeldAt != nil else { return }
         let power = charge
         attackHeldAt = nil
         defer { cancelled = false }
         guard !cancelled, canAct else { message = "Attack cancelled."; return }
         if mode == .bow {
-            arrows.append(DemoArrow(x: playerX + facing * 105, direction: facing))
+            let origin = origin ?? CGPoint(x: playerX + facing * 105, y: -205)
+            arrows.append(DemoArrow(x: origin.x, y: origin.y, dx: cos(aimAngle), dy: sin(aimAngle)))
             message = power > 0.85 ? "Full draw!" : "Quick shot. Hold longer to finish drawing."
         } else {
             action = "swordSwing"; actionBegan = time; hitApplied = false
@@ -79,11 +89,12 @@ struct DemoSimulation {
         hits += 1; hitFlashUntil = time + 0.18; message = "Target impact"
     }
     mutating func advance(_ seconds: Double, durations: [String: Double]) {
-        let dt = min(0.05, max(0, seconds)); time += dt
+        let dt = min(0.1, max(0, seconds)); time += dt
         if isDodging { playerX += facing * 280 * dt }
         else if action == nil && attackHeldAt == nil {
             playerX += movement * (guarding ? 65 : 150) * dt
             if abs(movement) > 0.05 { facing = movement < 0 ? -1 : 1 }
+            if mode == .bow && abs(movement) > 0.05 { aimAngle = facing > 0 ? 0 : .pi }
         }
         playerX = min(665, max(55, playerX))
         if action == "swordSwing", !hitApplied, time - actionBegan >= (durations["swordSwing"] ?? 1.05) * 0.42 {
@@ -94,9 +105,14 @@ struct DemoSimulation {
         if let action, time - actionBegan >= (durations[action] ?? 0.56) { self.action = nil }
         var remaining: [DemoArrow] = []
         for var arrow in arrows {
-            let before = arrow.x; arrow.x += arrow.direction * 510 * dt
-            if (before - targetX) * (arrow.x - targetX) <= 0 { registerImpact() }
-            else if arrow.x > -30 && arrow.x < 750 { remaining.append(arrow) }
+            let before = CGPoint(x: arrow.x, y: arrow.y)
+            arrow.x += arrow.dx * 510 * dt; arrow.y += arrow.dy * 510 * dt
+            // Swept segment vs the target ellipse: steep shots can miss, fast shots cannot tunnel.
+            let a = CGPoint(x: (before.x-targetX)/38, y: (before.y+220)/45)
+            let dx = (arrow.x-before.x)/38, dy = (arrow.y-before.y)/45
+            let t = min(1, max(0, -(a.x*dx+a.y*dy)/max(1e-12, dx*dx+dy*dy)))
+            if hypot(a.x+dx*t, a.y+dy*t) <= 1 { registerImpact() }
+            else if arrow.x > -100 && arrow.x < 820 && arrow.y > -900 && arrow.y < 100 { remaining.append(arrow) }
         }
         arrows = remaining
 
@@ -120,106 +136,115 @@ struct DemoHorizontalJoystick {
 }
 
 @MainActor
-final class DemoModel: ObservableObject {
+final class DemoModel: NSObject, ObservableObject {
     @Published var state = DemoSimulation()
     @Published var error: String?
     @Published var inputGeneration = 0
+    @Published var frame: CharacterFrame?
     let library: CharacterLibrary?
     private var lastTime: TimeInterval?
     private var clipBegan = 0.0
     private var previousClip = "idle"
     private var previousActionBegan = -1.0
     var phase = 0.0
-    var durations: [String: Double] { library?.animations.mapValues(\.duration) ?? [:] }
+    private var displayLink: CADisplayLink?
+    private var transitionFrom: CharacterFrame?
+    private var transitionBegan = 0.0
+    private var durations: [String: Double] = [:]
 
-    init() {
+    override init() {
         do { library = try CharacterLibrary() }
         catch { library = nil; self.error = error.localizedDescription }
+        super.init()
+        durations = library?.animations.mapValues(\.duration) ?? [:]
+        state.drawDuration = durations["bowDraw"] ?? 1.55
+        frame = library?.sample(animation: "idle", phase: 0)
     }
+    func start() {
+        guard displayLink == nil else { return }
+        let link = CADisplayLink(target: self, selector: #selector(displayFrame(_:)))
+        link.preferredFrameRateRange = CAFrameRateRange(minimum: 60, maximum: 120, preferred: 60)
+        link.add(to: .main, forMode: .common); displayLink = link
+    }
+    @objc private func displayFrame(_ link: CADisplayLink) { tick(link.timestamp) }
     func tick(_ now: TimeInterval) {
         defer { lastTime = now }
         guard library != nil, let lastTime else { return }
         var next = state; next.advance(now - lastTime, durations: durations)
         if next.clip != previousClip || (next.action != nil && next.actionBegan != previousActionBegan) {
+            transitionFrom = frame; transitionBegan = next.time
             clipBegan = next.time; previousClip = next.clip; previousActionBegan = next.actionBegan
         }
         let duration = durations[next.clip] ?? 1
-        let elapsed = next.time - (next.attackHeldAt ?? clipBegan)
+        let elapsed = next.time - (next.clip == "bowDraw" ? (next.attackHeldAt ?? clipBegan) : clipBegan)
         let raw = elapsed / duration
         phase = library?.animations[next.clip]?.loops == true ? raw.truncatingRemainder(dividingBy: 1) : min(1, raw)
+        let sampled = library?.sample(animation: next.clip, phase: phase, bowAimPitchDegrees: next.mode == .bow ? next.aimPitch : nil)
+        // Bow uses the solved nock immediately so guide and fingertips stay together.
+        if next.mode == .melee, let old = transitionFrom, let sampled {
+            frame = sampled.blended(from: old, progress: (next.time-transitionBegan)/0.12)
+        } else { frame = sampled }
+        if next.time-transitionBegan >= 0.12 { transitionFrom = nil }
         state = next
     }
-    func pause() { state.releaseInputs(); lastTime = nil; inputGeneration += 1 }
-    func reset() { inputGeneration += 1; state = DemoSimulation(); phase = 0; previousClip = "idle"; clipBegan = 0; previousActionBegan = -1; lastTime = nil }
+    func releaseAttack() {
+        let nock = library?.sample(animation: state.clip, phase: phase, bowAimPitchDegrees: state.aimPitch).bowNock
+        let origin = nock.map { CGPoint(x: state.playerX + ($0.x-(library?.canvasSize.width ?? 0)/2) * 0.36 * (state.facing > 0 ? -1 : 1),
+                                      y: ($0.y-(library?.baseline ?? 0))*0.36) }
+        state.releaseAttack(origin: origin)
+    }
+    func pause() { displayLink?.invalidate(); displayLink = nil; state.releaseInputs(); lastTime = nil; inputGeneration += 1 }
+    func reset() { inputGeneration += 1; state = DemoSimulation(); state.drawDuration = durations["bowDraw"] ?? 1.55; phase = 0; previousClip = "idle"; clipBegan = 0; previousActionBegan = -1; lastTime = nil; transitionFrom = nil; frame = library?.sample(animation: "idle", phase: 0) }
 }
 
 // MARK: - Native drawing: sampled matrices and triangle deformation, not spritesheets
 
-struct DemoStage: UIViewRepresentable {
+struct DemoStage: View {
     let library: CharacterLibrary
     let state: DemoSimulation
-    let phase: Double
-    func makeUIView(context: Context) -> DemoStageView { DemoStageView() }
-    func updateUIView(_ view: DemoStageView, context: Context) {
-        view.library = library; view.state = state; view.phase = phase; view.setNeedsDisplay()
-    }
-}
-
-final class DemoStageView: UIView {
-    var library: CharacterLibrary?
-    var state = DemoSimulation()
-    var phase = 0.0
-    override init(frame: CGRect) { super.init(frame: frame); isOpaque = false; backgroundColor = .clear; isUserInteractionEnabled = false }
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-
-    override func draw(_ rect: CGRect) {
-        guard let context = UIGraphicsGetCurrentContext(), let library else { return }
-        let scale = bounds.width / 720
-        let ground = bounds.height * 0.78
-        context.setStrokeColor(UIColor.white.withAlphaComponent(0.055).cgColor)
-        context.setLineWidth(1)
-        for column in stride(from: 0.0, through: 720, by: 60) {
-            context.move(to: CGPoint(x: column * scale, y: 0)); context.addLine(to: CGPoint(x: column * scale, y: bounds.height))
-        }
-        for row in stride(from: 0.0, through: Double(bounds.height), by: 36) {
-            context.move(to: CGPoint(x: 0, y: row)); context.addLine(to: CGPoint(x: bounds.width, y: row))
-        }
-        context.strokePath()
-        context.setFillColor(UIColor(red: 0.15, green: 0.18, blue: 0.19, alpha: 1).cgColor)
-        context.fill(CGRect(x: 0, y: ground, width: bounds.width, height: bounds.height - ground))
-        context.setStrokeColor(UIColor(red: 0.57, green: 0.51, blue: 0.32, alpha: 1).cgColor)
-        context.move(to: CGPoint(x: 0, y: ground)); context.addLine(to: CGPoint(x: bounds.width, y: ground)); context.strokePath()
-        let target = CGPoint(x: state.targetX * scale, y: ground)
-        drawTarget(context, at: target, scale: scale)
-        context.saveGState()
-        context.translateBy(x: state.playerX * scale, y: ground)
-        context.setFillColor(UIColor.black.withAlphaComponent(0.3).cgColor)
-        context.fillEllipse(in: CGRect(x: -60 * scale, y: -8 * scale, width: 120 * scale, height: 16 * scale))
-        library.draw(in: context, animation: state.clip, phase: phase, at: .zero,
-                     scale: 0.36 * scale, facing: state.facing > 0 ? .right : .left)
-        context.restoreGState()
-        context.setStrokeColor(UIColor(red: 0.98, green: 0.82, blue: 0.47, alpha: 1).cgColor)
-        context.setLineWidth(2)
-        for arrow in state.arrows {
-            let x = arrow.x * scale, y = ground - 205 * scale
-            context.move(to: CGPoint(x: x - arrow.direction * 26 * scale, y: y)); context.addLine(to: CGPoint(x: x, y: y))
-            context.move(to: CGPoint(x: x - arrow.direction * 8 * scale, y: y - 5 * scale)); context.addLine(to: CGPoint(x: x, y: y)); context.addLine(to: CGPoint(x: x - arrow.direction * 8 * scale, y: y + 5 * scale)); context.strokePath()
+    let frame: CharacterFrame?
+    var body: some View {
+        Canvas(rendersAsynchronously: true) { context, size in
+            let scale = size.width / 720, ground = size.height * 0.78
+            let grid = Path { path in
+                for x in stride(from: 0.0, through: size.width, by: 60*scale) {
+                    path.move(to: CGPoint(x: x, y: 0)); path.addLine(to: CGPoint(x: x, y: size.height))
+                }
+                for y in stride(from: 0.0, through: size.height, by: 36) {
+                    path.move(to: CGPoint(x: 0, y: y)); path.addLine(to: CGPoint(x: size.width, y: y))
+                }
+            }
+            context.stroke(grid, with: .color(.white.opacity(0.055)))
+            context.fill(Path(CGRect(x: 0, y: ground, width: size.width, height: size.height-ground)), with: .color(Color(red: 0.15, green: 0.18, blue: 0.19)))
+            var world = context
+            world.translateBy(x: 0, y: ground); world.scaleBy(x: scale, y: scale)
+            world.stroke(Path { $0.move(to: .zero); $0.addLine(to: CGPoint(x: 720, y: 0)) }, with: .color(.yellow.opacity(0.4)))
+            let wood = Color(red: 0.42, green: 0.29, blue: 0.18)
+            world.fill(Path(CGRect(x: state.targetX-7, y: -250, width: 14, height: 250)), with: .color(wood))
+            world.fill(Path(CGRect(x: state.targetX-70, y: -205, width: 140, height: 14)), with: .color(wood))
+            world.fill(Path(ellipseIn: CGRect(x: state.targetX-38, y: -265, width: 76, height: 90)), with: .color(state.time < state.hitFlashUntil ? .white : Color(red: 0.66, green: 0.50, blue: 0.29)))
+            world.stroke(Path(ellipseIn: CGRect(x: state.targetX-24, y: -249, width: 48, height: 59)), with: .color(Color(red: 0.38, green: 0.18, blue: 0.14)), lineWidth: 9)
+            world.fill(Path(ellipseIn: CGRect(x: state.playerX-60, y: -8, width: 120, height: 16)), with: .color(.black.opacity(0.3)))
+            if let frame {
+                library.draw(in: world, frame: frame, at: CGPoint(x: state.playerX, y: 0), scale: 0.36, facing: state.facing > 0 ? .right : .left) { world in
+                if state.mode == .bow, let nock = frame.bowNock {
+                    let origin = CGPoint(x: state.playerX+(nock.x-library.canvasSize.width/2)*0.36*(state.facing > 0 ? -1 : 1), y: (nock.y-library.baseline)*0.36)
+                    let dx = cos(state.aimAngle), dy = sin(state.aimAngle)
+                    world.stroke(Path { path in path.move(to: origin); path.addLine(to: CGPoint(x: origin.x+dx*900, y: origin.y+dy*900)) }, with: .color(.yellow.opacity(0.3)), style: StrokeStyle(lineWidth: 1.5, dash: [8, 8]))
+                    drawArrow(world, tip: CGPoint(x: origin.x+dx*150, y: origin.y+dy*150), dx: dx, dy: dy, length: 150)
+                }
+                }
+            }
+            for arrow in state.arrows { drawArrow(world, tip: CGPoint(x: arrow.x, y: arrow.y), dx: arrow.dx, dy: arrow.dy, length: 26) }
         }
     }
-
-    private func drawTarget(_ context: CGContext, at point: CGPoint, scale: Double) {
-        context.saveGState(); defer { context.restoreGState() }
-        context.translateBy(x: point.x, y: point.y); context.scaleBy(x: scale, y: scale)
-        context.setFillColor(UIColor(red: 0.42, green: 0.29, blue: 0.18, alpha: 1).cgColor)
-        context.fill(CGRect(x: -7, y: -250, width: 14, height: 250))
-        context.fill(CGRect(x: -70, y: -205, width: 140, height: 14))
-        context.setFillColor((state.time < state.hitFlashUntil ? UIColor.white : UIColor(red: 0.66, green: 0.50, blue: 0.29, alpha: 1)).cgColor)
-        context.fillEllipse(in: CGRect(x: -38, y: -265, width: 76, height: 90))
-        context.setStrokeColor(UIColor(red: 0.38, green: 0.18, blue: 0.14, alpha: 1).cgColor)
-        context.setLineWidth(9); context.strokeEllipse(in: CGRect(x: -24, y: -249, width: 48, height: 59))
+    private func drawArrow(_ context: GraphicsContext, tip: CGPoint, dx: Double, dy: Double, length: Double) {
+        context.stroke(Path { path in
+            path.move(to: CGPoint(x: tip.x-dx*length, y: tip.y-dy*length)); path.addLine(to: tip)
+            path.move(to: CGPoint(x: tip.x-dx*8-dy*5, y: tip.y-dy*8+dx*5)); path.addLine(to: tip)
+            path.addLine(to: CGPoint(x: tip.x-dx*8+dy*5, y: tip.y-dy*8-dx*5))
+        }, with: .color(Color(red: 0.98, green: 0.82, blue: 0.47)), lineWidth: 2)
     }
-
-
 }
 
 struct DemoMovementSurface: UIViewRepresentable {
@@ -297,33 +322,23 @@ final class DemoMovementInputView: UIView {
 struct PlateDemoView: View {
     @StateObject private var model = DemoModel()
     @Environment(\.scenePhase) private var scenePhase
-    private let clock = Timer.publish(every: 1.0 / 30, on: .main, in: .common).autoconnect()
     private let gold = Color(red: 0.91, green: 0.73, blue: 0.42)
 
     var body: some View {
         VStack(spacing: 0) {
             HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("MODULAR CHARACTER STUDIO").font(.system(size: 11, weight: .bold, design: .monospaced)).tracking(2).foregroundStyle(gold)
-                    Text("Vanguard rig").font(.system(size: 27, weight: .semibold, design: .serif))
-                    Text("Plate armor · sword & shield · bow").font(.caption).foregroundStyle(.secondary)
-                }
+                Text("MODULAR CHARACTER STUDIO").font(.system(size: 11, weight: .bold, design: .monospaced)).tracking(2).foregroundStyle(gold)
                 Spacer()
                 Button("Reset") { model.reset() }.font(.caption.bold()).tint(gold).accessibilityIdentifier("demo.reset")
             }.padding(20)
             if let error = model.error {
                 ContentUnavailableView("Export needed", systemImage: "shippingbox", description: Text(error))
             } else if let library = model.library {
-                DemoStage(library: library, state: model.state, phase: model.phase)
+                DemoStage(library: library, state: model.state, frame: model.frame)
                     .overlay {
                         DemoMovementSurface(enabled: scenePhase == .active, resetToken: model.inputGeneration) { value in
                             model.state.movement = value
                         }
-                    }
-                    .overlay(alignment: .topLeading) {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(model.state.mode == .melee ? "SWORD & SHIELD" : "BOW READIED").font(.caption.bold()).foregroundStyle(gold)
-                        }.padding(20).allowsHitTesting(false)
                     }
                     .accessibilityLabel("Training arena")
                     .accessibilityValue("\(model.state.mode.rawValue), \(model.state.clip)")
@@ -333,14 +348,14 @@ struct PlateDemoView: View {
                 .frame(maxWidth: .infinity, minHeight: 38).padding(.horizontal, 12).accessibilityIdentifier("demo.status")
             actionBar.padding(.horizontal, 14).padding(.vertical, 14)
                 .background(Color(red: 0.16, green: 0.14, blue: 0.12))
-            Text("Touch + drag the arena to move · tap to strike · hold to draw")
+            Text(model.state.mode == .bow ? "Hold DRAW · turn the aim dial · release to fire" : "Touch + drag the arena to move · tap to strike · hold to draw")
                 .font(.system(size: 10)).foregroundStyle(.secondary).multilineTextAlignment(.center).padding(10)
         }
         .background(Color(red: 0.075, green: 0.09, blue: 0.105))
         .foregroundStyle(Color(red: 0.92, green: 0.91, blue: 0.86))
         .preferredColorScheme(.dark)
-        .onReceive(clock) { _ in if scenePhase == .active { model.tick(ProcessInfo.processInfo.systemUptime) } }
-        .onChange(of: scenePhase) { _, _ in model.pause() }
+        .onAppear { if scenePhase == .active { model.start() } }
+        .onChange(of: scenePhase) { _, phase in model.pause(); if phase == .active { model.start() } }
         .onDisappear { model.pause() }
     }
     private var actionBar: some View {
@@ -358,12 +373,13 @@ struct PlateDemoView: View {
             .gesture(DragGesture(minimumDistance: 0).onChanged { value in
                 model.state.beginAttack()
                 model.state.cancelled = value.translation.height < -80
-                if abs(value.translation.width) > 24 { model.state.facing = value.translation.width < 0 ? -1 : 1 }
-            }.onEnded { _ in model.state.releaseAttack() })
+                if model.state.mode == .melee && abs(value.translation.width) > 24 { model.state.facing = value.translation.width < 0 ? -1 : 1 }
+            }.onEnded { _ in model.releaseAttack() })
             .opacity(model.state.canAct ? 1 : 0.4)
+            .accessibilityElement(children: .ignore)
             .accessibilityLabel(model.state.mode == .melee ? "Attack" : "Draw and fire")
             .accessibilityAddTraits(.isButton)
-            .accessibilityAction { model.state.beginAttack(); model.state.releaseAttack() }
+            .accessibilityAction { model.state.beginAttack(); model.releaseAttack() }
             .accessibilityIdentifier("demo.attack")
             VStack(spacing: 8) {
                 HStack(spacing: 3) {
@@ -394,8 +410,33 @@ struct PlateDemoView: View {
                         .accessibilityLabel("Dodge").accessibilityIdentifier("demo.dodge")
                 }
             }
+            if model.state.mode == .bow { aimDial }
             Spacer(minLength: 0)
         }.buttonStyle(.plain)
+    }
+    private var aimDial: some View {
+        VStack(spacing: 4) {
+            ZStack {
+                Circle().fill(.black.opacity(0.2))
+                Circle().stroke(gold.opacity(0.5), lineWidth: 1)
+                Path { path in
+                    path.move(to: CGPoint(x: 10, y: 38)); path.addLine(to: CGPoint(x: 66, y: 38))
+                    path.move(to: CGPoint(x: 38, y: 10)); path.addLine(to: CGPoint(x: 38, y: 66))
+                }.stroke(gold.opacity(0.2))
+                Image(systemName: "arrow.right").font(.system(size: 30, weight: .medium))
+                    .rotationEffect(.radians(model.state.aimAngle)).foregroundStyle(gold)
+            }.frame(width: 76, height: 76).contentShape(Circle())
+                .gesture(DragGesture(minimumDistance: 0).onChanged { value in
+                    model.state.aim(at: CGPoint(x: value.location.x-38, y: value.location.y-38))
+                })
+                .accessibilityElement().accessibilityLabel("Bow aim")
+                .accessibilityValue("\(Int(model.state.aimPitch)) degrees, \(model.state.facing > 0 ? "right" : "left")")
+                .accessibilityAdjustableAction { direction in
+                    let angle = model.state.aimAngle + (direction == .increment ? -Double.pi/12 : Double.pi/12)
+                    model.state.aim(at: CGPoint(x: cos(angle)*38, y: sin(angle)*38))
+                }.accessibilityIdentifier("demo.aim")
+            Text("AIM \(Int(model.state.aimPitch))°").font(.system(size: 9, weight: .bold, design: .monospaced))
+        }
     }
     private func modeButton(_ mode: DemoSimulation.Mode, symbol: String, label: String) -> some View {
         Button { model.state.setMode(mode) } label: {

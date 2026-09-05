@@ -5,19 +5,26 @@ import UIKit
 
 /// A transparent character view fitted to its bounds. Supply normalized animation phase
 /// from a TimelineView, game clock, or slider. Input/gameplay stay in the host application.
-public struct ModularCharacterView: UIViewRepresentable {
+public struct ModularCharacterView: View {
     public let library: CharacterLibrary
     public var animation: String
     public var phase: Double
     public var facing: CharacterFacing
+    public var bowAimPitchDegrees: Double?
 
-    public init(library: CharacterLibrary, animation: String = "idle", phase: Double = 0, facing: CharacterFacing = .left) {
+    public init(library: CharacterLibrary, animation: String = "idle", phase: Double = 0, facing: CharacterFacing = .left, bowAimPitchDegrees: Double? = nil) {
         self.library = library; self.animation = animation; self.phase = phase; self.facing = facing
+        self.bowAimPitchDegrees = bowAimPitchDegrees
     }
-    public func makeUIView(context: Context) -> CharacterCanvasView { CharacterCanvasView() }
-    public func updateUIView(_ view: CharacterCanvasView, context: Context) {
-        view.library = library; view.animation = animation; view.phase = phase; view.facing = facing
-        view.setNeedsDisplay()
+    public var body: some View {
+        let frame = library.sample(animation: animation, phase: phase, bowAimPitchDegrees: bowAimPitchDegrees)
+        Canvas(rendersAsynchronously: true) { context, bounds in
+            let size = library.canvasSize
+            let scale = min(bounds.width/size.width, bounds.height/size.height)
+            let top = (bounds.height-size.height*scale)/2
+            library.draw(in: context, frame: frame,
+                         at: CGPoint(x: bounds.width/2, y: top+library.baseline*scale), scale: scale, facing: facing)
+        }.allowsHitTesting(false)
     }
 }
 

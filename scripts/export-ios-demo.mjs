@@ -9,7 +9,8 @@ import { RigTracks } from '../src/rig/tracks.ts'
 import { animationDurations, animationLoops, animationHandPose, layerMatchesHandPose, layerMatchesAnimationEquipment } from '../src/rig/clips.ts'
 import { constrainForearmPose } from '../src/rig/ik.ts'
 import { solveFrames, posedGripLayer } from '../src/canvas/paint.ts'
-import { deformWeightedMesh, rigidLayerMatrix, planeStrips } from '../src/rig/mesh.ts'
+import { deformWeightedMesh, rigidLayerMatrix, planeStrips, layerLocalMatrix } from '../src/rig/mesh.ts'
+import { multiply, transformPoint } from '../src/rig/matrix.ts'
 import { parseExpressionCatalog, expressionAssetPath, expressionAssets } from '../src/editor/expressions.ts'
 import { bakeAnimationLibrary } from './bake-animation-library.mjs'
 import { xcodeProject } from './ios-demo-project.mjs'
@@ -90,10 +91,18 @@ export async function exportIOSDemo({ project = resolve(repoRoot, 'project'), ou
     const samples = Math.ceil(duration * fps)
     const layers = rig.layers.filter(layer => layer.visible && layerMatchesHandPose(layer, animationHandPose[name]) && layerMatchesAnimationEquipment(layer, name))
       .sort((a, b) => a.drawOrder - b.drawOrder)
-    const frames = []
+    const frames = [], boneFrames = []
     for (let sample = 0; sample <= samples; sample++) {
       const phase = sample / samples
-      const solved = solveFrames(rig, { authored: constrainForearmPose(rig.bones, tracks.pose(name, phase)) })
+      const pose = constrainForearmPose(rig.bones, tracks.pose(name, phase))
+      for (const id of ['handL', 'handR']) {
+        const limit = name.startsWith('bow') && id === 'handL' ? 5 : 30
+        const rotation = pose[id]?.rotation ?? 0
+        const normalized = ((rotation + 180) % 360 + 360) % 360 - 180
+        pose[id] = { ...pose[id], rotation: Math.min(limit, Math.max(-limit, normalized)) }
+      }
+      const solved = solveFrames(rig, { authored: pose })
+      boneFrames.push(Object.fromEntries(Object.entries(solved.currentWorld).map(([id, matrix]) => [id, matrixValues(matrix)])))
       const context = { rig, heldLayer: rig.layers.find(layer => layer.id === (name.startsWith('bow') ? 'bow' : 'weapon')) }
       const frame = []
       for (const layer of layers) {
@@ -105,10 +114,15 @@ export async function exportIOSDemo({ project = resolve(repoRoot, 'project'), ou
         const mesh = deformWeightedMesh(posed, width, height, solved.meshBindWorld, solved.currentWorld)
         const key = `${layer.id}:${assetIndex}`
         if (!attachmentIndices.has(key)) {
-          const attachment = { id: layer.id, asset: assetIndex }
+          const attachment = { id: layer.id, asset: assetIndex, bone: layer.bone }
+          if (layer.id === 'bow') attachment.bowPivot = { x: posed.pivotX*width, y: posed.pivotY*height }
           if (mesh) {
             attachment.source = flatten(mesh.vertices.map(vertex => vertex.source))
             attachment.triangles = mesh.triangles.flat()
+            const bindMatrix = multiply(solved.meshBindWorld[layer.bone], layerLocalMatrix(posed, width, height))
+            attachment.aimMesh = { parent: posed.mesh.parentBone, child: posed.mesh.childBone,
+              weights: mesh.vertices.map(vertex => vertex.sectionWeight),
+              bindPoints: flatten(mesh.vertices.map(vertex => transformPoint(bindMatrix, vertex.source))) }
           } else {
             // Preserve the rigid finger cutout and projective plane strips too.
             if (layer.clipPath?.closed) attachment.clipPath = layer.clipPath
@@ -121,7 +135,8 @@ export async function exportIOSDemo({ project = resolve(repoRoot, 'project'), ou
       }
       frames.push(frame)
     }
-    clips[name] = { duration, loops: animationLoops[name], endKeyed: tracks.hasEndKey(name), frames }
+    clips[name] = { duration, loops: animationLoops[name], endKeyed: tracks.hasEndKey(name), frames,
+      ...(boneFrames.length ? { boneFrames } : {}) }
   }
   // Export a resolved rig, not stale default assets from the author's other outfits.
   const runtimeLayers = rig.layers.filter(layer => layer.visible).map(layer => {
@@ -133,7 +148,10 @@ export async function exportIOSDemo({ project = resolve(repoRoot, 'project'), ou
   for (const path of expressionAssets(face, profile)) await assetFor(path)
   // Complete all source validation/baking before writing anything to the output.
   const poseLibrary = bakeAnimationLibrary(scene)
+  const bindFrames = solveFrames(rig, { authored: {} })
   const manifest = { format: 'modular-character-studio-ios-demo-v1', profile, fps,
+    aimRig: { parents: Object.fromEntries(rig.bones.map(bone => [bone.id, bone.parent ?? ''])),
+      bindWorld: Object.fromEntries(Object.entries(bindFrames.meshBindWorld).map(([id, matrix]) => [id, matrixValues(matrix)])) },
     sourceSHA256: createHash('sha256').update(sourceBytes).digest('hex'),
     canvas: scene.canvas, baseline: scene.profileReference.canonicalTargetPixels.baseline, loadout, assets, attachments,
     clips: Object.fromEntries(DEMO_CLIPS.map(name => [name, `clips/${name}.json`])) }

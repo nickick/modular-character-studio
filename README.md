@@ -1,5 +1,16 @@
 # Modular Character Studio
 
+<table>
+  <tr>
+    <th width="76%">Editor · mid-sword-swing preview</th>
+    <th width="24%">Native iOS demo</th>
+  </tr>
+  <tr>
+    <td valign="top"><img src="docs/screenshots/editor-sword-swing.png" alt="Rig Studio paused halfway through a sword swing, with skeleton and joint deformation controls visible" width="100%"></td>
+    <td valign="top"><img src="docs/screenshots/ios-bow-aim.png" alt="iOS demo with both bow arms aimed upward using the radial dial" width="100%"></td>
+  </tr>
+</table>
+
 A local-first editor for modular 2D cutout characters. It combines skeletal
 animation, layered equipment, profile-specific fitting, hand, wrist, and
 double-sided ankle deformation, and equipment previewing in one project format.
@@ -68,7 +79,9 @@ Run `npm run export:ios`, then open
 `output/ios-plate-demo/PlateDemo.xcodeproj` in Xcode and run on an iPhone simulator.
 The export is self-contained: a small Swift demo, the reusable `ModularCharacter`
 Swift package, JSON animation/mesh data, and the plate-loadout textures. It includes a touch-origin horizontal joystick, sword attacks,
-hold-to-draw bow shots, weapon switching, blocking, dodging, and a training target.
+hold-to-draw bow shots, a radial aim dial with live two-arm bow IK, weapon switching,
+blocking, dodging, and a training target. Playback uses asynchronous Canvas drawing
+and a display-synchronized clock with short melee-animation transitions.
 See [the iOS demo guide](examples/ios/README.md) for controls, embedding, and
 export options. [The baking walkthrough](examples/ios/BAKING.md) explains how saved
 rig data becomes bone samples, mesh geometry, and iOS resources. Generated files live under ignored `output/`; re-export after
