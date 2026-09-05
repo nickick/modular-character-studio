@@ -94,14 +94,15 @@ enum BowAimSolver {
         let total = rest+(reachable(drawDistance)-rest)*progress
         return CGPoint(x: seat.x-dx*total, y: seat.y-dy*total)
     }
-    static func solve(world: [String: RigMatrix], rig: RuntimeAimRig, pitch: Double, drawProgress: Double = 1) -> [String: RigMatrix] {
+    static func solve(world: [String: RigMatrix], rig: RuntimeAimRig, pitch: Double, drawProgress: Double = 1,
+                      leadReach: Double = reach, rearTarget: CGPoint? = nil) -> [String: RigMatrix] {
         let world = constrainWrists(world: world, rig: rig, bow: true)
         guard pitch.isFinite, let left = world["shoulderL"], let right = world["shoulderR"],
               let upperR = world["upperArmR"], let lowerR = world["lowerArmR"], let handR = world["handR"] else { return world }
         let radians = min(90, max(-90, pitch)) * .pi / 180
         let unit = CGPoint(x: -cos(radians), y: sin(radians))
         guard let upperL = world["upperArmL"], let lowerL = world["lowerArmL"], let handL = world["handL"] else { return world }
-        let targetL = left.inverse.point(CGPoint(x: left.x+unit.x*(reach-90), y: left.y+unit.y*(reach-90)))
+        let targetL = left.inverse.point(CGPoint(x: left.x+unit.x*(leadReach-90), y: left.y+unit.y*(leadReach-90)))
         let upperSegment = upperL.inverse.times(lowerL), forearmSegment = lowerL.inverse.times(handL)
         let front = twoBone(target: targetL, first: upperSegment, second: forearmSegment)
         var rotations = ["upperArmL": front.upper, "lowerArmL": front.lower]
@@ -122,22 +123,22 @@ enum BowAimSolver {
         }
         rotations["handL"] = wrist
         let bowWorld = applying(rotations, world: world, rig: rig)
-        guard let nock = arrowNock(world: bowWorld, pitch: pitch, drawProgress: drawProgress) else { return world }
+        guard let nock = rearTarget ?? arrowNock(world: bowWorld, pitch: pitch, drawProgress: drawProgress) else { return world }
         let target = right.inverse.point(nock)
         let lowerLocal = upperR.inverse.times(lowerR), handLocal = lowerR.inverse.times(handR)
         let contact = handLocal.point(drawingGrip)
         let second = RigMatrix([1, 0, 0, 1, contact.x, contact.y])
-        let back = twoBone(target: target, first: lowerLocal, second: second)
+        let back = twoBone(target: target, first: lowerLocal, second: second, reachReserve: rearTarget == nil ? 0 : 18)
         rotations["upperArmR"] = back.upper
         rotations["lowerArmR"] = back.lower
         // The bounded rear wrist is part of the lower IK segment; its finger gap is the endpoint.
         return applying(rotations, world: world, rig: rig)
     }
 
-    private static func twoBone(target: CGPoint, first: RigMatrix, second: RigMatrix) -> (upper: Double, lower: Double) {
+    private static func twoBone(target: CGPoint, first: RigMatrix, second: RigMatrix, reachReserve: Double = 0) -> (upper: Double, lower: Double) {
         let upperLength = max(0.001, hypot(first.x, first.y)), lowerLength = max(0.001, hypot(second.x, second.y))
         let raw = hypot(target.x, target.y)
-        let distance = min(upperLength+lowerLength-1e-6, max(abs(upperLength-lowerLength)+1e-6, raw))
+        let distance = min(upperLength+lowerLength-max(1e-6, reachReserve), max(abs(upperLength-lowerLength)+1e-6, raw))
         func clamp(_ value: Double) -> Double { min(1, max(-1, value)) }
         let offset = acos(clamp((distance*distance+upperLength*upperLength-lowerLength*lowerLength)/(2*distance*upperLength)))
         let elbow = acos(clamp((distance*distance-upperLength*upperLength-lowerLength*lowerLength)/(2*upperLength*lowerLength)))

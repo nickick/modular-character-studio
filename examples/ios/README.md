@@ -35,6 +35,12 @@ the bundle. See the package's `README.md` in the generated export, or
   the limbs flex while the grip stays stable. The string draws above the helmet;
   the hands cover the string and arrow. A resting pull keeps the string at the finger gap.
   Wrists are limited to ±30° from neutral, or ±5° for the bow-holding wrist.
+- Firing straightens the limbs/string immediately and leaves the rear hand at
+  its release pose for 0.1 s. It then reaches the string as the bow arm bends,
+  before the bow arm extends and both hands settle into the nocked resting pose.
+  Reaching the string takes 1 s from release, then resetting takes another 1 s
+  (2 s total recovery).
+  Another shot can start afterward. The bow keeps its size throughout the motion.
 - In Bow mode, the same held gesture aims in any direction while drawing. Both
   arms follow the aim, and arrows leave above the bow hand along the displayed guide.
 - In Sword mode, drag across the attack pad to face left/right. Drag up off the

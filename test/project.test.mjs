@@ -184,7 +184,7 @@ test('bow animations never preview staff, weapon, or shield layers', () => {
   const bowAnimations = animationNames.filter((name) => name.startsWith('bow'))
   assert.deepEqual(bowAnimations, [
     'bowIdle', 'bowWalkForward', 'bowWalkBackward', 'bowRunForward', 'bowRunBackward',
-    'bowDraw', 'bowMoveForward', 'bowMoveBackward', 'bowDodgeForward', 'bowDodgeBackward',
+    'bowDraw', 'bowReload', 'bowMoveForward', 'bowMoveBackward', 'bowDodgeForward', 'bowDodgeBackward',
   ])
 
   for (const animation of bowAnimations) {

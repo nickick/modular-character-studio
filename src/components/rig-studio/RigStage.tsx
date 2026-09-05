@@ -9,7 +9,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react"
 import { useShallow } from "zustand/react/shallow"
-import { paintLayers, posedGripLayer, solveFrames, type PaintContext } from "@/canvas/paint.ts"
+import { paintLayers, posedGripLayer, solvePreviewFrames, type PaintContext } from "@/canvas/paint.ts"
 import { drawBackdrop, drawSelectionOutline, drawSkeleton, floorLineY } from "@/canvas/overlays.ts"
 import { layerCorners } from "@/canvas/paint.ts"
 import {
@@ -123,6 +123,7 @@ export function RigStage({ images, reference, view, canvasRef }: RigStageProps) 
   const paintContext = useMemo<PaintContext>(
     () => ({
       rig,
+      tracks,
       animation,
       phase,
       images,
@@ -131,12 +132,12 @@ export function RigStage({ images, reference, view, canvasRef }: RigStageProps) 
       showMesh: view.showMesh,
       soloLayerID: view.dimUnselected ? selectedLayer : null,
     }),
-    [rig, animation, phase, images, heldLayer, handControls, view.showMesh, view.dimUnselected, selectedLayer],
+    [rig, tracks, animation, phase, images, heldLayer, handControls, view.showMesh, view.dimUnselected, selectedLayer],
   )
 
   const frame = useMemo(
-    () => solveFrames(rig, { authored: pose, manual: {}, clipScoped: true }),
-    [rig, pose],
+    () => solvePreviewFrames(rig, { authored: pose, manual: {}, clipScoped: true }, paintContext),
+    [rig, pose, paintContext],
   )
 
   /**

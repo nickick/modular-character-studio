@@ -9,12 +9,15 @@
  * values -- arrive as explicit options rather than as closure state.
  */
 import { traceBezierPath } from "./bezier.ts"
-import { multiply, transformPoint, type MatrixTable } from "../rig/matrix.ts"
+import { inverse, multiply, transformPoint, type MatrixTable } from "../rig/matrix.ts"
 import { deformWeightedMesh, layerLocalMatrix, planeStrips, rigidLayerMatrix, triangleTransform } from "../rig/mesh.ts"
 import { posedGripAttachment, type GripControls } from "../rig/grip.ts"
 import { worldMatrices } from "../rig/skeleton.ts"
 import { mergePoses } from "../rig/clip-poses.ts"
 import type { Matrix2D, Point, Pose, ResolvedLayer, ResolvedRig } from "../rig/types.ts"
+import { emptyTracks, type RigTracks } from "../rig/tracks.ts"
+import { blendBowMatrix, bowNock, bowReloadAt, drawingGrip, solveBowArms } from "../rig/bow-reload.ts"
+import { bowStringFor, drawBowBody, drawBowString, straightStringContact, type BowString } from "./bow-string.ts"
 
 /**
  * A decoded image the canvas can draw, with its intrinsic size. Both the
@@ -40,6 +43,7 @@ export interface PaintContext {
   rig: ResolvedRig
   animation: string
   phase: number
+  tracks?: RigTracks
   images: LayerImageLookup
   /** The held item the closed grip is wrapped around, if any. */
   heldLayer: ResolvedLayer | null
@@ -59,6 +63,7 @@ export interface PaintedFrame {
   meshBindWorld: MatrixTable
   currentWorld: MatrixTable
   pose: Pose
+  bowReload?: { layer: ResolvedLayer; image: LayerImage; span: BowString; matrix: Matrix2D; contact: Point; nock: Point | null }
 }
 
 /** Seat a layer in the grip stack for the current hand controls. */
@@ -198,6 +203,37 @@ export function solveFrames(rig: ResolvedRig, frames: PoseFrames): PaintedFrame 
   }
 }
 
+/** Same procedural reload in the stage, thumbnail picker and equipment preview. */
+export function solvePreviewFrames(rig: ResolvedRig, frames: PoseFrames, context: PaintContext,
+  stringFor: (image: LayerImage) => BowString | null = bowStringFor,
+): PaintedFrame {
+  const frame = solveFrames(rig, frames)
+  if (context.animation !== "bowReload") return frame
+  const layer = rig.layers.find(layer => layer.id === "bow" && layer.visible)
+  const image = layer && context.images(layer, context.animation, context.phase)
+  const span = image && stringFor(image)
+  if (!layer || !image || !span) return frame
+  const tracks = context.tracks ?? emptyTracks, timing = bowReloadAt(context.phase)
+  const start = worldMatrices(rig.bones, tracks.pose("bowDraw", 1))
+  const end = worldMatrices(rig.bones, tracks.pose("bowIdle", 0))
+  if (!start.handL || !start.handR) return frame
+  const base = Object.fromEntries(Object.keys(start).map(id => [id, blendBowMatrix(start[id], end[id] ?? start[id], timing.settling)]))
+  const released = solveBowArms(start, frame.meshBindWorld, rig.bones, 1)
+  const reach = 290-timing.retraction
+  const front = solveBowArms(base, frame.meshBindWorld, rig.bones, 0, reach)
+  const rest = bowNock(front, 0)
+  const matrix = rigidLayerMatrix(layer, image.width, image.height, frame.bindWorld, front)
+  const straight = transformPoint(matrix, straightStringContact(span, transformPoint(inverse(matrix),rest)))
+  const blend = (a:Point,b:Point,t:number):Point => ({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t})
+  const releasedGrip = transformPoint(released.handR,drawingGrip)
+  const desired = blend(straight,rest,timing.settling)
+  const rear = timing.connected ? desired : blend(releasedGrip,straight,timing.reaching)
+  const world = timing.reaching === 0 ? released : timing.settling === 1 ? front
+    : solveBowArms(base, frame.meshBindWorld, rig.bones, 0, reach, rear)
+  const contact = timing.connected ? transformPoint(world.handR,drawingGrip) : straight
+  return {...frame,currentWorld:world,bowReload:{layer,image,span,matrix,contact,nock:timing.connected?contact:null}}
+}
+
 /**
  * Draw every visible layer in draw order. The caller has already decided which
  * layers are on show, because that answer differs between the two studios.
@@ -209,11 +245,52 @@ export function paintLayers(
   context: PaintContext,
 ): void {
   const ordered = [...layers].sort((left, right) => left.drawOrder - right.drawOrder)
+  if (frame.bowReload && layers.some(layer => layer.id === "bow")) {
+    paintBowReload(target, ordered, frame, context)
+    return
+  }
   for (const layer of ordered) {
     const image = context.images(layer, context.animation, context.phase)
     if (!image) continue
     drawLayer(target, layer, image, frame, context)
   }
+}
+
+const bowOverlays = new WeakMap<HTMLCanvasElement, HTMLCanvasElement>()
+function paintBowReload(target: CanvasRenderingContext2D, layers: ResolvedLayer[], frame: PaintedFrame, context: PaintContext) {
+  const bow = frame.bowReload!
+  const rear = (l: ResolvedLayer) => ["upperArmR","lowerArmR","handR"].includes(l.bone)
+  const lead = (l: ResolvedLayer) => ["upperArmL","lowerArmL"].includes(l.bone)
+  const hand = (l: ResolvedLayer) => l.bone==="handL" && l.id.startsWith("hand")
+  const leg = (l: ResolvedLayer) => l.bone.includes("Leg") || l.bone.startsWith("foot")
+  const paint = (l: ResolvedLayer, c=target) => {
+    const image=context.images(l,context.animation,context.phase)
+    if(image)drawLayer(c,l,image,frame,context)
+  }
+  layers.filter(lead).forEach(l=>paint(l))
+  for(const layer of layers.filter(l=>!lead(l)&&!rear(l)&&!hand(l))) {
+    if(layer.id!=="bow"){paint(layer);continue}
+    drawBowBody(target,bow.image,bow.matrix,bow.span)
+    if(bow.nock) {
+      const p=bow.nock
+      target.save();target.strokeStyle="#fad177";target.lineWidth=4;target.beginPath()
+      target.moveTo(p.x,p.y);target.lineTo(p.x-400,p.y)
+      target.moveTo(p.x-380,p.y-10);target.lineTo(p.x-400,p.y);target.lineTo(p.x-380,p.y+10);target.stroke();target.restore()
+    }
+  }
+  let canvas=bowOverlays.get(target.canvas)
+  if(!canvas){canvas=document.createElement("canvas");bowOverlays.set(target.canvas,canvas)}
+  if(canvas.width!==target.canvas.width)canvas.width=target.canvas.width
+  if(canvas.height!==target.canvas.height)canvas.height=target.canvas.height
+  const overlay=canvas.getContext("2d")!
+  overlay.resetTransform();overlay.clearRect(0,0,canvas.width,canvas.height);overlay.setTransform(target.getTransform())
+  drawBowString(overlay,bow.image,bow.matrix,bow.span,bow.contact)
+  layers.filter(hand).forEach(l=>paint(l,overlay))
+  overlay.globalCompositeOperation="destination-out"
+  layers.filter(leg).forEach(l=>paint(l,overlay))
+  overlay.globalCompositeOperation="source-over"
+  target.save();target.resetTransform();target.drawImage(canvas,0,0);target.restore()
+  layers.filter(rear).forEach(l=>paint(l))
 }
 
 /**

@@ -22,6 +22,7 @@ const animationLabels: Record<string, string> = {
   spellMoveForward: "Spell moving forward",
   spellMoveBackward: "Spell moving backward",
   bowDraw: "Bow draw",
+  bowReload: "Bow reload",
   bowMoveForward: "Bow moving forward",
   bowMoveBackward: "Bow moving backward",
 }

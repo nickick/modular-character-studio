@@ -80,10 +80,25 @@ out of the body and drawn as two deforming textured sections meeting at the
 nock, in a foreground pass above the helmet and below the hands. Each half is
 straight from its limb attachment to the nock, including a slight resting pull.
 No replacement string art is used. Custom arrows can use the Canvas draw call's
-`bowOverlay` closure, which runs after the string and before the hands.
+`bowOverlay` closure, which runs after the bow body, behind the legs and hands.
 Straight strings are detected once when textures load; unsupported silhouettes
 retain their undeformed sprite. Re-export older bundles to include wrist metadata
 for every clip. These live deformations use the Canvas renderer.
+
+For shot follow-through, capture `BowRelease(drawProgress: phase)` when firing,
+advance its `elapsed` in seconds, and pass it to `library.sample(..., bowRelease: release)`
+or `ModularCharacterView(..., bowRelease: release)`. Keep the shot's aim and
+facing fixed during recovery. The limbs and original string immediately return
+to their straight shape; the rear hand remains at its release pose for 0.1 s.
+Over the next 0.9 s it reaches the straight string while the bow arm bends
+(one second total from firing to grabbing the string).
+The final 1 s extends the bow arm and settles both hands, with the caught
+string driven by the rear finger gap. Wrist limits remain unchanged.
+Rigid attachments blend in bone-local space, keeping the bow's size and grip
+registration stable as the arm rotates through recovery.
+`frame.bowNock` is nil until reconnection, so a fired arrow is not also drawn
+in the hand. Clear the release state when `isComplete`, or on cancel, reset,
+mode switch or suspension. The demo prevents another draw during recovery.
 
 `frame.blended(from:progress:)` blends matching attachment geometry for short
 clip transitions. The demo uses a display link (60 Hz preferred), 120 ms melee

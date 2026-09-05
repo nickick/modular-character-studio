@@ -127,6 +127,7 @@ export const REVIEW_PHASE: Record<string, number> = {
   swordSwing: 0.42,
   sneakAttack: 0.55,
   bowDraw: 0.85,
+  bowReload: 0.75,
 }
 
 const CLIP_LABELS: Record<string, string> = {
@@ -147,6 +148,7 @@ const CLIP_LABELS: Record<string, string> = {
   blocked: "Blocked recoil",
   sneakAttack: "Sneak attack",
   bowDraw: "Bow draw",
+  bowReload: "Bow reload",
 }
 
 /** A clip's name in this studio, which depends on what is being fitted. */

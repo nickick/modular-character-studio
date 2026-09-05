@@ -11,6 +11,7 @@
 import { clamp01 } from "./angles.ts"
 import { animationDurations, type AnimationName } from "./clips.ts"
 import { solveTwoBoneIK } from "./ik.ts"
+import { bowReloadAt } from "./bow-reload.ts"
 import type { Point, Pose, PoseDelta, Side } from "./types.ts"
 
 const TAU = Math.PI * 2;
@@ -597,6 +598,21 @@ export function authoredPose(name: string, phase: number): Pose {
   // the phase it is given instead of guessing whether its endpoint should wrap.
   const t = clamp01(phase);
   const wave = cycle(t);
+  if (name === "bowReload") {
+    const start = authoredPose("bowDraw", 1), end = authoredPose("bowIdle", 0)
+    const blend = bowReloadAt(t).settling
+    const pose: Pose = {}
+    for (const bone of new Set([...Object.keys(start), ...Object.keys(end)])) {
+      const a = start[bone] ?? {}, b = end[bone] ?? {}
+      const delta: PoseDelta = {}
+      for (const key of ["x", "y", "rotation", "scaleX", "scaleY"] as const) {
+        const neutral = key.startsWith("scale") ? 1 : 0
+        delta[key] = (a[key] ?? neutral) + ((b[key] ?? neutral) - (a[key] ?? neutral)) * blend
+      }
+      pose[bone] = delta
+    }
+    return pose
+  }
 
   // Carrying a ranged weapon is separate from committing its aimed attack.
   // Keep the lead wrist neutral so all clips use the family grip registration.

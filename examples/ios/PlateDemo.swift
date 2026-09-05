@@ -24,13 +24,14 @@ struct DemoSimulation {
     var aimAngle = 0.0
     var aimPitch: Double { asin(sin(aimAngle)) * 180 / .pi }
     mutating func aim(at point: CGPoint) {
-        guard hypot(point.x, point.y) > 8 else { return }
+        guard bowRelease == nil, hypot(point.x, point.y) > 8 else { return }
         aimAngle = atan2(point.y, point.x)
         if abs(cos(aimAngle)) > 0.02 { facing = cos(aimAngle) < 0 ? -1 : 1 }
     }
     var movement = 0.0
     var guarding = false
     var attackHeldAt: Double?
+    var bowRelease: BowRelease?
     var cancelled = false
     var action: String?
     var actionBegan = 0.0
@@ -43,7 +44,7 @@ struct DemoSimulation {
     var isDodging: Bool { action?.contains("Dodge") == true || action?.hasPrefix("dodge") == true }
     var drawDuration = 1.55
     var charge: Double { attackHeldAt.map { min(1, max(0, (time - $0) / drawDuration)) } ?? 0 }
-    var canAct: Bool { action == nil }
+    var canAct: Bool { action == nil && bowRelease == nil }
     var clip: String {
         if let action { return action }
         if mode == .bow {
@@ -59,7 +60,7 @@ struct DemoSimulation {
         mode = next; releaseInputs()
         aimAngle = facing > 0 ? 0 : .pi
     }
-    mutating func releaseInputs() { attackHeldAt = nil; cancelled = false; guarding = false; movement = 0 }
+    mutating func releaseInputs() { attackHeldAt = nil; bowRelease = nil; cancelled = false; guarding = false; movement = 0 }
     mutating func beginAttack() {
         guard canAct, attackHeldAt == nil else { return }
         guarding = false; cancelled = false; attackHeldAt = time
@@ -71,12 +72,14 @@ struct DemoSimulation {
     }
     mutating func releaseAttack(origin: CGPoint? = nil) {
         guard attackHeldAt != nil else { return }
+        let releasedCharge = charge
         attackHeldAt = nil
         defer { cancelled = false }
         guard !cancelled, canAct else { return }
         if mode == .bow {
             let origin = origin ?? CGPoint(x: playerX + facing * 105, y: -205)
             arrows.append(DemoArrow(x: origin.x, y: origin.y, dx: cos(aimAngle), dy: sin(aimAngle)))
+            bowRelease = BowRelease(drawProgress: releasedCharge)
         } else {
             action = "swordSwing"; actionBegan = time; hitApplied = false
         }
@@ -91,8 +94,12 @@ struct DemoSimulation {
     }
     mutating func advance(_ seconds: Double, durations: [String: Double]) {
         let dt = min(0.1, max(0, seconds)); time += dt
+        if var release = bowRelease {
+            release.elapsed += dt
+            bowRelease = release.isComplete ? nil : release
+        }
         if isDodging { playerX += facing * 280 * dt }
-        else if action == nil && attackHeldAt == nil {
+        else if canAct && attackHeldAt == nil {
             playerX += movement * (guarding ? 65 : 150) * dt
             if abs(movement) > 0.05 { facing = movement < 0 ? -1 : 1 }
             if mode == .bow && abs(movement) > 0.05 { aimAngle = facing > 0 ? 0 : .pi }
@@ -171,6 +178,7 @@ final class DemoModel: NSObject, ObservableObject {
         defer { lastTime = now }
         guard library != nil, let lastTime else { return }
         var next = state; next.advance(now - lastTime, durations: durations)
+        if state.bowRelease != nil && next.bowRelease == nil { clipBegan = next.time }
         if next.clip != previousClip || (next.action != nil && next.actionBegan != previousActionBegan) {
             transitionFrom = frame; transitionBegan = next.time
             clipBegan = next.time; previousClip = next.clip; previousActionBegan = next.actionBegan
@@ -179,7 +187,7 @@ final class DemoModel: NSObject, ObservableObject {
         let elapsed = next.time - (next.clip == "bowDraw" ? (next.attackHeldAt ?? clipBegan) : clipBegan)
         let raw = elapsed / duration
         phase = library?.animations[next.clip]?.loops == true ? raw.truncatingRemainder(dividingBy: 1) : min(1, raw)
-        let sampled = library?.sample(animation: next.clip, phase: phase, bowAimPitchDegrees: next.mode == .bow ? next.aimPitch : nil)
+        let sampled = library?.sample(animation: next.clip, phase: phase, bowAimPitchDegrees: next.mode == .bow ? next.aimPitch : nil, bowRelease: next.bowRelease)
         // Bow uses the solved nock immediately so guide and fingertips stay together.
         if next.mode == .melee, let old = transitionFrom, let sampled {
             frame = sampled.blended(from: old, progress: (next.time-transitionBegan)/0.12)
@@ -188,10 +196,14 @@ final class DemoModel: NSObject, ObservableObject {
         state = next
     }
     func releaseAttack() {
-        let nock = library?.sample(animation: state.clip, phase: phase, bowAimPitchDegrees: state.aimPitch).bowNock
+        let nock = library?.sample(animation: state.clip, phase: state.mode == .bow ? state.charge : phase, bowAimPitchDegrees: state.aimPitch).bowNock
         let origin = nock.map { CGPoint(x: state.playerX + ($0.x-(library?.canvasSize.width ?? 0)/2) * 0.36 * (state.facing > 0 ? -1 : 1),
                                       y: ($0.y-(library?.baseline ?? 0))*0.36) }
         state.releaseAttack(origin: origin)
+        if let release = state.bowRelease {
+            // Switch the limbs/string on the release event, not one display tick later.
+            frame = library?.sample(animation: "bowIdle", phase: 0, bowAimPitchDegrees: state.aimPitch, bowRelease: release)
+        }
     }
     func pause() { displayLink?.invalidate(); displayLink = nil; state.releaseInputs(); lastTime = nil; inputGeneration += 1 }
     func reset() { inputGeneration += 1; state = DemoSimulation(); state.drawDuration = durations["bowDraw"] ?? 1.55; phase = 0; previousClip = "idle"; clipBegan = 0; previousActionBegan = -1; lastTime = nil; transitionFrom = nil; frame = library?.sample(animation: "idle", phase: 0) }

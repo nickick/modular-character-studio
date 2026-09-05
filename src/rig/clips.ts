@@ -48,6 +48,7 @@ export const animationNames = [
   "staffSpellMoveForward",
   "staffSpellMoveBackward",
   "bowDraw",
+  "bowReload",
   "bowMoveForward",
   "bowMoveBackward",
   "bowDodgeForward",
@@ -159,6 +160,7 @@ export const animationLoops = {
   spellMoveForward: true,
   spellMoveBackward: true,
   bowDraw: false,
+  bowReload: false,
   bowMoveForward: true,
   bowMoveBackward: true,
 } as const satisfies Record<AnimationName, boolean>
@@ -213,6 +215,7 @@ export const animationDurations = {
   spellMoveForward: jogDuration,
   spellMoveBackward: jogDuration,
   bowDraw: 1.55,
+  bowReload: 2,
   bowMoveForward: jogDuration,
   bowMoveBackward: jogDuration,
 } as const satisfies Record<AnimationName, number>
@@ -233,6 +236,7 @@ export const animationAim = {
   spellMoveForward: "spell",
   spellMoveBackward: "spell",
   bowDraw: "bow",
+  bowReload: "bow",
   bowMoveForward: "bow",
   bowMoveBackward: "bow",
 } as const satisfies Partial<Record<AnimationName, AimKind>>
@@ -284,6 +288,7 @@ export const animationHandPose = {
   spellMoveForward: "openLClosedR",
   spellMoveBackward: "openLClosedR",
   bowDraw: "closedLOpenR",
+  bowReload: "closedLOpenR",
   bowMoveForward: "closedLOpenR",
   bowMoveBackward: "closedLOpenR",
 } as const satisfies Record<AnimationName, HandPoseName>
@@ -353,6 +358,7 @@ export const animationEquipment = {
   spellMoveForward: ["shield"],
   spellMoveBackward: ["shield"],
   bowDraw: ["bow"],
+  bowReload: ["bow"],
   bowMoveForward: ["bow"],
   bowMoveBackward: ["bow"],
 } as const satisfies Record<AnimationName, readonly EquipmentLayerID[]>
@@ -385,6 +391,7 @@ export const REVIEW_ANIMATIONS = [
   "blocked",
   "sneakAttack",
   "bowDraw",
+  "bowReload",
   "bowIdle",
   "bowWalkForward",
   "bowRunForward",

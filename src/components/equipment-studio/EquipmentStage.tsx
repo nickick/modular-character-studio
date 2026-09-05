@@ -7,7 +7,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useShallow } from "zustand/react/shallow"
-import { layerCorners, paintLayers, solveFrames, type PaintContext } from "@/canvas/paint.ts"
+import { layerCorners, paintLayers, solvePreviewFrames, type PaintContext } from "@/canvas/paint.ts"
 import { drawSelectionOutline } from "@/canvas/overlays.ts"
 import { inverse, transformPoint } from "@/rig/matrix.ts"
 import { constrainForearmPose } from "@/rig/ik.ts"
@@ -161,7 +161,6 @@ function ProfileStage(props: ProfileStageProps) {
     () => constrainForearmPose(rig.bones, tracks.pose(animation, phase)),
     [rig.bones, tracks, animation, phase],
   )
-  const frame = useMemo(() => solveFrames(rig, { authored: pose }), [rig, pose])
 
   const imagesForProfile = useCallback(
     (layer: ResolvedLayer, clip: string, at: number) => images(profile, layer, clip, at),
@@ -169,9 +168,10 @@ function ProfileStage(props: ProfileStageProps) {
   )
 
   const context = useMemo<PaintContext>(
-    () => ({ rig, animation, phase, images: imagesForProfile, heldLayer, handControls }),
-    [rig, animation, phase, imagesForProfile, heldLayer, handControls],
+    () => ({ rig, tracks, animation, phase, images: imagesForProfile, heldLayer, handControls }),
+    [rig, tracks, animation, phase, imagesForProfile, heldLayer, handControls],
   )
+  const frame = useMemo(() => solvePreviewFrames(rig, { authored: pose }, context), [rig, pose, context])
 
   const layers = useMemo(() => {
     const handPose = animationHandPose[animation as keyof typeof animationHandPose] ?? "closed"

@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dialog.tsx"
 import { animationDurations, animationNames, type AnimationName } from "@/rig/clips.ts"
 import { animationLabel } from "@/editor/labels.ts"
-import { paintLayers, solveFrames, type PaintContext } from "@/canvas/paint.ts"
+import { paintLayers, solvePreviewFrames, type PaintContext } from "@/canvas/paint.ts"
 import { STAGE_OVERSCAN, STAGE_VIEW_SIZE } from "@/editor/stage.ts"
 import { layerMatchesAnimationEquipment, layerMatchesHandPose } from "@/rig/clips.ts"
 import { handPoseForClip, heldLayerFor, matchesMainHand } from "@/hooks/use-rig-frame.ts"
@@ -104,9 +104,9 @@ export function AnimationPickerDialog({
         if (!target || !loadout) continue
         // Each cell runs its own clip at its own speed.
         const phase = (timestamp / (animationDurations[name] * 1000)) % 1
-        const frame = solveFrames(rig, { authored: tracks.pose(name, phase) })
         const context: PaintContext = {
           rig,
+          tracks,
           animation: name,
           phase,
           images,
@@ -120,6 +120,7 @@ export function AnimationPickerDialog({
               fingerIDs,
             ),
         }
+        const frame = solvePreviewFrames(rig, { authored: tracks.pose(name, phase) }, context)
         target.clearRect(0, 0, canvas.width, canvas.height)
         target.save()
         const scale = canvas.width / STAGE_VIEW_SIZE

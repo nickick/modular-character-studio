@@ -203,6 +203,120 @@ final class CharacterRuntimeTests: XCTestCase {
         }
     }
 
+    func testBowReleaseTiming() {
+        let hold = BowRelease(elapsed: 0.05, drawProgress: 1)
+        XCTAssertEqual(hold.reachProgress, 0)
+        XCTAssertEqual(hold.leadRetraction, 0)
+        let catchTime = BowRelease.pauseDuration + BowRelease.reachDuration
+        XCTAssertEqual(catchTime, 1, accuracy: 1e-8)
+        XCTAssertEqual(BowRelease.settleDuration, 1, accuracy: 1e-8)
+        XCTAssertEqual(BowRelease.duration, 2, accuracy: 1e-8)
+        let settling = BowRelease(elapsed: 1.5, drawProgress: 1)
+        XCTAssertTrue(settling.hasReconnected)
+        XCTAssertFalse(settling.isComplete)
+        XCTAssertEqual(settling.settleProgress, 0.5, accuracy: 1e-8)
+        let reconnect = BowRelease(elapsed: catchTime, drawProgress: 1)
+        XCTAssertEqual(reconnect.reachProgress, 1)
+        XCTAssertTrue(reconnect.hasReconnected)
+        XCTAssertGreaterThan(reconnect.leadRetraction, 0)
+        let end = BowRelease(elapsed: BowRelease.duration, drawProgress: 1)
+        XCTAssertTrue(end.isComplete)
+        XCTAssertEqual(end.settleProgress, 1, accuracy: 1e-8)
+        XCTAssertEqual(end.leadRetraction, 0, accuracy: 1e-8)
+    }
+
+    func testBowReleaseGeometryWhenExportSupplied() throws {
+        guard let path = ProcessInfo.processInfo.environment["MCS_RUNTIME_DIRECTORY"] else { throw XCTSkip("Requires a real export.") }
+        let data = try CharacterData(directory: URL(fileURLWithPath: path))
+        let draw = try XCTUnwrap(data.animations["bowDraw"])
+        let idle = try XCTUnwrap(data.animations["bowIdle"])
+        let rig = try XCTUnwrap(data.manifest.aimRig)
+        let bowID = try XCTUnwrap(data.manifest.attachments.firstIndex { $0.id == "bow" })
+        let bow = data.manifest.attachments[bowID], asset = data.manifest.assets[bow.asset]
+        let source = try XCTUnwrap(CGImageSourceCreateWithURL(try CharacterData.resource(asset.path, in: data.root) as CFURL, nil))
+        let image = try XCTUnwrap(CGImageSourceCreateImageAtIndex(source, 0, nil))
+        let deformation = try XCTUnwrap(BowSpriteDeformation(image: image, renderRect: CGRect(x: 0, y: 0, width: asset.width, height: asset.height)))
+        let span = BowStringSpan(top: deformation.top, bottom: deformation.bottom)
+        let spans = [bow.asset: span]
+        let catchTime = BowRelease.pauseDuration + BowRelease.reachDuration
+        let idleWorld = try XCTUnwrap(BowAimSolver.sampleWorld(idle, phase: 0))
+        for progress in [0.0, 0.4, 1.0] {
+            let drawWorld = try XCTUnwrap(BowAimSolver.sampleWorld(draw, phase: progress))
+            for pitch in stride(from: -90.0, through: 90.0, by: 15) {
+                let before = data.sample(animation: "bowDraw", phase: progress, bowAimPitchDegrees: pitch)
+                let beforeBow = RigMatrix(try XCTUnwrap(before.layers.first { $0.attachment == bowID }).values)
+                let restFrame = data.sample(animation: "bowIdle", phase: 0, bowAimPitchDegrees: pitch)
+                let restBow = RigMatrix(try XCTUnwrap(restFrame.layers.first { $0.attachment == bowID }).values)
+                for time in [0.0, 0.05, 0.1, 0.55, catchTime,
+                             catchTime + BowRelease.settleDuration * 0.25,
+                             catchTime + BowRelease.settleDuration * 0.5,
+                             catchTime + BowRelease.settleDuration * 0.75, BowRelease.duration] {
+                    let release = BowRelease(elapsed: time, drawProgress: progress)
+                    let frame = data.sample(animation: "bowIdle", phase: 0, bowAimPitchDegrees: pitch, bowRelease: release, bowStrings: spans)
+                    XCTAssertEqual(frame.bowDrawProgress, 0, "limbs snap straight at release")
+                    XCTAssertTrue(frame.layers.flatMap(\.values).allSatisfy(\.isFinite))
+                    XCTAssertEqual(frame.bowNock != nil, release.hasReconnected)
+                    let contact = try XCTUnwrap(frame.bowStringContact)
+                    let matrix = RigMatrix(try XCTUnwrap(frame.layers.first { $0.attachment == bowID }).values)
+                    // Fractional baked draw samples can have a tiny pre-existing scale
+                    // difference; recovery must only interpolate it, never shrink from rotation.
+                    XCTAssertEqual(matrix.sx, beforeBow.sx + (restBow.sx-beforeBow.sx)*release.settleProgress,
+                                   accuracy: 0.001, "bow width has no rotation-induced shrinking")
+                    XCTAssertEqual(matrix.sy, beforeBow.sy + (restBow.sy-beforeBow.sy)*release.settleProgress,
+                                   accuracy: 0.001, "bow height has no rotation-induced shrinking")
+                    let local = matrix.inverse.point(contact)
+                    if !release.hasReconnected || time == catchTime {
+                        let projected = span.closestPoint(to: local)
+                        XCTAssertEqual(local.x, projected.x, accuracy: 0.01, "straight string until catch")
+                        XCTAssertEqual(local.y, projected.y, accuracy: 0.01)
+                    }
+                    let baseWorld = drawWorld.reduce(into: [String: RigMatrix]()) { result, entry in
+                        result[entry.key] = RigMatrix.blend(entry.value, idleWorld[entry.key]!, release.settleProgress)
+                    }
+                    let baseLayers = data.blendReleaseLayers(from: draw.sample(phase: progress), to: idle.sample(phase: 0),
+                        fromWorld: drawWorld, toWorld: idleWorld, world: baseWorld, progress: release.settleProgress)
+                    func boneWorld(_ id: String) throws -> RigMatrix {
+                        let base = RigMatrix.blend(drawWorld[id]!, idleWorld[id]!, release.settleProgress)
+                        let layer = try XCTUnwrap(frame.layers.first { data.manifest.attachments[$0.attachment].bone == id && data.manifest.attachments[$0.attachment].source == nil })
+                        let original = try XCTUnwrap(baseLayers.first { $0.attachment == layer.attachment })
+                        return RigMatrix(layer.values).times(RigMatrix(original.values).inverse).times(base)
+                    }
+                    let handR = try boneWorld("handR")
+                    let fingers = handR.point(BowAimSolver.drawingGrip)
+                    if release.hasReconnected {
+                        XCTAssertEqual(fingers.x, contact.x, accuracy: 0.05, "rear fingers at string: pitch \(pitch), time \(time)")
+                        XCTAssertEqual(fingers.y, contact.y, accuracy: 0.05)
+                    }
+                    if time <= BowRelease.pauseDuration {
+                        for layer in frame.layers where data.manifest.attachments[layer.attachment].bone == "handR" {
+                            let original = try XCTUnwrap(before.layers.first { $0.attachment == layer.attachment })
+                            for (a, b) in zip(layer.values, original.values) { XCTAssertEqual(a, b, accuracy: 0.01, "released hand stays where it was") }
+                        }
+                    }
+                    // Recover wrist transforms from their child hand even when forearms are meshes.
+                    for id in ["handL", "handR"] {
+                        let aimed = try boneWorld(id)
+                        let parent = rig.parents[id]!
+                        let neutral = RigMatrix(rig.bindWorld[parent]!).inverse.times(RigMatrix(rig.bindWorld[id]!)).angle
+                        // The solver preserves the bounded wrist from the sampled base.
+                        let bounded = BowAimSolver.constrainWrists(world: drawWorld, rig: rig, bow: true)
+                        XCTAssertTrue(aimed.values.allSatisfy(\.isFinite))
+                        XCTAssertLessThanOrEqual(abs(atan2(sin(bounded[parent]!.inverse.times(bounded[id]!).angle-neutral),
+                                                          cos(bounded[parent]!.inverse.times(bounded[id]!).angle-neutral))) * 180 / .pi,
+                                                 id == "handL" ? 5.000001 : 30.000001)
+                    }
+                    if release.isComplete {
+                        let rest = data.sample(animation: "bowIdle", phase: 0, bowAimPitchDegrees: pitch)
+                        for layer in frame.layers {
+                            let original = try XCTUnwrap(rest.layers.first { $0.attachment == layer.attachment })
+                            for (a, b) in zip(layer.values, original.values) { XCTAssertEqual(a, b, accuracy: 0.01, "settles exactly to idle") }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     func testTransitionKeepsMatchingGeometryContinuous() {
         let old = CharacterFrame(layers: [.init(attachment: 0, values: [0, 10])], bowNock: nil)
         let new = CharacterFrame(layers: [.init(attachment: 0, values: [10, 20]), .init(attachment: 1, values: [30, 40])], bowNock: nil)

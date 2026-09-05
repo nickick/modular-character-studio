@@ -4,8 +4,9 @@ import SwiftUI
 import UIKit
 
 extension CharacterLibrary {
-    public func sample(animation: String, phase: Double, bowAimPitchDegrees: Double? = nil) -> CharacterFrame {
-        data.sample(animation: animation, phase: phase, bowAimPitchDegrees: bowAimPitchDegrees)
+    public func sample(animation: String, phase: Double, bowAimPitchDegrees: Double? = nil, bowRelease: BowRelease? = nil) -> CharacterFrame {
+        data.sample(animation: animation, phase: phase, bowAimPitchDegrees: bowAimPitchDegrees,
+                    bowRelease: bowRelease, bowStrings: bows.mapValues { BowStringSpan(top: $0.top, bottom: $0.bottom) })
     }
 
     /// GPU-backed SwiftUI Canvas path, matching the main client's scoped draws.
@@ -19,7 +20,7 @@ extension CharacterLibrary {
         context.translateBy(x: position.x, y: position.y)
         context.scaleBy(x: facing == .right ? -scale : scale, y: scale)
         context.translateBy(x: -canvasSize.width / 2, y: -baseline)
-        let bowActive = frame.bowNock != nil
+        let bowActive = frame.bowStringContact != nil
         func bone(_ layer: RuntimeLayerFrame) -> String { data.manifest.attachments[layer.attachment].bone ?? "" }
         func leadArm(_ layer: RuntimeLayerFrame) -> Bool { bowActive && ["upperArmL", "lowerArmL"].contains(bone(layer)) }
         func leadHand(_ layer: RuntimeLayerFrame) -> Bool {
@@ -48,7 +49,7 @@ extension CharacterLibrary {
             }
             var layer = context
             layer.concatenate(CGAffineTransform(a: values[0], b: values[1], c: values[2], d: values[3], tx: values[4], ty: values[5]))
-            if attachment.id == "bow", let bow = bows[attachment.asset], let nock = frame.bowNock {
+            if attachment.id == "bow", let bow = bows[attachment.asset], let nock = frame.bowStringContact {
                 let localNock = RigMatrix(values).inverse.point(nock)
                 let pivot = CGPoint(x: attachment.bowPivot?.x ?? asset.width*0.2153, y: attachment.bowPivot?.y ?? asset.height*0.622)
                 if stringOnly {

@@ -11,13 +11,15 @@ public struct ModularCharacterView: View {
     public var phase: Double
     public var facing: CharacterFacing
     public var bowAimPitchDegrees: Double?
+    public var bowRelease: BowRelease?
 
-    public init(library: CharacterLibrary, animation: String = "idle", phase: Double = 0, facing: CharacterFacing = .left, bowAimPitchDegrees: Double? = nil) {
+    public init(library: CharacterLibrary, animation: String = "idle", phase: Double = 0, facing: CharacterFacing = .left, bowAimPitchDegrees: Double? = nil, bowRelease: BowRelease? = nil) {
         self.library = library; self.animation = animation; self.phase = phase; self.facing = facing
         self.bowAimPitchDegrees = bowAimPitchDegrees
+        self.bowRelease = bowRelease
     }
     public var body: some View {
-        let frame = library.sample(animation: animation, phase: phase, bowAimPitchDegrees: bowAimPitchDegrees)
+        let frame = library.sample(animation: animation, phase: phase, bowAimPitchDegrees: bowAimPitchDegrees, bowRelease: bowRelease)
         Canvas(rendersAsynchronously: true) { context, bounds in
             let size = library.canvasSize
             let scale = min(bounds.width/size.width, bounds.height/size.height)
