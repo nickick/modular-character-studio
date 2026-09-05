@@ -13,7 +13,7 @@
 .inventory-thumbnail-empty { color: #5d6978; font-size: 20px; }
 
 .item-matrix-modal {
-  width: min(1460px, calc(100vw - 48px));
+  width: min(780px, calc(100vw - 32px));
   max-width: none;
   max-height: 88vh;
   padding: 0;
@@ -39,6 +39,7 @@
 .item-matrix-clear { margin-right: 36px; white-space: nowrap; }
 .item-matrix-grid {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-auto-rows: minmax(82px, auto);
   align-content: start;
   gap: 8px;
@@ -79,8 +80,9 @@
   width: 100%;
   min-width: 0;
   padding: 5px;
-  border: 1px solid transparent;
-  background: transparent;
+  border: 1px solid var(--line, #343c49);
+  border-radius: 9px;
+  background: #141b25;
   color: inherit;
   text-align: left;
 }
@@ -105,3 +107,8 @@
 .item-matrix-na { display: grid; place-items: center; color: #667281; }
 .item-matrix-empty { background: repeating-linear-gradient(135deg, #11161e, #11161e 6px, #131a23 6px, #131a23 12px); }
 .item-matrix-na { border-color: #2f353b; background: rgba(255, 255, 255, .012); letter-spacing: .08em; text-transform: uppercase; }
+.item-picker-empty { grid-column: 1 / -1; margin: 0; color: var(--studio-muted, #8fa3b8); }
+@media (max-width: 600px) {
+  .item-matrix-choice { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; padding: 8px 4px; }
+  .item-matrix-header { padding-right: 40px; }
+}

@@ -134,6 +134,13 @@ export interface DressedOption {
   item: CatalogItem | null
 }
 
+/** Only selectable rig options; catalogue-only backlog items never occupy a card. */
+export function availableOptions(options: readonly SceneOption[], catalog: EquipmentCatalog | null): DressedOption[] {
+  return options.map((option) => ({ option, item: catalog?.items.get(option.itemID ?? "") ?? null }))
+    .sort((a, b) => (a.item?.name ?? a.option.label).localeCompare(b.item?.name ?? b.option.label, "en", { sensitivity: "base", numeric: true })
+      || a.option.id.localeCompare(b.option.id))
+}
+
 /** Every option in a slot, filed by build line and tier. */
 export function optionsByCell(
   options: readonly SceneOption[],
