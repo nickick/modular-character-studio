@@ -19,23 +19,20 @@ extension CharacterLibrary {
         context.translateBy(x: position.x, y: position.y)
         context.scaleBy(x: facing == .right ? -scale : scale, y: scale)
         context.translateBy(x: -canvasSize.width / 2, y: -baseline)
-        var drawBowStrings: [() -> Void] = []
-        var drawBowHands: [() -> Void] = []
-        var layers = frame.layers
-        if let bow = layers.firstIndex(where: { data.manifest.attachments[$0.attachment].id == "bow" }),
-           let legs = layers.lastIndex(where: {
-               let bone = data.manifest.attachments[$0.attachment].bone ?? ""
-               return bone.contains("Leg") || bone.hasPrefix("foot")
-           }), bow < legs {
-            let layer = layers.remove(at: bow)
-            layers.insert(layer, at: legs)
+        let bowActive = frame.bowNock != nil
+        func bone(_ layer: RuntimeLayerFrame) -> String { data.manifest.attachments[layer.attachment].bone ?? "" }
+        func leadArm(_ layer: RuntimeLayerFrame) -> Bool { bowActive && ["upperArmL", "lowerArmL"].contains(bone(layer)) }
+        func leadHand(_ layer: RuntimeLayerFrame) -> Bool {
+            bowActive && bone(layer) == "handL" && data.manifest.attachments[layer.attachment].id.hasPrefix("hand")
         }
-        for current in layers {
+        func rearArm(_ layer: RuntimeLayerFrame) -> Bool { bowActive && ["upperArmR", "lowerArmR", "handR"].contains(bone(layer)) }
+        func leg(_ layer: RuntimeLayerFrame) -> Bool { bone(layer).contains("Leg") || bone(layer).hasPrefix("foot") }
+        let bowLayers = frame.layers.filter { data.manifest.attachments[$0.attachment].id == "bow" }
+        func paint(_ current: RuntimeLayerFrame, in context: GraphicsContext, stringOnly: Bool = false) {
             let attachment = data.manifest.attachments[current.attachment], values = current.values
             let asset = data.manifest.assets[attachment.asset]
             let image = context.resolve(Image(uiImage: images[attachment.asset]))
             let rect = CGRect(x: 0, y: 0, width: asset.width, height: asset.height)
-            let foregroundHand = frame.bowNock != nil && attachment.id.hasPrefix("hand")
             if let source = attachment.source, let triangles = attachment.triangles {
                 for i in stride(from: 0, to: triangles.count, by: 3) {
                     let indices = Array(triangles[i..<(i+3)])
@@ -45,25 +42,23 @@ extension CharacterLibrary {
                     var triangle = context
                     triangle.clip(to: Path { path in path.move(to: to[0]); path.addLine(to: to[1]); path.addLine(to: to[2]); path.closeSubpath() }, style: FillStyle(antialiased: false))
                     triangle.concatenate(transform)
-                    if foregroundHand {
-                        let handContext = triangle
-                        drawBowHands.append { handContext.draw(image, in: rect) }
-                    } else { triangle.draw(image, in: rect) }
+                    triangle.draw(image, in: rect)
                 }
-                continue
+                return
             }
             var layer = context
             layer.concatenate(CGAffineTransform(a: values[0], b: values[1], c: values[2], d: values[3], tx: values[4], ty: values[5]))
             if attachment.id == "bow", let bow = bows[attachment.asset], let nock = frame.bowNock {
                 let localNock = RigMatrix(values).inverse.point(nock)
                 let pivot = CGPoint(x: attachment.bowPivot?.x ?? asset.width*0.2153, y: attachment.bowPivot?.y ?? asset.height*0.622)
-                bow.drawBody(context: layer, image: image, renderRect: rect, pivot: pivot, nock: localNock, progress: frame.bowDrawProgress)
-                let stringContext = layer
-                drawBowStrings.append {
-                    bow.drawString(context: stringContext, image: image, renderRect: rect, pivot: pivot, nock: localNock, progress: frame.bowDrawProgress)
+                if stringOnly {
+                    bow.drawString(context: layer, image: image, renderRect: rect, pivot: pivot, nock: localNock, progress: frame.bowDrawProgress)
+                } else {
+                    bow.drawBody(context: layer, image: image, renderRect: rect, pivot: pivot, nock: localNock, progress: frame.bowDrawProgress)
                 }
-                continue
+                return
             }
+            guard !stringOnly else { return }
             if let cutout = attachment.clipPath, cutout.closed, cutout.nodes.count >= 3 {
                 layer.clip(to: Path { path in
                     let nodes = cutout.nodes
@@ -85,15 +80,24 @@ extension CharacterLibrary {
                     column.scaleBy(x: (strip.width+0.5)/strip.sourceWidth, y: strip.height/asset.height)
                     column.draw(image, in: CGRect(x: -strip.sourceX, y: 0, width: asset.width, height: asset.height))
                 }
-            } else if foregroundHand {
-                let handContext = layer
-                drawBowHands.append { handContext.draw(image, in: rect) }
             } else { layer.draw(image, in: rect) }
         }
-        // The string crosses in front of headgear; the bow body keeps its authored order.
-        drawBowStrings.forEach { $0() }
-        bowOverlay?(sceneContext)
-        drawBowHands.forEach { $0() }
+        frame.layers.filter(leadArm).forEach { paint($0, in: context) }
+        for layer in frame.layers where !leadArm(layer) && !leadHand(layer) && !rearArm(layer) {
+            paint(layer, in: context)
+            if data.manifest.attachments[layer.attachment].id == "bow" { bowOverlay?(sceneContext) }
+        }
+        if bowActive {
+            // One masked overlay, not one offscreen surface per sprite/triangle.
+            // Keep the string over the helmet, but let opaque leg/boot pixels hide it and the lead hand.
+            context.drawLayer { overlay in
+                bowLayers.forEach { paint($0, in: overlay, stringOnly: true) }
+                frame.layers.filter(leadHand).forEach { paint($0, in: overlay) }
+                overlay.blendMode = .destinationOut
+                frame.layers.filter(leg).forEach { paint($0, in: overlay) }
+            }
+            frame.layers.filter(rearArm).forEach { paint($0, in: context) }
+        }
     }
 }
 #endif
