@@ -167,6 +167,7 @@ export async function exportIOSDemo({ project = resolve(repoRoot, 'project'), ou
   await writeFile(resolve(resources, 'runtime.json'), JSON.stringify(manifest, null, 2) + '\n')
   await writeFile(resolve(resources, 'rig.json'), JSON.stringify({ format: 'modular-character-studio-resolved-rig-v1', profile, loadout, bones: rig.bones, layers: runtimeLayers }, null, 2) + '\n')
   for (const name of ['PlateDemo.swift', 'README.md', 'BAKING.md']) await copyFile(resolve(repoRoot, 'examples/ios', name), resolve(output, name))
+  await cp(resolve(repoRoot, 'examples/ios/Assets.xcassets'), resolve(output, 'Assets.xcassets'), { recursive: true })
   const swiftPackage = resolve(output, 'ModularCharacter')
   await mkdir(swiftPackage, { recursive: true })
   for (const name of ['Package.swift', 'LICENSE']) await copyFile(resolve(repoRoot, name), resolve(swiftPackage, name))

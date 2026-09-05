@@ -97,6 +97,12 @@ and ankle openings while preserving those designs.
 
 <img src="../project/assets/Layers/Accessories/Necklaces/simple-pendant.png" width="220" alt="Simple pendant">
 
+## [MCS app icon](records/mcs-app-icon.md)
+
+The generated gold articulated character is bundled in the iOS app's asset catalog.
+
+<img src="../examples/ios/Assets.xcassets/AppIcon.appiconset/AppIcon.png" width="180" alt="MCS app icon">
+
 ## Assets without retained prompts
 
 No authoritative generation prompt was retained for the bundled sword, axe,

@@ -42,6 +42,16 @@ test('plate export is self-contained and retains mesh, cutout, and equipment vis
     const xcode = await readFile(resolve(output, 'PlateDemo.xcodeproj/project.pbxproj'), 'utf8')
     assert.match(xcode, /XCLocalSwiftPackageReference; relativePath = ModularCharacter/)
     assert.match(xcode, /packageProductDependencies/)
+    assert.equal(xcode.match(/INFOPLIST_KEY_CFBundleDisplayName = MCS;/g)?.length, 2, 'both build configurations use MCS')
+    assert.equal(xcode.match(/ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;/g)?.length, 2)
+    assert.match(xcode, /lastKnownFileType = folder.assetcatalog; path = Assets.xcassets/)
+    assert.match(xcode, /files = \(A00000000000000000000012, A00000000000000000000017\)/)
+    const icons = JSON.parse(await readFile(resolve(output, 'Assets.xcassets/AppIcon.appiconset/Contents.json'), 'utf8'))
+    const icon = await readFile(resolve(output, 'Assets.xcassets/AppIcon.appiconset', icons.images[0].filename))
+    assert.equal(icon.readUInt32BE(16), 1024)
+    assert.equal(icon.readUInt32BE(20), 1024)
+    assert.equal(icon[25], 2, 'icon is RGB without an alpha channel')
+    assert.deepEqual(icon, await readFile(resolve(import.meta.dirname, '../examples/ios/Assets.xcassets/AppIcon.appiconset/AppIcon.png')))
     for (const path of ['Package.swift', 'Sources/ModularCharacter/CharacterLibrary.swift', 'Tests/ModularCharacterTests/CharacterRuntimeTests.swift', 'README.md', 'LICENSE']) {
       assert.ok((await readFile(resolve(output, 'ModularCharacter', path))).length)
     }

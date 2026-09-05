@@ -5,6 +5,23 @@ import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { execFileSync } from 'node:child_process'
 
+test('demo has no transient status message section between arena and controls', async () => {
+  const source = await readFile(new URL('../examples/ios/PlateDemo.swift', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /demo\.status|state\.message|var message|Full draw!|Quick shot\.|Target impact|Attack cancelled\.|Out of reach\./)
+  assert.match(source, /actionBar\.padding/)
+})
+
+test('bow draw and aim share one radial control', async () => {
+  const source = await readFile(new URL('../examples/ios/PlateDemo.swift', import.meta.url), 'utf8')
+  assert.match(source, /private var bowDrawDial: some View/)
+  assert.doesNotMatch(source, /demo\.aim|private var aimDial/)
+  assert.match(source, /Circle\(\)\.trim\(from: 0, to: model\.state\.charge\)/)
+  const dial = source.slice(source.indexOf('private var bowDrawDial'), source.indexOf('private func modeButton'))
+  assert.match(dial, /aimAndDraw/)
+  assert.match(dial, /model\.releaseAttack\(\)/)
+  assert.doesNotMatch(dial, /translation\.height|cancelled =/)
+})
+
 test('Swift slice resolves strikes, arrows, cancellation, guarding, dodge, and switching', { skip: process.platform !== 'darwin' }, async () => {
   const temp = await mkdtemp(resolve(tmpdir(), 'mcs-swift-simulation-'))
   try {
@@ -55,6 +72,22 @@ aimed.beginAttack(); aimed.releaseAttack(); assert(aimed.arrows.last!.dx < 0 && 
 let angle = aimed.aimAngle; aimed.aim(at: CGPoint(x: 0, y: 0)); assert(aimed.aimAngle == angle)
 var sweep = DemoSimulation(); sweep.arrows = [DemoArrow(x: 500, y: -220, dx: 1, dy: 0)]
 sweep.advance(0.1, durations: [:]); assert(sweep.hits == 1 && sweep.arrows.isEmpty)
+var dial = DemoSimulation(); dial.setMode(.bow)
+dial.aimAndDraw(at: CGPoint(x: 0, y: 0)); assert(dial.attackHeldAt != nil && dial.aimAngle == 0)
+let drawBegan = dial.attackHeldAt
+advance(&dial, 0.5)
+dial.aimAndDraw(at: CGPoint(x: 40, y: -40))
+assert(dial.attackHeldAt == drawBegan && dial.charge > 0 && !dial.cancelled)
+assert(abs(dial.aimPitch + 45) < 0.001)
+dial.aimAndDraw(at: CGPoint(x: -40, y: -40))
+assert(dial.facing == -1 && !dial.cancelled)
+advance(&dial, 1.2); assert(dial.charge == 1)
+dial.releaseAttack(); assert(dial.arrows.count == 1 && dial.arrows[0].dx < 0 && dial.arrows[0].dy < 0)
+dial.releaseAttack(); assert(dial.arrows.count == 1)
+dial.aimAndDraw(at: CGPoint(x: 40, y: 40)); dial.releaseInputs(); dial.releaseAttack()
+assert(dial.arrows.count == 1 && dial.attackHeldAt == nil)
+var meleeDial = DemoSimulation(); meleeDial.aimAndDraw(at: CGPoint(x: 40, y: -40))
+assert(meleeDial.attackHeldAt == nil)
 print("Swift simulation checks passed")
 `
     const swift = resolve(temp, 'main.swift'), binary = resolve(temp, 'checks')

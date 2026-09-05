@@ -37,7 +37,6 @@ struct DemoSimulation {
     var hitApplied = false
     var hits = 0
     var arrows: [DemoArrow] = []
-    var message = "Move closer to strike, or switch to the bow."
     var hitFlashUntil = 0.0
     var dodgeReadyAt = 0.0
 
@@ -59,23 +58,25 @@ struct DemoSimulation {
         guard action == nil else { return }
         mode = next; releaseInputs()
         aimAngle = facing > 0 ? 0 : .pi
-        message = next == .bow ? "Hold the attack pad to draw. Release to fire." : "Tap the attack pad to swing. Hold the shield to guard."
     }
     mutating func releaseInputs() { attackHeldAt = nil; cancelled = false; guarding = false; movement = 0 }
     mutating func beginAttack() {
         guard canAct, attackHeldAt == nil else { return }
         guarding = false; cancelled = false; attackHeldAt = time
     }
+    mutating func aimAndDraw(at point: CGPoint) {
+        guard mode == .bow, canAct else { return }
+        beginAttack()
+        aim(at: point)
+    }
     mutating func releaseAttack(origin: CGPoint? = nil) {
         guard attackHeldAt != nil else { return }
-        let power = charge
         attackHeldAt = nil
         defer { cancelled = false }
-        guard !cancelled, canAct else { message = "Attack cancelled."; return }
+        guard !cancelled, canAct else { return }
         if mode == .bow {
             let origin = origin ?? CGPoint(x: playerX + facing * 105, y: -205)
             arrows.append(DemoArrow(x: origin.x, y: origin.y, dx: cos(aimAngle), dy: sin(aimAngle)))
-            message = power > 0.85 ? "Full draw!" : "Quick shot. Hold longer to finish drawing."
         } else {
             action = "swordSwing"; actionBegan = time; hitApplied = false
         }
@@ -86,7 +87,7 @@ struct DemoSimulation {
         actionBegan = time; dodgeReadyAt = time + 1.0
     }
     mutating func registerImpact() {
-        hits += 1; hitFlashUntil = time + 0.18; message = "Target impact"
+        hits += 1; hitFlashUntil = time + 0.18
     }
     mutating func advance(_ seconds: Double, durations: [String: Double]) {
         let dt = min(0.1, max(0, seconds)); time += dt
@@ -100,7 +101,6 @@ struct DemoSimulation {
         if action == "swordSwing", !hitApplied, time - actionBegan >= (durations["swordSwing"] ?? 1.05) * 0.42 {
             hitApplied = true
             if abs(targetX - playerX) < 140 && (targetX - playerX) * facing > 0 { registerImpact() }
-            else { message = "Out of reach. Move toward the target." }
         }
         if let action, time - actionBegan >= (durations[action] ?? 0.56) { self.action = nil }
         var remaining: [DemoArrow] = []
@@ -344,11 +344,9 @@ struct PlateDemoView: View {
                     .accessibilityValue("\(model.state.mode.rawValue), \(model.state.clip)")
                     .accessibilityIdentifier("demo.arena")
             }
-            Text(model.state.message).font(.system(size: 12, weight: .medium)).foregroundStyle(gold)
-                .frame(maxWidth: .infinity, minHeight: 38).padding(.horizontal, 12).accessibilityIdentifier("demo.status")
             actionBar.padding(.horizontal, 14).padding(.vertical, 14)
                 .background(Color(red: 0.16, green: 0.14, blue: 0.12))
-            Text(model.state.mode == .bow ? "Hold DRAW · turn the aim dial · release to fire" : "Touch + drag the arena to move · tap to strike · hold to draw")
+            Text(model.state.mode == .bow ? "Hold the dial to draw · drag to aim · release to fire" : "Touch + drag the arena to move · tap to strike · hold to draw")
                 .font(.system(size: 10)).foregroundStyle(.secondary).multilineTextAlignment(.center).padding(10)
         }
         .background(Color(red: 0.075, green: 0.09, blue: 0.105))
@@ -361,6 +359,9 @@ struct PlateDemoView: View {
     private var actionBar: some View {
         HStack(spacing: 14) {
             Spacer(minLength: 0)
+            if model.state.mode == .bow {
+                bowDrawDial
+            } else {
             VStack(spacing: 5) {
                 Image(systemName: model.state.cancelled ? "xmark" : model.state.mode == .bow ? "arrow.up.right" : "figure.fencing")
                     .font(.system(size: 27, weight: .semibold))
@@ -381,6 +382,7 @@ struct PlateDemoView: View {
             .accessibilityAddTraits(.isButton)
             .accessibilityAction { model.state.beginAttack(); model.releaseAttack() }
             .accessibilityIdentifier("demo.attack")
+            }
             VStack(spacing: 8) {
                 HStack(spacing: 3) {
                     modeButton(.melee, symbol: "figure.fencing", label: "Sword")
@@ -410,32 +412,46 @@ struct PlateDemoView: View {
                         .accessibilityLabel("Dodge").accessibilityIdentifier("demo.dodge")
                 }
             }
-            if model.state.mode == .bow { aimDial }
             Spacer(minLength: 0)
         }.buttonStyle(.plain)
     }
-    private var aimDial: some View {
+    private var bowDrawDial: some View {
         VStack(spacing: 4) {
             ZStack {
-                Circle().fill(.black.opacity(0.2))
+                Circle().fill(gold.opacity(model.state.attackHeldAt == nil ? 0.14 : 0.25))
                 Circle().stroke(gold.opacity(0.5), lineWidth: 1)
+                Circle().trim(from: 0, to: model.state.charge)
+                    .stroke(gold, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
                 Path { path in
-                    path.move(to: CGPoint(x: 10, y: 38)); path.addLine(to: CGPoint(x: 66, y: 38))
-                    path.move(to: CGPoint(x: 38, y: 10)); path.addLine(to: CGPoint(x: 38, y: 66))
+                    path.move(to: CGPoint(x: 12, y: 46)); path.addLine(to: CGPoint(x: 80, y: 46))
+                    path.move(to: CGPoint(x: 46, y: 12)); path.addLine(to: CGPoint(x: 46, y: 80))
                 }.stroke(gold.opacity(0.2))
                 Image(systemName: "arrow.right").font(.system(size: 30, weight: .medium))
                     .rotationEffect(.radians(model.state.aimAngle)).foregroundStyle(gold)
-            }.frame(width: 76, height: 76).contentShape(Circle())
+            }.frame(width: 92, height: 92).contentShape(Circle())
                 .gesture(DragGesture(minimumDistance: 0).onChanged { value in
-                    model.state.aim(at: CGPoint(x: value.location.x-38, y: value.location.y-38))
+                    model.state.aimAndDraw(at: CGPoint(x: value.location.x-46, y: value.location.y-46))
+                }.onEnded { value in
+                    // Upward drags aim upward; they must not cancel the shot.
+                    if model.state.attackHeldAt != nil {
+                        model.state.aim(at: CGPoint(x: value.location.x-46, y: value.location.y-46))
+                        model.releaseAttack()
+                    }
                 })
-                .accessibilityElement().accessibilityLabel("Bow aim")
-                .accessibilityValue("\(Int(model.state.aimPitch)) degrees, \(model.state.facing > 0 ? "right" : "left")")
+                .id(model.inputGeneration)
+                .opacity(model.state.canAct ? 1 : 0.4)
+                .accessibilityElement().accessibilityLabel("Aim, draw and fire")
+                .accessibilityAddTraits(.isButton)
+                .accessibilityHint("Hold and drag around the dial to aim, then release to fire.")
+                .accessibilityValue("\(Int(model.state.aimPitch)) degrees, \(model.state.facing > 0 ? "right" : "left"), \(Int(model.state.charge * 100)) percent drawn")
                 .accessibilityAdjustableAction { direction in
                     let angle = model.state.aimAngle + (direction == .increment ? -Double.pi/12 : Double.pi/12)
-                    model.state.aim(at: CGPoint(x: cos(angle)*38, y: sin(angle)*38))
-                }.accessibilityIdentifier("demo.aim")
-            Text("AIM \(Int(model.state.aimPitch))°").font(.system(size: 9, weight: .bold, design: .monospaced))
+                    model.state.aim(at: CGPoint(x: cos(angle)*46, y: sin(angle)*46))
+                }
+                .accessibilityAction { model.state.beginAttack(); model.releaseAttack() }
+                .accessibilityIdentifier("demo.attack")
+            Text("DRAW / FIRE").font(.system(size: 9, weight: .heavy))
         }
     }
     private func modeButton(_ mode: DemoSimulation.Mode, symbol: String, label: String) -> some View {

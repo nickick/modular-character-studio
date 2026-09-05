@@ -1,4 +1,9 @@
-# Vanguard iOS slice
+# MCS iOS demo
+
+The app appears as **MCS** on the Home Screen with the bundled gold character icon.
+The project and bundle identifier retain their original PlateDemo names so existing
+installs and build commands continue to work. The icon is included in every export
+as `Assets.xcassets/AppIcon.appiconset` and is CC0 like the character artwork.
 
 Open `PlateDemo.xcodeproj`, choose an iPhone simulator, and Run. For a device,
 select your own signing team in the target's Signing & Capabilities settings.
@@ -23,16 +28,17 @@ the bundle. See the package's `README.md` in the generated export, or
   move and turn. Vertical drag is ignored. Release to stop and hide the joystick.
 - In Sword mode, tap Attack within reach of the training target.
 - Hold the shield button to preview guarding, including while moving.
-- Switch to Bow; hold the same attack pad to draw, then release to shoot.
+- Switch to Bow; the attack pad becomes a combined radial Draw / Fire dial.
+  Hold it to draw, drag around its center to aim, then release to shoot.
+  The outer ring shows draw progress; touching the center preserves the current aim.
   The rear finger gap pulls the arrow and original textured string back together;
   the limbs flex while the grip stays stable. The string draws above the helmet;
   the hands cover the string and arrow. A resting pull keeps the string at the finger gap.
   Wrists are limited to ±30° from neutral, or ±5° for the bow-holding wrist.
-- In Bow mode, turn the radial aim dial to aim in any direction. Both arms follow
-  the aim, and arrows leave above the bow hand along the displayed guide.
-  You can aim first, or turn the dial with a second finger while holding Draw.
+- In Bow mode, the same held gesture aims in any direction while drawing. Both
+  arms follow the aim, and arrows leave above the bow hand along the displayed guide.
 - In Sword mode, drag across the attack pad to face left/right. Drag up off the
-  attack pad in either mode to cancel.
+  attack pad in Sword mode to cancel. Upward drags on the bow dial aim upward.
 - Tap Dodge to preview the dodge animation. Reset restores the starting pose
   and position. There are no health bars, scores, or game-over states.
 
